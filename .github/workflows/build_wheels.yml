@@ -107,7 +107,7 @@ jobs:
             dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm &&
             dnf install -y boost1.78-devel &&
             cd /project &&
-            cmake -Bbuild -DCMAKE_BUILD_TYPE=Release &&
+            cmake -Bbuild -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_BUILD_TYPE=Release &&
             cmake --build build -j
 
       - name: Build on macOS
