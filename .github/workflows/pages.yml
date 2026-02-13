@@ -1,4 +1,4 @@
-name: build
+name: Publish Pages
 on:
   push:
     branches:
