@@ -3,7 +3,7 @@ cmake_minimum_required( VERSION 3.15 )
 # Project details
 project(
     LibTokaMap
-    VERSION 0.1.0.0
+    VERSION 0.1.1
     LANGUAGES CXX
 )
 
@@ -117,6 +117,10 @@ set( EXT_HEADERS
     ext_include/exprtk/exprtk.hpp
     ext_include/inja/inja.hpp
 )
+
+if( "${PROJECT_VERSION_TWEAK}" STREQUAL "" )
+    set( PROJECT_VERSION_TWEAK 0 )
+endif()
 
 configure_file(
     ${CMAKE_CURRENT_LIST_DIR}/include/version.hpp.in
