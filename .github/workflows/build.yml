@@ -23,7 +23,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/github-script@v7
         with:
@@ -61,7 +61,7 @@ jobs:
         run: ./build/examples/simple_mapper/simple_mapper
 
       - name: Archive example trace
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: example-trace-${{ matrix.os }}-${{ matrix.release }}
           path: trace.json
