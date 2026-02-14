@@ -54,7 +54,7 @@ jobs:
       - name: Install Windows dependencies
         if: runner.os == 'Windows'
         run: >
-          vcpkg install --triplet x64-windows-static-md --binarysource="clear;x-gha,readwrite"
+          vcpkg install --triplet x64-windows-static-md
           boost
 
       - name: Install linux dependencies
