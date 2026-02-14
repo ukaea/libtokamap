@@ -51,19 +51,19 @@ jobs:
         with:
           platforms: all
 
-      - name: Install Windows dependencies
-        if: runner.os == 'Windows'
-        run: >
-          vcpkg install --triplet x64-windows-static-md
-          boost
+      # - name: Install Windows dependencies
+      #   if: runner.os == 'Windows'
+      #   run: >
+      #     vcpkg install --triplet x64-windows-static-md
+      #     boost
 
-      - name: Install linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install -y libboost-dev
+      # - name: Install linux dependencies
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: sudo apt update && sudo apt install -y libboost-dev
 
-      - name: Install macOS dependencies
-        if: matrix.os == 'macos-latest'
-        run: brew update-reset && brew install boost
+      # - name: Install macOS dependencies
+      #   if: matrix.os == 'macos-latest'
+      #   run: brew update-reset && brew install boost
 
       - name: Build (Windows)
         if: runner.os == 'Windows'

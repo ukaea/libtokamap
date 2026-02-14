@@ -2,7 +2,6 @@
 
 #include <any>
 #ifdef _WIN32
-#  include <Windows.h>
 #  include <DbgHelp.h>
 #else
 #  include <cxxabi.h>

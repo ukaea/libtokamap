@@ -1,7 +1,6 @@
 #include "library_loader.hpp"
 
 #ifdef _WIN32
-#  include <Windows.h>
 #  include <libloaderapi.h>
 #else
 #  include <dlfcn.h>

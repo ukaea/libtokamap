@@ -26,8 +26,8 @@ libtokamap::extract_indices(const std::deque<std::string_view>& path_tokens)
         const char* last_pos = token.begin();
 
         for (auto match : ctre::search_all<indices_re>(token)) {
-            const char* start = match.get<0>().begin();
-            const char* end = match.get<0>().end();
+            const auto* start = match.get<0>().begin();
+            const auto* end = match.get<0>().end();
 
             auto num = match.get<1>().to_string();
             indices.push_back(std::stoi(num));
