@@ -1,7 +1,12 @@
 #pragma once
 
 #include <any>
-#include <cxxabi.h>
+#ifdef _WIN32
+#  include <Windows.h>
+#  include <DbgHelp.h>
+#else
+#  include <cxxabi.h>
+#endif
 #include <filesystem>
 #include <functional>
 #include <memory>
@@ -105,7 +110,12 @@ DataSourceFactory load_data_source_factory(const std::filesystem::path& library_
 template <typename T> std::string to_string()
 {
     int status = 0;
+#ifdef _WIN32
+    char buffer[1024];
+    UnDecorateSymbolName(typeid(T).name(), buffer, sizeof(buffer), UNDNAME_COMPLETE);
+#else
     return abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, &status);
+#endif
 }
 
 template <typename T> auto get_arg(const DataSourceFactoryArgs& args, const char* variable) -> T

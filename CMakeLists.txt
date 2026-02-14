@@ -147,6 +147,13 @@ configure_file(
 )
 
 add_library( libtokamap ${SOURCES} )
+
+if( MSVC )
+    target_compile_options( libtokamap PRIVATE /W4 /WX )
+else()
+    target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
+endif()
+
 target_include_directories( libtokamap
     PRIVATE
       ${CMAKE_CURRENT_SOURCE_DIR}/src
