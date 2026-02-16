@@ -67,8 +67,6 @@ jobs:
           CIBW_ARCHS: ${{matrix.build-platform[1]}}
           CIBW_PLATFORM: windows
           CIBW_BUILD: cp3*-${{matrix.build-platform[2]}}
-          # CIBW_SKIP: cp36* cp37* cp313*
-          CIBW_SKIP: cp36* cp37*
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel} --add-path ${{github.workspace}}/build"
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 
