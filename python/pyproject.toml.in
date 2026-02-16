@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "libtokamap"
-version = "@PROJECT_VERSION@"
+version = "@PYTHON_PROJECT_VERSION@"
 description = "A library for flexible data mapping and transformation using TokaMap compatible mappings"
 authors = [
     { name = "Jonathan Hollocombe", email = "jonathan.hollocombe@ukaea.uk" },

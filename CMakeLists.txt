@@ -1,22 +1,24 @@
 cmake_minimum_required( VERSION 3.15 )
 
-# Project details
-project(
-    LibTokaMap
-    VERSION 0.1.1
-    LANGUAGES CXX
-)
-
-if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
-    message( SEND_ERROR "In-source builds are not allowed." )
-endif()
-
 # Extra cmake modules to find libraries
 list(
     APPEND CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
     ${CMAKE_SOURCE_DIR}/cmake/Modules
 )
+
+include( GitVersion )
+
+# Project details
+project(
+    LibTokaMap
+    VERSION ${GIT_VERSION}
+    LANGUAGES CXX
+)
+
+if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
+    message( SEND_ERROR "In-source builds are not allowed." )
+endif()
 
 # Set project options
 include( StaticAnalyzers )
@@ -135,13 +137,13 @@ configure_file(
 )
 
 configure_file(
-    ${CMAKE_CURRENT_LIST_DIR}/setup.py.in
+    ${CMAKE_CURRENT_LIST_DIR}/python/setup.py.in
     ${CMAKE_CURRENT_LIST_DIR}/python/setup.py
     @ONLY
 )
 
 configure_file(
-    ${CMAKE_CURRENT_LIST_DIR}/pyproject.toml.in
+    ${CMAKE_CURRENT_LIST_DIR}/python/pyproject.toml.in
     ${CMAKE_CURRENT_LIST_DIR}/python/pyproject.toml
     @ONLY
 )
