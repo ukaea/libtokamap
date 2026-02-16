@@ -60,7 +60,7 @@ jobs:
 
       - name: Install (Windows)
         if: matrix.os == 'windows-latest'
-        run: sudo cmake --install build  --config ${{ matrix.release }}
+        run: cmake --install build  --config ${{ matrix.release }}
 
       - name: Test
         if: matrix.os != 'windows-latest'
