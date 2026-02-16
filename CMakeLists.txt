@@ -54,6 +54,11 @@ set( UTIL_SOURCES
     src/utils/syntax_parser.cpp
     src/utils/typed_data_array.cpp
 )
+if( WIN32 )
+    list( APPEND UTIL_SOURCES src/utils/windows_utils.cpp )
+else()
+    list( APPEND UTIL_SOURCES src/utils/unix_utils.cpp )
+endif()
 
 set( MAP_TYPE_SOURCES
     src/map_types/custom_mapping.cpp
@@ -79,6 +84,7 @@ set( UTIL_HEADERS
     src/utils/indices.hpp
     src/utils/library_loader.hpp
     src/utils/mapping_locator.hpp
+    src/utils/os_utils.hpp
     src/utils/profiler.hpp
     src/utils/ram_cache.hpp
     src/utils/render.hpp

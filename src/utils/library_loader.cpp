@@ -1,10 +1,5 @@
 #include "library_loader.hpp"
 
-#ifdef _WIN32
-#  include <libloaderapi.h>
-#else
-#  include <dlfcn.h>
-#endif
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -12,6 +7,7 @@
 
 #include "config.hpp"
 #include "exceptions/exceptions.hpp"
+#include "utils/os_utils.hpp"
 
 namespace
 {
@@ -23,21 +19,8 @@ constexpr const char* factory_loader = "LibTokaMapFactoryLoader";
 
 std::vector<libtokamap::LibraryFunction> load_library_functions(const std::filesystem::path& library_path)
 {
-#ifdef _WIN32
-    HMODULE hModule = LoadLibraryA(library_path.string().c_str());
-    if (hModule == nullptr) {
-        throw libtokamap::TokaMapError("Failed to load library '" + library_path.string() + "'");
-    }
+    void* function_pointer = libtokamap::load_library_object(library_path, library_loader);
 
-    FARPROC function_pointer = GetProcAddress(hModule, library_loader);
-#else
-    void* handle = dlopen(library_path.c_str(), RTLD_LAZY);
-    if (handle == nullptr) {
-        throw libtokamap::TokaMapError("Failed to load library '" + library_path.string() + "'");
-    }
-
-    void* function_pointer = dlsym(handle, library_loader);
-#endif
     if (function_pointer == nullptr) {
         throw libtokamap::TokaMapError("Failed to find entry function '" + std::string{ library_loader } + "'");
     }
@@ -55,12 +38,7 @@ using FactoryEntryFunction = void (*)(libtokamap::FactoryEntryInterface&);
 
 libtokamap::DataSourceFactory libtokamap::load_data_source_factory(const std::filesystem::path& library_path)
 {
-    void* handle = dlopen(library_path.c_str(), RTLD_LAZY);
-    if (handle == nullptr) {
-        throw libtokamap::TokaMapError("Failed to load library '" + library_path.string() + "'");
-    }
-
-    void* function_pointer = dlsym(handle, factory_loader);
+    void* function_pointer = load_library_object(library_path, factory_loader);
     if (function_pointer == nullptr) {
         throw libtokamap::TokaMapError("Failed to find entry function '" + std::string{ factory_loader } + "'");
     }
