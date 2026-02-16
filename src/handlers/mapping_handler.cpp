@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
-#include <cxxabi.h>
 #include <deque>
 #include <filesystem>
 #include <fstream>
@@ -436,8 +435,8 @@ void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::Ma
     auto expr = value["EXPR"].get<std::string>();
     auto parameters = value["PARAMETERS"].get<std::unordered_map<std::string, std::string>>();
     map_store.emplace(mapping_name, std::make_unique<libtokamap::ExprMapping>(expr, parameters));
-    for (const auto& [_key, value] : parameters) {
-        mapping_counts.increment(value);
+    for (const auto& [_key, param_value] : parameters) {
+        mapping_counts.increment(param_value);
     }
 }
 
@@ -452,8 +451,8 @@ void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::
     auto params = value["PARAMETERS"];
     map_store.emplace(mapping_name, std::make_unique<libtokamap::CustomMapping>(library_functions, library_name,
                                                                                 function_name, input_map, params));
-    for (const auto& [_key, value] : input_map) {
-        mapping_counts.increment(value);
+    for (const auto& [_key, input_value] : input_map) {
+        mapping_counts.increment(input_value);
     }
 }
 
@@ -581,7 +580,7 @@ void libtokamap::MappingHandler::init(const nlohmann::json& config)
     bool enable_caching = config.contains("cache_enabled") && config.at("cache_enabled").get<bool>();
 
     if (enable_caching) {
-        const std::size_t cache_size =
+        const int cache_size =
             config.contains("cache_size") ? config.at("cache_size").get<int>() : libtokamap::default_size;
         m_ram_cache = std::make_shared<libtokamap::RamCache>(cache_size);
     } else {

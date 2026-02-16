@@ -1,4 +1,3 @@
-#include <cxxabi.h>
 #include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -11,14 +10,14 @@
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/ram_cache.hpp"
+#include "utils/os_utils.hpp"
 
 namespace
 {
 // define this _before_ including catch headers
 std::ostream& operator<<(std::ostream& out, const std::type_index& value)
 {
-    int status = 0;
-    out << abi::__cxa_demangle(value.name(), nullptr, nullptr, &status);
+    out << libtokamap::demangle(value.name());
     return out;
 }
 } // namespace
@@ -35,7 +34,7 @@ template <> struct StringMaker<std::type_index> {
     static std::string convert(const std::type_index& value)
     {
         int status = 0;
-        return abi::__cxa_demangle(value.name(), nullptr, nullptr, &status);
+        return libtokamap::demangle(value.name());
     }
 };
 } // namespace Catch

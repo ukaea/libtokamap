@@ -34,8 +34,8 @@ libtokamap::TypedDataArray dot_product(libtokamap::CustomMappingInputs& inputs,
         throw libtokamap::TokaMapError("Vectors must be of type float");
     }
 
-    const auto lhs_data = lhs.span<float>();
-    const auto rhs_data = rhs.span<float>();
+    const auto lhs_data = lhs.data<float>();
+    const auto rhs_data = rhs.data<float>();
     float result = 0.0F;
 
     for (size_t i = 0; i < lhs.size(); ++i) {

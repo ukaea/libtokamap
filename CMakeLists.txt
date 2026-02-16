@@ -54,7 +54,7 @@ set( UTIL_SOURCES
     src/utils/syntax_parser.cpp
     src/utils/typed_data_array.cpp
 )
-if( WIN32 )
+if( MSVC )
     list( APPEND UTIL_SOURCES src/utils/windows_utils.cpp )
 else()
     list( APPEND UTIL_SOURCES src/utils/unix_utils.cpp )
@@ -157,7 +157,8 @@ configure_file(
 add_library( libtokamap ${SOURCES} )
 
 if( MSVC )
-    target_compile_options( libtokamap PRIVATE /W4 /WX )
+    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj )
+    target_link_libraries( libtokamap PRIVATE Dbghelp )
 else()
     target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
 endif()
@@ -173,10 +174,6 @@ target_include_directories( libtokamap
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ext_include>
       $<INSTALL_INTERFACE:include/libtokamap>
-)
-target_compile_options( libtokamap PRIVATE
-    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:-Wall -Werror -Wpedantic>
-    $<$<CXX_COMPILER_ID:GNU>:-Wall -Werror -Wpedantic>
 )
 if( ENABLE_PROFILING )
     target_compile_definitions( libtokamap PRIVATE LIBTOKAMAP_PROFILE_ENABLED )

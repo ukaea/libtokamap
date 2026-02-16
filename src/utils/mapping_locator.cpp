@@ -78,7 +78,7 @@ std::filesystem::path select_subdirectory(const std::filesystem::path& directory
     std::vector<std::string> subdirectories;
     for (const auto& dir : std::filesystem::directory_iterator{directory}) {
         if (std::filesystem::is_directory(dir)) {
-            subdirectories.push_back(dir.path().filename());
+            subdirectories.push_back(dir.path().filename().string());
         }
     }
     return directory / libtokamap::detail::select_subdirectory(subdirectories, selector, value);
