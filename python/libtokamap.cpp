@@ -106,7 +106,7 @@ bool set_dictionary_item(PyObject* dict, const std::string& key, const nlohmann:
     if (value.is_string()) {
         py_value = PyUnicode_FromString(value.get<std::string>().c_str());
     } else if (value.is_number_integer()) {
-        py_value = PyLong_FromInt64(value.get<int64_t>());
+        py_value = PyLong_FromLongLong(value.get<int64_t>());
     } else if (value.is_number_float()) {
         py_value = PyFloat_FromDouble(value.get<double>());
     } else {
