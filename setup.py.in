@@ -23,6 +23,6 @@ ext_modules = [
 
 setup(
     name="libtokamap",
-    version="0.1.0",
+    version="@PROJECT_VERSION@",
     ext_modules=ext_modules,
 )

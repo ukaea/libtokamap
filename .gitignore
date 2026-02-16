@@ -5,7 +5,6 @@ python/build/
 python/src/libtokamap.egg-info
 python/dist/
 python/setup.py
-python/pyproject.toml
 .clangd
 .ropeproject
 venv

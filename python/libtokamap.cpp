@@ -324,13 +324,13 @@ int PyMapper_init(PyMapper* self, PyObject* args, PyObject* Py_UNUSED(kwds))
 }
 
 PyTypeObject PyMapperType = {
-    PyVarObject_HEAD_INIT(nullptr, 0) /* */
-        .tp_name = "clibtokamap.PyMapper",
+    .ob_base = PyVarObject_HEAD_INIT(nullptr, 0)
+    .tp_name = "clibtokamap.PyMapper",
     .tp_basicsize = sizeof(PyMapper),
+    .tp_dealloc = (destructor)PyMapper_dealloc,
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_init = (initproc)PyMapper_init,
     .tp_new = PyMapper_new,
-    .tp_dealloc = (destructor)PyMapper_dealloc,
 };
 
 PyObject* libtokamap_create(PyObject* Py_UNUSED(module), PyObject* args)

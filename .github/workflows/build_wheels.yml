@@ -1,4 +1,4 @@
-name: build and upload wheels
+name: Build & Upload Wheels
 
 on:
   push:
@@ -29,9 +29,9 @@ jobs:
           # on pushes to release branches and to main
           - [ubuntu-latest, x86_64, manylinux_2_28_x86_64, 0.0]
           - [ubuntu-latest, aarch64, manylinux_2_28_aarch64, 0.0]
-          - [macos-13, x86_64, macosx_x86_64, 13.0]
-          - [macos-14, arm64, macosx_arm64, 14.0]
-          - [windows-latest, AMD64, win_amd64, 0.0]
+          - [macos-15-intel, x86_64, macosx_x86_64, 13.0]
+          - [macos-15, arm64, macosx_arm64, 15.0]
+          # - [windows-latest, AMD64, win_amd64, 0.0]
 
     steps:
       - uses: actions/checkout@v6
@@ -51,19 +51,19 @@ jobs:
         with:
           platforms: all
 
-      - name: Install Windows dependencies
-        if: runner.os == 'Windows'
-        run: >
-          vcpkg install --triplet x64-windows-static-md --binarysource="clear;x-gha,readwrite"
-          boost
+      # - name: Install Windows dependencies
+      #   if: runner.os == 'Windows'
+      #   run: >
+      #     vcpkg install --triplet x64-windows-static-md
+      #     boost
 
-      - name: Install linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install -y libboost-dev
+      # - name: Install linux dependencies
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: sudo apt update && sudo apt install -y libboost-dev
 
-      - name: Install macOS dependencies
-        if: matrix.os == 'macos-latest'
-        run: brew update-reset && brew install boost
+      # - name: Install macOS dependencies
+      #   if: matrix.os == 'macos-latest'
+      #   run: brew update-reset && brew install boost
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
@@ -107,7 +107,7 @@ jobs:
             dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm &&
             dnf install -y boost1.78-devel &&
             cd /project &&
-            cmake -Bbuild -DCMAKE_BUILD_TYPE=Release &&
+            cmake -Bbuild -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_BUILD_TYPE=Release &&
             cmake --build build -j
 
       - name: Build on macOS

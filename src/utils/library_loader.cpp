@@ -1,6 +1,10 @@
 #include "library_loader.hpp"
 
-#include <dlfcn.h>
+#ifdef _WIN32
+#  include <libloaderapi.h>
+#else
+#  include <dlfcn.h>
+#endif
 #include <filesystem>
 #include <string>
 #include <utility>
@@ -19,12 +23,21 @@ constexpr const char* factory_loader = "LibTokaMapFactoryLoader";
 
 std::vector<libtokamap::LibraryFunction> load_library_functions(const std::filesystem::path& library_path)
 {
+#ifdef _WIN32
+    HMODULE hModule = LoadLibraryA(library_path.string().c_str());
+    if (hModule == nullptr) {
+        throw libtokamap::TokaMapError("Failed to load library '" + library_path.string() + "'");
+    }
+
+    FARPROC function_pointer = GetProcAddress(hModule, library_loader);
+#else
     void* handle = dlopen(library_path.c_str(), RTLD_LAZY);
     if (handle == nullptr) {
         throw libtokamap::TokaMapError("Failed to load library '" + library_path.string() + "'");
     }
 
     void* function_pointer = dlsym(handle, library_loader);
+#endif
     if (function_pointer == nullptr) {
         throw libtokamap::TokaMapError("Failed to find entry function '" + std::string{ library_loader } + "'");
     }

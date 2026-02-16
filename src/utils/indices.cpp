@@ -23,7 +23,7 @@ libtokamap::extract_indices(const std::deque<std::string_view>& path_tokens)
 
     for (const auto& token : path_tokens) {
         std::string result;
-        const auto* last_pos = token.begin();
+        const char* last_pos = token.begin();
 
         for (auto match : ctre::search_all<indices_re>(token)) {
             const auto* start = match.get<0>().begin();
