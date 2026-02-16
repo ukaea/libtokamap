@@ -31,24 +31,27 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Install linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install -y libboost-dev
+      # - name: Install linux dependencies
+      #   if: matrix.os == 'ubuntu-latest'
+      #   run: sudo apt update && sudo apt install -y libboost-dev
 
-      - name: Install macos dependencies
-        if: matrix.os == 'macos-latest'
-        run: brew update-reset && brew install boost
+      # - name: Install macos dependencies
+      #   if: matrix.os == 'macos-latest'
+      #   run: brew update-reset && brew install boost
 
       - name: Configure CMake
+        if: matrix.os != 'windows-latest'
         run: >
-          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
+          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.release }} \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
 
       - name: Build
-        run: cmake --build build --config ${{ matrix.release }}
+        if: matrix.os != 'windows-latest'
+        run: cmake --build build
 
       - name: Install
         if: matrix.os != 'windows-latest'
-        run: sudo cmake --install build --config ${{ matrix.release }}
+        run: sudo cmake --install build
 
       # - name: Install
       #   if: matrix.os == 'windows-latest'
