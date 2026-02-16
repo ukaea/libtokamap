@@ -31,7 +31,7 @@ ext_modules = [
             str(ROOT / "build" / "include"),
             numpy.get_include(),
         ],
-        extra_objects=[str(LIBRARY)],
+        extra_objects=[str(library)],
         extra_compile_args=EXTRA_COMPILE_ARGS,
     )
 ]
