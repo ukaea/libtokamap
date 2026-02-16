@@ -17,8 +17,10 @@ library = find_file(LIBRARY_NAME, LIBRARY_DIR)
 
 if platform.system() == 'Windows':
     EXTRA_COMPILE_ARGS = ["/std:c++20", "/O2"]
+    EXTRA_LINK_ARGS= ["Dbghelp.lib"]
 else:
     EXTRA_COMPILE_ARGS = ["-std=c++20", "-O3"]
+    EXTRA_LINK_ARGS = []
 
 ext_modules = [
     Extension(
@@ -33,6 +35,7 @@ ext_modules = [
         ],
         extra_objects=[str(library)],
         extra_compile_args=EXTRA_COMPILE_ARGS,
+        extra_link_args=EXTRA_LINK_ARGS,
     )
 ]
 
