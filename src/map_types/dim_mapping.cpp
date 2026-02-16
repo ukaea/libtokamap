@@ -23,11 +23,15 @@ libtokamap::TypedDataArray libtokamap::DimMapping::map(const MapArguments& argum
 
     auto array = arguments.entries.at(m_dim_probe)->map(arguments);
     if (array.rank() == 0) {
-        if (dim_index == 0) {
-            // Special case for scalar arrays
-            return TypedDataArray{static_cast<uint64_t>(1)};
-        }
-        throw libtokamap::MappingError{"cannot use DIM_PROBE on rank 0 mapping '" + m_dim_probe + "'"};
+        // Special case for scalar arrays
+        return TypedDataArray{static_cast<uint64_t>(1)};
+
+        // ** commented out for now to avoid warnings while dim_index is const **
+        //if (dim_index == 0) {
+        //    // Special case for scalar arrays
+        //    return TypedDataArray{static_cast<uint64_t>(1)};
+        //}
+        //throw libtokamap::MappingError{"cannot use DIM_PROBE on rank 0 mapping '" + m_dim_probe + "'"};
     }
 
     auto result = TypedDataArray{static_cast<uint64_t>(array.shape()[dim_index])};
