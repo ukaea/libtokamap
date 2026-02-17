@@ -14,20 +14,26 @@
 namespace libtokamap
 {
 
-inline void to_lower(std::string& string) { std::ranges::transform(string, string.begin(), ::tolower); }
-inline void to_upper(std::string& string) { std::ranges::transform(string, string.begin(), ::toupper); }
+inline void to_lower(std::string& string)
+{
+    std::ranges::transform(string, string.begin(), [](char c) { return static_cast<char>(::tolower(c)); });
+}
+inline void to_upper(std::string& string)
+{
+    std::ranges::transform(string, string.begin(), [](char c) { return static_cast<char>(::toupper(c)); });
+}
 
 inline std::string to_lower_copy(std::string_view string)
 {
     std::string result(string);
-    std::ranges::transform(result, result.begin(), ::tolower);
+    std::ranges::transform(result, result.begin(), [](char c) { return static_cast<char>(::tolower(c)); });
     return result;
 }
 
 inline std::string to_upper_copy(std::string_view string)
 {
     std::string result(string);
-    std::ranges::transform(result, result.begin(), ::toupper);
+    std::ranges::transform(result, result.begin(), [](char c) { return static_cast<char>(::toupper(c)); });
     return result;
 }
 

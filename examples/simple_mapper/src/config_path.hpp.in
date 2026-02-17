@@ -1,0 +1,3 @@
+#pragma once
+
+constexpr const char* ConfigDirectory = "@CONFIG_DIRECTORY@";

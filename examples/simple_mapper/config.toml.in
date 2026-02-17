@@ -3,11 +3,11 @@ schemas_directory = "@CMAKE_SOURCE_DIR@/schemas"
 trace_enabled = true
 cache_enabled = true
 custom_function_libraries = [
-    "@CMAKE_CURRENT_BINARY_DIR@/libcustom_library@CMAKE_SHARED_LIBRARY_SUFFIX@"
+    "@CMAKE_CURRENT_BINARY_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@custom_library@CMAKE_SHARED_LIBRARY_SUFFIX@"
 ]
 
 [data_source_factories]
-json_factory = "@CMAKE_CURRENT_BINARY_DIR@/libjson_data_source@CMAKE_SHARED_LIBRARY_SUFFIX@"
+json_factory = "@CMAKE_CURRENT_BINARY_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@json_data_source@CMAKE_SHARED_LIBRARY_SUFFIX@"
 
 [data_sources.JSON]
 factory = "json_factory"

@@ -8,6 +8,7 @@ on:
       - release/*
       - main
       - develop
+      - feature/*
 
 # prevent duplicate CI runs from separate triggers
 concurrency:
@@ -30,7 +31,7 @@ jobs:
           - [ubuntu-latest, aarch64, manylinux_2_28_aarch64, 0.0]
           - [macos-15-intel, x86_64, macosx_x86_64, 13.0]
           - [macos-15, arm64, macosx_arm64, 14.0]
-          # - [windows-latest, AMD64, win_amd64, 0.0]
+          - [windows-latest, AMD64, win_amd64, 0.0]
 
     steps:
       - uses: actions/checkout@v6
@@ -50,25 +51,11 @@ jobs:
         with:
           platforms: all
 
-      # - name: Install Windows dependencies
-      #   if: runner.os == 'Windows'
-      #   run: >
-      #     vcpkg install --triplet x64-windows-static-md
-      #     boost
-
-      # - name: Install linux dependencies
-      #   if: matrix.os == 'ubuntu-latest'
-      #   run: sudo apt update && sudo apt install -y libboost-dev
-
-      # - name: Install macOS dependencies
-      #   if: matrix.os == 'macos-latest'
-      #   run: brew update-reset && brew install boost
-
       - name: Build (Windows)
         if: runner.os == 'Windows'
         run: >
-          cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
-          && cmake --build build -j --config Release
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE=Release &&
+          cmake --build build -j --config Release
 
       - name: Build Windows wheels
         if: runner.OS == 'Windows'
@@ -80,8 +67,6 @@ jobs:
           CIBW_ARCHS: ${{matrix.build-platform[1]}}
           CIBW_PLATFORM: windows
           CIBW_BUILD: cp3*-${{matrix.build-platform[2]}}
-          # CIBW_SKIP: cp36* cp37* cp313*
-          CIBW_SKIP: cp36* cp37*
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel} --add-path ${{github.workspace}}/build"
           CIBW_BEFORE_BUILD_WINDOWS: "pip install delvewheel"
 

@@ -15,8 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        # os: [ubuntu-22.04, windows-latest, macos-latest]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         release: [Debug, Release]
     runs-on: ${{ matrix.os }}
     defaults:
@@ -31,36 +30,48 @@ jobs:
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-      - name: Install linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install -y libboost-dev
+      # Non-Windows
 
-      - name: Install macos dependencies
-        if: matrix.os == 'macos-latest'
-        run: brew update-reset && brew install boost
-
-      - name: Configure CMake
-        run: >
-          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.release }} -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
-
-      - name: Build
-        run: cmake --build build --config ${{ matrix.release }}
-
-      - name: Install
+      - name: Configure CMake (non-Windows)
         if: matrix.os != 'windows-latest'
-        run: sudo cmake --install build --config ${{ matrix.release }}
+        run: >
+          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.release }} \
+            -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
 
-      # - name: Install
-      #   if: matrix.os == 'windows-latest'
-      #   run: cmake --install build --config ${{ matrix.release }}
+      - name: Build (non-Windows)
+        if: matrix.os != 'windows-latest'
+        run: cmake --build build
+
+      - name: Install (non-Windows)
+        if: matrix.os != 'windows-latest'
+        run: sudo cmake --install build
+
+      # Windows
+
+      - name: Configure CMake (Windows)
+        if: matrix.os == 'windows-latest'
+        run: >
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake --build build -j 8 --config ${{ matrix.release }}
+
+      - name: Install (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake --install build  --config ${{ matrix.release }}
 
       - name: Test
+        if: matrix.os != 'windows-latest'
         run: ctest --test-dir build --output-on-failure
 
       - name: Examples
+        if: matrix.os != 'windows-latest'
         run: ./build/examples/simple_mapper/simple_mapper
 
       - name: Archive example trace
+        if: matrix.os != 'windows-latest'
         uses: actions/upload-artifact@v6
         with:
           name: example-trace-${{ matrix.os }}-${{ matrix.release }}

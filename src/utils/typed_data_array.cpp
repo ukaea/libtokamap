@@ -2,7 +2,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <cxxabi.h>
 #include <iomanip>
 #include <ios>
 #include <ostream>
@@ -11,6 +10,8 @@
 #include <string>
 #include <typeindex>
 #include <vector>
+
+#include "utils/os_utils.hpp"
 
 namespace
 {
@@ -135,14 +136,12 @@ std::ostream& operator<<(std::ostream& out, const SpanStreamAdaptor<T>& data)
 
 std::string to_string(const std::type_index& value)
 {
-    int status = 0;
-    return abi::__cxa_demangle(value.name(), nullptr, nullptr, &status);
+    return libtokamap::demangle(value.name());
 }
 
 std::ostream& operator<<(std::ostream& out, const std::type_index& value)
 {
-    int status = 0;
-    out << abi::__cxa_demangle(value.name(), nullptr, nullptr, &status);
+    out << libtokamap::demangle(value.name());
     return out;
 }
 

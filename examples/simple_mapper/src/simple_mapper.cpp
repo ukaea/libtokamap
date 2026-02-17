@@ -12,6 +12,8 @@
 #include <typeindex>
 #include <vector>
 
+#include "config_path.hpp"
+
 namespace
 {
 
@@ -73,10 +75,8 @@ int main()
     try {
         libtokamap::MappingHandler mapping_handler;
 
-        auto root = std::filesystem::path{__FILE__}.parent_path().parent_path();
-        auto build_root = root.parent_path().parent_path() / "build" / "examples" / "simple_mapper";
-
-        std::filesystem::path config_path = build_root / "config.toml";
+        std::filesystem::path config_dir = ConfigDirectory;
+        std::filesystem::path config_path = config_dir / "config.toml";
         mapping_handler.init(config_path);
 
         const char* experiment = "EXAMPLE";

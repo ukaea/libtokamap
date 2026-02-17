@@ -24,5 +24,5 @@ class JSONDataSource : public libtokamap::DataSource
 
   private:
     std::filesystem::path m_data_root;
-    std::unordered_map<std::string, nlohmann::json> m_data;
+    std::unordered_map<std::filesystem::path::string_type, nlohmann::json> m_data;
 };

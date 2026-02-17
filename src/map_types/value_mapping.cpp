@@ -45,7 +45,7 @@ T try_convert(const std::string& input)
             throw std::invalid_argument("input is not a " + name<T>());
         }
         return result;
-    } catch (std::invalid_argument& e) {
+    } catch (std::invalid_argument&) {
         throw std::invalid_argument("input is not a " + name<T>());
     }
 }
@@ -70,7 +70,7 @@ std::vector<std::remove_all_extents_t<ARRAY_T>> try_convert(const std::string& i
 
         std::vector<T> result;
         auto pos = trimmed.find(',');
-        auto start = 0U;
+        size_t start = 0U;
         while (pos != std::string::npos) {
             auto sub = trimmed.substr(start, pos - start);
             start = pos + 1;
@@ -80,7 +80,7 @@ std::vector<std::remove_all_extents_t<ARRAY_T>> try_convert(const std::string& i
         auto rem = trimmed.substr(start);
         result.emplace_back(try_convert<T>(rem));
         return result;
-    } catch (std::invalid_argument& e) {
+    } catch (std::invalid_argument&) {
         throw std::invalid_argument("input is not a " + name<T>() + "[]");
     }
 }
@@ -144,7 +144,7 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
                             return libtokamap::TypedDataArray{rendered_string};
                     }
                 }
-            } catch (const std::invalid_argument& e) {
+            } catch (const std::invalid_argument&) {
                 // UDA_LOG(UDA_LOG_DEBUG,
                 //         "ValueMapping::map failure to convert"
                 //         "string to int in mapping : %s\n",
@@ -157,7 +157,9 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
             throw libtokamap::JsonError{"unknown json type"};
     }
 
+#ifndef WIN32
     return {};
+#endif
 }
 
 } // namespace

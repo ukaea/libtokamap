@@ -1,11 +1,6 @@
 #pragma once
 
 #include <any>
-#ifdef _WIN32
-#  include <DbgHelp.h>
-#else
-#  include <cxxabi.h>
-#endif
 #include <filesystem>
 #include <functional>
 #include <memory>
@@ -17,6 +12,7 @@
 
 #include "exceptions/exceptions.hpp"
 #include "utils/typed_data_array.hpp"
+#include "utils/os_utils.hpp"
 
 namespace libtokamap
 {
@@ -108,13 +104,7 @@ DataSourceFactory load_data_source_factory(const std::filesystem::path& library_
 
 template <typename T> std::string to_string()
 {
-    int status = 0;
-#ifdef _WIN32
-    char buffer[1024];
-    UnDecorateSymbolName(typeid(T).name(), buffer, sizeof(buffer), UNDNAME_COMPLETE);
-#else
-    return abi::__cxa_demangle(typeid(T).name(), nullptr, nullptr, &status);
-#endif
+    return demangle(typeid(T).name());
 }
 
 template <typename T> auto get_arg(const DataSourceFactoryArgs& args, const char* variable) -> T
