@@ -264,8 +264,7 @@ class TypedDataArray
 
         auto* data = reinterpret_cast<T*>(m_buffer);
         for (size_t idx = 0; idx < m_size; ++idx) {
-            data[idx] *= static_cast<T>(scale_factor);
-            data[idx] += static_cast<T>(offset);
+            data[idx] = static_cast<T>((static_cast<double>(data[idx]) * scale_factor) + offset);
         }
     }
 
