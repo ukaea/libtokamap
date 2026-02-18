@@ -11,7 +11,7 @@ include( GitVersion )
 
 # Project details
 project(
-    LibTokaMap
+    libtokamap
     VERSION ${GIT_VERSION}
     LANGUAGES CXX
 )
@@ -232,15 +232,16 @@ install( FILES
 )
 
 # Install documentation
-install( FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
-    RENAME copyright
-)
+#install( FILES
+#    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+#    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+#    RENAME copyright
+#)
 
 install( FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 )
 
 add_custom_command(
@@ -255,7 +256,7 @@ add_custom_target( changelog ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.
 
 install( FILES
     "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 )
 
 # Unit testing setup
@@ -276,6 +277,12 @@ set_property( TARGET clang-format APPEND PROPERTY SOURCES ${SOURCES} ${HEADERS} 
 set( CPACK_PACKAGE_NAME "libtokamap" )
 set( CPACK_PACKAGE_VENDOR "UKAEA" )
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for flexible data mapping and transformation with multiple data sources" )
+set( CPACK_PACKAGE_DESCRIPTION "\
+LibTokaMap is a flexible mapping library designed to handle complex data
+transformations through configurable JSON-based mapping definitions.
+It provides a plugin-based architecture for data sources and supports various
+mapping types including value mappings, data source mappings, expression
+mappings, and custom mappings." )
 set( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}" )
 set( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
 set( CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}" )
@@ -284,8 +291,8 @@ set( CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}" )
 set( CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/ukaea/libtokamap" )
 set( CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/packages" )
 set( CPACK_PACKAGE_CONTACT "jonathan.hollocombe@ukaea.uk" )
-set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_INSTALL_DOCDIR}/LICENSE" )
-set( CPACK_RESOURCE_FILE_README "${CMAKE_INSTALL_DOCDIR}/README.md" )
+set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE" )
+set( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md" )
 
 # DEB-specific settings
 set( CPACK_DEBIAN_PACKAGE_NAME "libtokamap-dev" )
@@ -297,7 +304,19 @@ set( CPACK_DEBIAN_RUNTIME_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKA
 set( CPACK_RPM_PACKAGE_NAME "libtokamap-devel" )
 set( CPACK_RPM_FILE_NAME RPM-DEFAULT )
 set( CPACK_RPM_PACKAGE_LICENSE "MIT" )
-set( CPACK_RPM_DEBUGINFO_PACKAGE ON )
+set( CPACK_RPM_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}" )
+set( CPACK_RPM_PACKAGE_GROUP "Development/Libraries" )
+set( CPACK_RPM_DEFAULT_DIR_PERMISSIONS
+    OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    GROUP_READ GROUP_EXECUTE
+    WORLD_READ WORLD_EXECUTE
+)
+# Stop RPM macros from stripping archive of debug symbols
+set( CPACK_RPM_SPEC_MORE_DEFINE
+     "%global _strip_static_debuginfo 0\n\
+     %global __brp_strip_static_archive %{nil}\n\
+     %define packager Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>"
+)
 
 # Generators
 if( UNIX AND NOT APPLE )
