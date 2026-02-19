@@ -158,7 +158,7 @@ configure_file(
 add_library( libtokamap ${SOURCES} )
 
 if( MSVC )
-    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj )
+    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj /utf-8 )
     target_link_libraries( libtokamap PRIVATE Dbghelp )
 else()
     target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
@@ -234,14 +234,14 @@ install( FILES
 
 # Install documentation
 if( DEBIAN_PACKAGING )
-add_custom_command(
+    add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
     COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
     COMMENT "Generating changelog"
 )
 
-add_custom_command(
+    add_custom_command(
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
     COMMAND gzip -cn9 changelog > changelog.gz
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
@@ -249,20 +249,20 @@ add_custom_command(
     COMMENT "Compressing changelog"
 )
 
-add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
+    add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
 
-install( FILES
+    install( FILES
     "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
     DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
 )
 
-install( FILES
+    install( FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
     RENAME copyright
 )
 else()
-install( FILES
+    install( FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     DESTINATION "${CMAKE_INSTALL_DOCDIR}"
@@ -304,9 +304,9 @@ set( CPACK_PACKAGE_CONTACT "jonathan.hollocombe@ukaea.uk" )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE" )
 set( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md" )
 set( CPACK_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
-	OWNER_READ OWNER_WRITE OWNER_EXECUTE
-	GROUP_READ GROUP_EXECUTE
-	WORLD_READ WORLD_EXECUTE
+ OWNER_READ OWNER_WRITE OWNER_EXECUTE
+ GROUP_READ GROUP_EXECUTE
+ WORLD_READ WORLD_EXECUTE
 )
 
 # DEB-specific settings
