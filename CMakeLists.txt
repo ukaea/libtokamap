@@ -200,6 +200,8 @@ set_target_properties( libtokamap PROPERTIES
 
 add_library( LibTokaMap::libtokamap ALIAS libtokamap )
 
+include( GNUInstallDirs )
+
 install( TARGETS libtokamap
     EXPORT tokamapTargets
     RUNTIME DESTINATION bin
@@ -229,6 +231,33 @@ install( FILES
     DESTINATION lib/cmake/libtokamap
 )
 
+# Install documentation
+install( FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
+    RENAME copyright
+)
+
+install( FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
+)
+
+add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+    COMMAND gzip -cn9 "${CMAKE_CURRENT_SOURCE_DIR}/changelog" > "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
+    COMMENT "Compressing changelog"
+)
+
+add_custom_target( changelog ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
+
+install( FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
+)
+
 # Unit testing setup
 if( ENABLE_TESTING )
     add_subdirectory( test )
@@ -242,3 +271,49 @@ list( TRANSFORM SOURCES PREPEND ${CMAKE_CURRENT_LIST_DIR}/ )
 list( TRANSFORM HEADERS PREPEND ${CMAKE_CURRENT_LIST_DIR}/ )
 
 set_property( TARGET clang-format APPEND PROPERTY SOURCES ${SOURCES} ${HEADERS} )
+
+# Packaging setup
+set( CPACK_PACKAGE_NAME "libtokamap" )
+set( CPACK_PACKAGE_VENDOR "UKAEA" )
+set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for flexible data mapping and transformation with multiple data sources" )
+set( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}" )
+set( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
+set( CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}" )
+set( CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}" )
+set( CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}" )
+set( CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/ukaea/libtokamap" )
+set( CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/packages" )
+set( CPACK_PACKAGE_CONTACT "jonathan.hollocombe@ukaea.uk" )
+set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_INSTALL_DOCDIR}/LICENSE" )
+set( CPACK_RESOURCE_FILE_README "${CMAKE_INSTALL_DOCDIR}/README.md" )
+
+# DEB-specific settings
+set( CPACK_DEBIAN_PACKAGE_NAME "libtokamap-dev" )
+set( CPACK_DEBIAN_FILE_NAME DEB-DEFAULT )
+set( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
+set( CPACK_DEBIAN_RUNTIME_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>" )
+
+# RPM-specific settings
+set( CPACK_RPM_PACKAGE_NAME "libtokamap-devel" )
+set( CPACK_RPM_FILE_NAME RPM-DEFAULT )
+set( CPACK_RPM_PACKAGE_LICENSE "MIT" )
+set( CPACK_RPM_DEBUGINFO_PACKAGE ON )
+
+# Generators
+if( UNIX AND NOT APPLE )
+    set( CPACK_GENERATOR "DEB;RPM;TGZ" )
+elseif( APPLE )
+    set( CPACK_GENERATOR "TGZ;ZIP" )
+else()
+    set( CPACK_GENERATOR "ZIP" )
+endif()
+
+include( CPack )
+
+# Print packaging configuration summary
+message( STATUS "=== Packaging Configuration ===" )
+message( STATUS "Package name: ${CPACK_PACKAGE_NAME}" )
+message( STATUS "Version: ${CPACK_PACKAGE_VERSION}" )
+message( STATUS "Generators: ${CPACK_GENERATOR}" )
+message( STATUS "Output directory: ${CPACK_OUTPUT_FILE_PREFIX}" )
+message( STATUS "===============================" )

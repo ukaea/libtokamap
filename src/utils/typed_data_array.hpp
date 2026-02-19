@@ -5,18 +5,16 @@
 #include <cstdlib>
 #include <cstring>
 #include <limits>
-#include <memory>
 #include <nlohmann/json.hpp>
+#include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <typeindex>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "exceptions/exceptions.hpp"
-#include "utils/ram_cache.hpp"
 #include "utils/compiler.hpp"
 
 namespace libtokamap
