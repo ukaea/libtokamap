@@ -74,8 +74,6 @@ inline void split(Coll& collection, const std::string& input, const std::string&
 template <StringCollection Coll>
 void split(Coll& collection, const std::string& input, const std::string& delimiter)
 {
-    collection.clear();
-
     if (delimiter.empty()) {
         collection.push_back(input);
         return;
@@ -98,8 +96,6 @@ void split(Coll& collection, const std::string& input, const std::string& delimi
 template <StringViewCollection Coll>
 void split(Coll& collection, const std::string& input, const std::string& delimiter)
 {
-    collection.clear();
-
     if (delimiter.empty()) {
         collection.push_back(input.data());
         return;
