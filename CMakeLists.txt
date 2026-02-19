@@ -27,7 +27,17 @@ include( Utils )
 option( ENABLE_TESTING "Enable unit tests for the projects (from the `test` subfolder)." OFF )
 option( ENABLE_EXAMPLES "Enable examples for the projects (from the `examples` subfolder)." OFF )
 option( ENABLE_PROFILING "Compile with profiling enabled." OFF )
-option( DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
+option( ENABLE_DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
+
+## Generators
+if( UNIX AND NOT APPLE )
+    set( DEFAULT_CPACK_GENERATORS "DEB;RPM;TGZ" )
+elseif( APPLE )
+    set( DEFAULT_CPACK_GENERATORS "TGZ;ZIP" )
+else()
+    set( DEFAULT_CPACK_GENERATORS "ZIP" )
+endif()
+set( ENABLE_CPACK_GENERATORS "${DEFAULT_CPACK_GENERATORS}" CACHE STRING "enable the cpack generators" )
 
 add_clang_format_target()
 
@@ -233,41 +243,41 @@ install( FILES
 )
 
 # Install documentation
-if( DEBIAN_PACKAGING )
+if( ENABLE_DEBIAN_PACKAGING )
     add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
-    COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    COMMENT "Generating changelog"
-)
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+        COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Generating changelog"
+    )
 
     add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    COMMAND gzip -cn9 changelog > changelog.gz
-    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
-    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog"
-    COMMENT "Compressing changelog"
-)
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+        COMMAND gzip -cn9 changelog > changelog.gz
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+        COMMENT "Compressing changelog"
+    )
 
     add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
 
     install( FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
-)
+        "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+    )
 
     install( FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
-    RENAME copyright
-)
-else()
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+        RENAME copyright
+    )
+else( ENABLE_DEBIAN_PACKAGING )
     install( FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-    ${CMAKE_CURRENT_SOURCE_DIR}/README.md
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
-)
-endif()
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+        ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+    )
+endif( ENABLE_DEBIAN_PACKAGING )
 
 # Unit testing setup
 if( ENABLE_TESTING )
@@ -329,21 +339,13 @@ set( CPACK_RPM_SPEC_MORE_DEFINE
      %define packager Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>"
 )
 
-# Generators
-if( UNIX AND NOT APPLE )
-    set( CPACK_GENERATOR "DEB;RPM;TGZ" )
-elseif( APPLE )
-    set( CPACK_GENERATOR "TGZ;ZIP" )
-else()
-    set( CPACK_GENERATOR "ZIP" )
-endif()
-
+set( CPACK_GENERATOR ${ENABLE_CPACK_GENERATORS} )
 include( CPack )
 
 # Print packaging configuration summary
 message( STATUS "=== Packaging Configuration ===" )
 message( STATUS "Package name: ${CPACK_PACKAGE_NAME}" )
 message( STATUS "Version: ${CPACK_PACKAGE_VERSION}" )
-message( STATUS "Generators: ${CPACK_GENERATOR}" )
+message( STATUS "Generators: ${ENABLE_CPACK_GENERATORS}" )
 message( STATUS "Output directory: ${CPACK_OUTPUT_FILE_PREFIX}" )
 message( STATUS "===============================" )
