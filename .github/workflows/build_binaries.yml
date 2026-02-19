@@ -54,8 +54,16 @@ jobs:
       - name: Upload TGZ for ${{ matrix.distro }}
         uses: actions/upload-artifact@v4
         with:
-          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-tgz
           path: build_artifacts/${{ matrix.distro }}/packages/*.tar.gz
+          if-no-files-found: ignore
+          retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
+
+      - name: Upload ZIP for ${{ matrix.distro }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-zip
+          path: build_artifacts/${{ matrix.distro }}/packages/*.zip
           if-no-files-found: ignore
           retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
 
@@ -92,6 +100,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            release_assets/**/*.{deb,rpm,tar.gz}
+            release_assets/**/*.{deb,rpm,tar.gz,zip}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
