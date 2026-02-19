@@ -69,7 +69,7 @@ inline void split(Coll& collection, const std::string& input, const std::string&
 
 #else // !defined(LIBTOKAMAP_IS_GCC) || __GNUC__ >= 12
 
-# std::views::split is broken for GCC 11
+// std::views::split is broken for GCC 11
 
 template <StringCollection Coll>
 void split(Coll& collection, const std::string& input, const std::string& delimiter)
