@@ -27,6 +27,7 @@ include( Utils )
 option( ENABLE_TESTING "Enable unit tests for the projects (from the `test` subfolder)." OFF )
 option( ENABLE_EXAMPLES "Enable examples for the projects (from the `examples` subfolder)." OFF )
 option( ENABLE_PROFILING "Compile with profiling enabled." OFF )
+option( DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
 
 add_clang_format_target()
 
@@ -232,32 +233,41 @@ install( FILES
 )
 
 # Install documentation
-#install( FILES
-#    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-#    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
-#    RENAME copyright
-#)
+if( DEBIAN_PACKAGING )
+add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+    COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    COMMENT "Generating changelog"
+)
 
+add_custom_command(
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+    COMMAND gzip -cn9 changelog > changelog.gz
+    WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+    COMMENT "Compressing changelog"
+)
+
+add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
+
+install( FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+)
+
+install( FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+    RENAME copyright
+)
+else()
 install( FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     DESTINATION "${CMAKE_INSTALL_DOCDIR}"
 )
-
-add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    COMMAND gzip -cn9 "${CMAKE_CURRENT_SOURCE_DIR}/changelog" > "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
-    COMMENT "Compressing changelog"
-)
-
-add_custom_target( changelog ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
-
-install( FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}"
-)
+endif()
 
 # Unit testing setup
 if( ENABLE_TESTING )
@@ -293,12 +303,18 @@ set( CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/packages" )
 set( CPACK_PACKAGE_CONTACT "jonathan.hollocombe@ukaea.uk" )
 set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE" )
 set( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md" )
+set( CPACK_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+	OWNER_READ OWNER_WRITE OWNER_EXECUTE
+	GROUP_READ GROUP_EXECUTE
+	WORLD_READ WORLD_EXECUTE
+)
 
 # DEB-specific settings
 set( CPACK_DEBIAN_PACKAGE_NAME "libtokamap-dev" )
 set( CPACK_DEBIAN_FILE_NAME DEB-DEFAULT )
 set( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
-set( CPACK_DEBIAN_RUNTIME_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>" )
+set( CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>" )
+set( CPACK_DEBIAN_PACKAGE_CONTROL_STRICT_PERMISSION TRUE )
 
 # RPM-specific settings
 set( CPACK_RPM_PACKAGE_NAME "libtokamap-devel" )
@@ -306,11 +322,6 @@ set( CPACK_RPM_FILE_NAME RPM-DEFAULT )
 set( CPACK_RPM_PACKAGE_LICENSE "MIT" )
 set( CPACK_RPM_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}" )
 set( CPACK_RPM_PACKAGE_GROUP "Development/Libraries" )
-set( CPACK_RPM_DEFAULT_DIR_PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE
-)
 # Stop RPM macros from stripping archive of debug symbols
 set( CPACK_RPM_SPEC_MORE_DEFINE
      "%global _strip_static_debuginfo 0\n\

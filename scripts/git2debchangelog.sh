@@ -15,7 +15,7 @@ function logentry() {
         local version=$2
         echo "$PACKAGE ($version) unstable; urgency=low"
         echo
-        git --no-pager log --format="  * %s" $previous${previous:+..}$version
+	git --no-pager log --format="%w(80,0,4)  * %s" $previous${previous:+..}$version
         echo
         git --no-pager log --format=" -- %an <%ae>  %aD" -n 1 $version
         echo
