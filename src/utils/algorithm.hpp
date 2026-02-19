@@ -11,6 +11,11 @@
 #include <string_view>
 #include <type_traits>
 
+#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER)
+// clang likes to pretend it is GCC so double check
+#  define LIBTOKAMAP_IS_GCC __GNUC__ // probably
+#endif
+
 namespace libtokamap
 {
 
@@ -40,6 +45,12 @@ inline std::string to_upper_copy(std::string_view string)
 template <typename T>
 concept StringCollection = std::ranges::random_access_range<T> && std::is_same_v<typename T::value_type, std::string>;
 
+template <typename T>
+concept StringViewCollection =
+    std::ranges::random_access_range<T> && std::is_same_v<typename T::value_type, std::string_view>;
+
+#if !defined(LIBTOKAMAP_IS_GCC) || __GNUC__ >= 12
+
 template <StringCollection Coll>
 inline void split(Coll& collection, const std::string& input, const std::string& delimiter)
 {
@@ -48,10 +59,6 @@ inline void split(Coll& collection, const std::string& input, const std::string&
     }
 }
 
-template <typename T>
-concept StringViewCollection =
-    std::ranges::random_access_range<T> && std::is_same_v<typename T::value_type, std::string_view>;
-
 template <StringViewCollection Coll>
 inline void split(Coll& collection, const std::string& input, const std::string& delimiter)
 {
@@ -59,6 +66,60 @@ inline void split(Coll& collection, const std::string& input, const std::string&
         collection.emplace_back(&*token.begin(), token.size());
     }
 }
+
+#else // !defined(LIBTOKAMAP_IS_GCC) || __GNUC__ >= 12
+
+# std::views::split is broken for GCC 11
+
+template <StringCollection Coll>
+void split(Coll& collection, const std::string& input, const std::string& delimiter)
+{
+    collection.clear();
+
+    if (delimiter.empty()) {
+        collection.push_back(input);
+        return;
+    }
+
+    std::string::size_type start = 0;
+    while (true) {
+        auto pos = input.find(delimiter, start);
+
+        if (pos == std::string::npos) {
+            collection.push_back(input.substr(start));
+            break;
+        }
+
+        collection.push_back(input.substr(start, pos - start));
+        start = pos + delimiter.size();
+    }
+}
+
+template <StringViewCollection Coll>
+void split(Coll& collection, const std::string& input, const std::string& delimiter)
+{
+    collection.clear();
+
+    if (delimiter.empty()) {
+        collection.push_back(input.data());
+        return;
+    }
+
+    std::string::size_type start = 0;
+    while (true) {
+        auto pos = input.find(delimiter, start);
+
+        if (pos == std::string::npos) {
+            collection.emplace_back(&input[start]);
+            break;
+        }
+
+        collection.emplace_back(&input[start], &input[pos]);
+        start = pos + delimiter.size();
+    }
+}
+
+#endif // !defined(LIBTOKAMAP_IS_GCC) || __GNUC__ >= 12
 
 template <StringCollection Coll> inline std::string join(Coll& collection, const std::string& delimiter)
 {
