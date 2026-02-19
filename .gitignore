@@ -18,3 +18,4 @@ uda
 .vs
 out
 CMakeSettings.json
+build_artifacts
