@@ -86,9 +86,9 @@ template <typename T> TypedDataArray ExprMapping::eval_expr(const MapArguments& 
 
         if (array.type_index() != std::type_index{typeid(T)}) {
             if (array.type_index() == std::type_index{typeid(float)}) {
-                array = array.convert<T, float>();
+                array = array.template convert<T, float>();
             } else if (array.type_index() == std::type_index{typeid(int)}) {
-                array = array.convert<T, int>();
+                array = array.template convert<T, int>();
             } else {
                 throw TokaMapError{"Unsupported type for parameter '" + key + "'"};
             }
