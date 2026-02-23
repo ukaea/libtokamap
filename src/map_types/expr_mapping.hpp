@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <exprtk/exprtk.hpp>
 #include <inja/inja.hpp>
 #include <nlohmann/json.hpp>
@@ -87,8 +88,8 @@ template <typename T> TypedDataArray ExprMapping::eval_expr(const MapArguments& 
         if (array.data_type() != data_type_of<T>()) {
             if (array.data_type() == DataType::Float) {
                 array = array.template convert<T, float>();
-            } else if (array.data_type() == DataType::Int) {
-                array = array.template convert<T, int>();
+            } else if (array.data_type() == DataType::Int32) {
+                array = array.template convert<T, int32_t>();
             } else {
                 throw TokaMapError{"Unsupported type for parameter '" + key + "'"};
             }

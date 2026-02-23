@@ -88,11 +88,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(DataType::Int, 0);
+        MapArguments map_args = make_map_arguments(DataType::Int32, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.data_type() == DataType::Int);
+        REQUIRE(array.data_type() == DataType::Int32);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(array.buffer()) == 42);
     }
@@ -104,11 +104,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(DataType::Int, 0);
+        MapArguments map_args = make_map_arguments(DataType::Int32, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.data_type() == DataType::Int);
+        REQUIRE(array.data_type() == DataType::Int32);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(array.buffer()) == -42);
     }
@@ -120,11 +120,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(DataType::Char, 1);
+        MapArguments map_args = make_map_arguments(DataType::Int8, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.data_type() == DataType::Char);
+        REQUIRE(array.data_type() == DataType::Int8);
         REQUIRE(array.rank() == 1);
         REQUIRE_THAT(array.buffer(), Catch::Matchers::Equals("Hello World!"));
     }
@@ -175,11 +175,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(DataType::Int, 1);
+        MapArguments map_args = make_map_arguments(DataType::Int32, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.data_type() == DataType::Int);
+        REQUIRE(array.data_type() == DataType::Int32);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const int*>(array.buffer());
         auto vector = std::vector<int>{data, data + array.size()};
@@ -194,11 +194,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(DataType::Int, 1);
+        MapArguments map_args = make_map_arguments(DataType::Int32, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.data_type() == DataType::Int);
+        REQUIRE(array.data_type() == DataType::Int32);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const int*>(array.buffer());
         auto vector = std::vector<int>{data, data + array.size()};

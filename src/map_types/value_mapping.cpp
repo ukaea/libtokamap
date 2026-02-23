@@ -121,8 +121,8 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
             try {
                 if (rank == 0) {
                     switch (data_type) {
-                        case DataType::Int:
-                            return libtokamap::TypedDataArray{try_convert<int>(rendered_string)};
+                        case DataType::Int32:
+                            return libtokamap::TypedDataArray{try_convert<int32_t>(rendered_string)};
                         case DataType::Float:
                             return libtokamap::TypedDataArray{try_convert<float>(rendered_string)};
                         case DataType::Double:
@@ -132,8 +132,8 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
                     }
                 } else {
                     switch (data_type) {
-                        case DataType::Int:
-                            return libtokamap::TypedDataArray{try_convert<int[]>(rendered_string)};
+                        case DataType::Int32:
+                            return libtokamap::TypedDataArray{try_convert<int32_t[]>(rendered_string)};
                         case DataType::Float:
                             return libtokamap::TypedDataArray{try_convert<float[]>(rendered_string)};
                         case DataType::Double:

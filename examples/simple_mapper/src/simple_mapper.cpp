@@ -20,7 +20,7 @@ namespace
 uint64_t map(libtokamap::MappingHandler& mapping_handler, nlohmann::json& trace, const std::string& mapping,
              const std::string& path)
 {
-    libtokamap::DataType data_type = libtokamap::DataType::Char;
+    libtokamap::DataType data_type = libtokamap::DataType::Int8;
     int rank = 1;
     nlohmann::json extra_attributes = {{"shot", 42}};
 

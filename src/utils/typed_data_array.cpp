@@ -159,32 +159,26 @@ std::string libtokamap::TypedDataArray::to_string(size_t max_elements, int preci
     std::stringstream out;
     out << "{ type=" << data_type_name(m_data_type) << ", size=" << m_size << ", shape=" << m_shape;
     switch (m_data_type) {
-        case DataType::Char:
-            print<char>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::Int8:
+            print<int8_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::Short:
-            print<short>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::Int16:
+            print<int16_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::Int:
-            print<int>(out, m_buffer, m_size, max_elements, precision);
-            break;
-        case DataType::Long:
-            print<long>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::Int32:
+            print<int32_t>(out, m_buffer, m_size, max_elements, precision);
             break;
         case DataType::Int64:
             print<int64_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UChar:
-            print<unsigned char>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt8:
+            print<uint8_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UShort:
-            print<unsigned short>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt16:
+            print<uint16_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UInt:
-            print<unsigned int>(out, m_buffer, m_size, max_elements, precision);
-            break;
-        case DataType::ULong:
-            print<unsigned long>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt32:
+            print<uint32_t>(out, m_buffer, m_size, max_elements, precision);
             break;
         case DataType::UInt64:
             print<uint64_t>(out, m_buffer, m_size, max_elements, precision);

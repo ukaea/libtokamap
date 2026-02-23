@@ -1,5 +1,6 @@
 #pragma once
 
+#include <climits>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -22,66 +23,74 @@ namespace libtokamap
 
 enum class DataType : uint8_t {
     Unknown,
-    Char,
-    Short,
-    Int,
-    Long,
+    Int8,
+    Int16,
+    Int32,
     Int64,
-    UChar,
-    UShort,
-    UInt,
-    ULong,
+    UInt8,
+    UInt16,
+    UInt32,
     UInt64,
     Float,
-    Double
+    Double,
 };
 
 inline size_t data_type_size(DataType type)
 {
     switch (type) {
-        case DataType::Char:
-            return sizeof(char);
-        case DataType::Short:
-            return sizeof(short);
-        case DataType::Int:
-            return sizeof(int);
-        case DataType::Long:
-            return sizeof(long);
-        case DataType::UChar:
-            return sizeof(unsigned char);
-        case DataType::UShort:
-            return sizeof(unsigned short);
-        case DataType::UInt:
-            return sizeof(unsigned int);
-        case DataType::ULong:
-            return sizeof(unsigned long);
+        case DataType::Int8:
+            return sizeof(int8_t);
+        case DataType::Int16:
+            return sizeof(int16_t);
+        case DataType::Int32:
+            return sizeof(int32_t);
+        case DataType::Int64:
+            return sizeof(int64_t);
+        case DataType::UInt8:
+            return sizeof(uint8_t);
+        case DataType::UInt16:
+            return sizeof(uint16_t);
+        case DataType::UInt32:
+            return sizeof(uint32_t);
+        case DataType::UInt64:
+            return sizeof(uint64_t);
         case DataType::Float:
             return sizeof(float);
         case DataType::Double:
             return sizeof(double);
-        case DataType::Int64:
-            return sizeof(int64_t);
-        case DataType::UInt64:
-            return sizeof(uint64_t);
         case DataType::Unknown:
             return 0;
     }
     LIBTOKAMAP_UNREACHABLE
 }
 
+template <typename T, int SIZE>
+struct is_int : std::bool_constant<
+    std::is_integral_v<T> && std::is_signed_v<T> && sizeof(T) * CHAR_BIT == SIZE
+> {};
+
+template <typename T, int SIZE>
+struct is_uint : std::bool_constant<
+    std::is_integral_v<T> && !std::is_signed_v<T> && sizeof(T) * CHAR_BIT == SIZE
+> {};
+
+template <typename T, int SIZE>
+constexpr bool is_int_v = is_int<T, SIZE>::value;
+
+template <typename T, int SIZE>
+constexpr bool is_uint_v = is_uint<T, SIZE>::value;
+
 template <typename T>
 constexpr DataType data_type_of()
 {
-    if constexpr (std::is_same_v<T, char>) { return DataType::Char; }
-    else if constexpr (std::is_same_v<T, short>) { return DataType::Short; }
-    else if constexpr (std::is_same_v<T, int>) { return DataType::Int; }
-    else if constexpr (std::is_same_v<T, long>) { return DataType::Long; }
-    else if constexpr (std::is_same_v<T, int64_t>) { return DataType::Int64; }
-    else if constexpr (std::is_same_v<T, unsigned char>) { return DataType::UChar; }
-    else if constexpr (std::is_same_v<T, unsigned short>) { return DataType::UShort; }
-    else if constexpr (std::is_same_v<T, unsigned int>) { return DataType::UInt; }
-    else if constexpr (std::is_same_v<T, unsigned long>) { return DataType::ULong; }
-    else if constexpr (std::is_same_v<T, uint64_t>) { return DataType::UInt64; }
+    if constexpr (is_int_v<T, 8>) { return DataType::Int8; }
+    else if constexpr (is_int_v<T, 16>) { return DataType::Int16; }
+    else if constexpr (is_int_v<T, 32>) { return DataType::Int32; }
+    else if constexpr (is_int_v<T, 64>) { return DataType::Int64; }
+    else if constexpr (is_uint_v<T, 8>) { return DataType::UInt8; }
+    else if constexpr (is_uint_v<T, 16>) { return DataType::UInt16; }
+    else if constexpr (is_uint_v<T, 32>) { return DataType::UInt32; }
+    else if constexpr (is_uint_v<T, 64>) { return DataType::UInt64; }
     else if constexpr (std::is_same_v<T, float>) { return DataType::Float; }
     else if constexpr (std::is_same_v<T, double>) { return DataType::Double; }
     else { return DataType::Unknown; }
@@ -90,15 +99,13 @@ constexpr DataType data_type_of()
 inline std::string data_type_name(DataType type)
 {
     switch (type) {
-        case DataType::Char:    return "char";
-        case DataType::Short:   return "short";
-        case DataType::Int:     return "int";
-        case DataType::Long:    return "long";
+        case DataType::Int8:    return "int8_t";
+        case DataType::Int16:   return "int16_t";
+        case DataType::Int32:   return "int32_t";
         case DataType::Int64:   return "int64_t";
-        case DataType::UChar:   return "unsigned char";
-        case DataType::UShort:  return "unsigned short";
-        case DataType::UInt:    return "unsigned int";
-        case DataType::ULong:   return "unsigned long";
+        case DataType::UInt8:   return "uint8_t";
+        case DataType::UInt16:  return "uint16_t";
+        case DataType::UInt32:  return "uint32_t";
         case DataType::UInt64:  return "uint64_t";
         case DataType::Float:   return "float";
         case DataType::Double:  return "double";
@@ -223,7 +230,7 @@ class TypedDataArray
     }
 
     explicit TypedDataArray(const std::string& value)
-        : m_data_type{DataType::Char}, m_size{value.size() + 1}, m_shape{value.size() + 1}, m_owning{true}
+        : m_data_type{DataType::Int8}, m_size{value.size() + 1}, m_shape{value.size() + 1}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(m_size * sizeof(char)));
         std::memcpy(m_buffer, value.data(), m_size);
@@ -382,24 +389,20 @@ class TypedDataArray
         switch (m_data_type) {
             case DataType::Unknown:
                 throw libtokamap::DataTypeError{"unknown data type"};
-            case DataType::Char:
-                return sizeof(char);
-            case DataType::Short:
-                return sizeof(short);
-            case DataType::Int:
-                return sizeof(int);
-            case DataType::Long:
-                return sizeof(long);
+            case DataType::Int8:
+                return sizeof(int8_t);
+            case DataType::Int16:
+                return sizeof(int16_t);
+            case DataType::Int32:
+                return sizeof(int32_t);
             case DataType::Int64:
                 return sizeof(int64_t);
-            case DataType::UChar:
-                return sizeof(unsigned char);
-            case DataType::UShort:
-                return sizeof(unsigned short);
-            case DataType::UInt:
-                return sizeof(unsigned int);
-            case DataType::ULong:
-                return sizeof(unsigned long);
+            case DataType::UInt8:
+                return sizeof(uint8_t);
+            case DataType::UInt16:
+                return sizeof(uint16_t);
+            case DataType::UInt32:
+                return sizeof(uint32_t);
             case DataType::UInt64:
                 return sizeof(uint64_t);
             case DataType::Float:

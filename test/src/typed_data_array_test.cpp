@@ -21,7 +21,7 @@ TEST_CASE("Test create array")
         REQUIRE(array.rank() == 0);
         REQUIRE(array.size() == 1);
         REQUIRE(array.shape() == std::vector<size_t>{});
-        REQUIRE(array.data_type() == libtokamap::DataType::Int);
+        REQUIRE(array.data_type() == libtokamap::DataType::Int32);
         REQUIRE(*reinterpret_cast<int*>(array.buffer()) == num);
     }
 
