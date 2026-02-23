@@ -1,20 +1,40 @@
 #include <cstddef>
-#include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <unordered_map>
+#include <ostream>
 
 #include "exceptions/exceptions.hpp"
 #include "map_types/dim_mapping.hpp"
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/os_utils.hpp"
+#include "utils/typed_data_array.hpp"
+
+namespace
+{
+// define this _before_ including catch headers
+std::ostream& operator<<(std::ostream& out, const libtokamap::DataType& value)
+{
+    out << libtokamap::data_type_name(value);
+    return out;
+}
+} // namespace
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_tostring.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+
+namespace Catch
+{
+template <> struct StringMaker<libtokamap::DataType> {
+    static std::string convert(const libtokamap::DataType& value)
+    {
+        return libtokamap::data_type_name(value);
+    }
+};
+} // namespace Catch
 
 using namespace libtokamap;
 
