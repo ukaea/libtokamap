@@ -11,7 +11,7 @@ include( GitVersion )
 
 # Project details
 project(
-    LibTokaMap
+    libtokamap
     VERSION ${GIT_VERSION}
     LANGUAGES CXX
 )
@@ -27,6 +27,17 @@ include( Utils )
 option( ENABLE_TESTING "Enable unit tests for the projects (from the `test` subfolder)." OFF )
 option( ENABLE_EXAMPLES "Enable examples for the projects (from the `examples` subfolder)." OFF )
 option( ENABLE_PROFILING "Compile with profiling enabled." OFF )
+option( ENABLE_DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
+
+## Generators
+if( UNIX AND NOT APPLE )
+    set( DEFAULT_CPACK_GENERATORS "DEB;RPM;TGZ" )
+elseif( APPLE )
+    set( DEFAULT_CPACK_GENERATORS "TGZ;ZIP" )
+else()
+    set( DEFAULT_CPACK_GENERATORS "ZIP" )
+endif()
+set( ENABLE_CPACK_GENERATORS "${DEFAULT_CPACK_GENERATORS}" CACHE STRING "enable the cpack generators" )
 
 add_clang_format_target()
 
@@ -157,7 +168,7 @@ configure_file(
 add_library( libtokamap ${SOURCES} )
 
 if( MSVC )
-    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj )
+    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj /utf-8 )
     target_link_libraries( libtokamap PRIVATE Dbghelp )
 else()
     target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
@@ -232,31 +243,41 @@ install( FILES
 )
 
 # Install documentation
-install( FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
-    RENAME copyright
-)
+if( ENABLE_DEBIAN_PACKAGING )
+    add_custom_command(
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+        COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        COMMENT "Generating changelog"
+    )
 
-install( FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/README.md
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
-)
+    add_custom_command(
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+        COMMAND gzip -cn9 changelog > changelog.gz
+        WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+        DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog"
+        COMMENT "Compressing changelog"
+    )
 
-add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    COMMAND gzip -cn9 "${CMAKE_CURRENT_SOURCE_DIR}/changelog" > "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/changelog"
-    COMMENT "Compressing changelog"
-)
+    add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
 
-add_custom_target( changelog ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
+    install( FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+    )
 
-install( FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
-    DESTINATION "${CMAKE_INSTALL_DOCDIR}/libtokamap"
-)
+    install( FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
+        RENAME copyright
+    )
+else( ENABLE_DEBIAN_PACKAGING )
+    install( FILES
+        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+        ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+        DESTINATION "${CMAKE_INSTALL_DOCDIR}"
+    )
+endif( ENABLE_DEBIAN_PACKAGING )
 
 # Unit testing setup
 if( ENABLE_TESTING )
@@ -276,6 +297,12 @@ set_property( TARGET clang-format APPEND PROPERTY SOURCES ${SOURCES} ${HEADERS} 
 set( CPACK_PACKAGE_NAME "libtokamap" )
 set( CPACK_PACKAGE_VENDOR "UKAEA" )
 set( CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for flexible data mapping and transformation with multiple data sources" )
+set( CPACK_PACKAGE_DESCRIPTION "\
+LibTokaMap is a flexible mapping library designed to handle complex data
+transformations through configurable JSON-based mapping definitions.
+It provides a plugin-based architecture for data sources and supports various
+mapping types including value mappings, data source mappings, expression
+mappings, and custom mappings." )
 set( CPACK_PACKAGE_VERSION "${PROJECT_VERSION}" )
 set( CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" )
 set( CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}" )
@@ -284,36 +311,41 @@ set( CPACK_PACKAGE_INSTALL_DIRECTORY "${CPACK_PACKAGE_NAME}" )
 set( CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/ukaea/libtokamap" )
 set( CPACK_OUTPUT_FILE_PREFIX "${CMAKE_BINARY_DIR}/packages" )
 set( CPACK_PACKAGE_CONTACT "jonathan.hollocombe@ukaea.uk" )
-set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_INSTALL_DOCDIR}/LICENSE" )
-set( CPACK_RESOURCE_FILE_README "${CMAKE_INSTALL_DOCDIR}/README.md" )
+set( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE" )
+set( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md" )
+set( CPACK_INSTALL_DEFAULT_DIRECTORY_PERMISSIONS
+ OWNER_READ OWNER_WRITE OWNER_EXECUTE
+ GROUP_READ GROUP_EXECUTE
+ WORLD_READ WORLD_EXECUTE
+)
 
 # DEB-specific settings
 set( CPACK_DEBIAN_PACKAGE_NAME "libtokamap-dev" )
 set( CPACK_DEBIAN_FILE_NAME DEB-DEFAULT )
 set( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
-set( CPACK_DEBIAN_RUNTIME_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>" )
+set( CPACK_DEBIAN_PACKAGE_MAINTAINER "Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>" )
+set( CPACK_DEBIAN_PACKAGE_CONTROL_STRICT_PERMISSION TRUE )
 
 # RPM-specific settings
 set( CPACK_RPM_PACKAGE_NAME "libtokamap-devel" )
 set( CPACK_RPM_FILE_NAME RPM-DEFAULT )
 set( CPACK_RPM_PACKAGE_LICENSE "MIT" )
-set( CPACK_RPM_DEBUGINFO_PACKAGE ON )
+set( CPACK_RPM_PACKAGE_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION}" )
+set( CPACK_RPM_PACKAGE_GROUP "Development/Libraries" )
+# Stop RPM macros from stripping archive of debug symbols
+set( CPACK_RPM_SPEC_MORE_DEFINE
+     "%global _strip_static_debuginfo 0\n\
+     %global __brp_strip_static_archive %{nil}\n\
+     %define packager Jonathan Hollocombe <${CPACK_PACKAGE_CONTACT}>"
+)
 
-# Generators
-if( UNIX AND NOT APPLE )
-    set( CPACK_GENERATOR "DEB;RPM;TGZ" )
-elseif( APPLE )
-    set( CPACK_GENERATOR "TGZ;ZIP" )
-else()
-    set( CPACK_GENERATOR "ZIP" )
-endif()
-
+set( CPACK_GENERATOR ${ENABLE_CPACK_GENERATORS} )
 include( CPack )
 
 # Print packaging configuration summary
 message( STATUS "=== Packaging Configuration ===" )
 message( STATUS "Package name: ${CPACK_PACKAGE_NAME}" )
 message( STATUS "Version: ${CPACK_PACKAGE_VERSION}" )
-message( STATUS "Generators: ${CPACK_GENERATOR}" )
+message( STATUS "Generators: ${ENABLE_CPACK_GENERATORS}" )
 message( STATUS "Output directory: ${CPACK_OUTPUT_FILE_PREFIX}" )
 message( STATUS "===============================" )

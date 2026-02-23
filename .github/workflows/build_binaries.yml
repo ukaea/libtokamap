@@ -1,0 +1,105 @@
+name: Build binary distributions
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - "feature/**"
+    tags:
+      - "*"
+    release:
+      types:
+        - published
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - alma10.1
+          - ubuntu24.04
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: get version
+        id: version
+        run: |
+          VERSION=`git describe --tags`
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build image for ${{ matrix.distro }}
+        run: |
+          docker build \
+            --build-arg LIBTOKAMAP_VERSION=${{ github.sha }} \
+            -f docker/Dockerfile.${{ matrix.distro }} \
+            -t libtokamap-${{ matrix.distro }}:${{ steps.version.outputs.version }} .
+
+      - name: extract binaries from container
+        run: |
+          mkdir -p build_artifacts/${{ matrix.distro }}
+          id=`docker create libtokamap-${{ matrix.distro }}:${{ steps.version.outputs.version }}`
+          docker cp $id:/libtokamap/build/packages build_artifacts/${{ matrix.distro }}
+          docker rm $id
+
+      - name: Upload TGZ for ${{ matrix.distro }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-tgz
+          path: build_artifacts/${{ matrix.distro }}/packages/*.tar.gz
+          if-no-files-found: ignore
+          retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
+
+      - name: Upload ZIP for ${{ matrix.distro }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-zip
+          path: build_artifacts/${{ matrix.distro }}/packages/*.zip
+          if-no-files-found: ignore
+          retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
+
+      - name: Upload RPM for ${{ matrix.distro }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-rpm
+          path: build_artifacts/${{ matrix.distro }}/packages/*.rpm
+          if-no-files-found: ignore
+          retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
+
+      - name: Upload DEB for ${{ matrix.distro }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-deb
+          path: build_artifacts/${{ matrix.distro }}/packages/*deb
+          if-no-files-found: ignore
+          retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
+
+  upload-release:
+    if: github.event_name == 'release'
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release_assets
+
+      - name: Upload assets to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release_assets/**/*.{deb,rpm,tar.gz,zip}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,24 @@
+FROM ubuntu:24.04
+
+ARG LIBTOKAMAP_VERSION="main"
+ARG INSTALL_DIR="/usr"
+ARG BUILD_CORES=4
+
+RUN apt-get update && apt-get install -y git cmake build-essential lintian
+
+RUN git clone https://github.com/ukaea/libtokamap.git /libtokamap && \
+    git -C /libtokamap checkout "$LIBTOKAMAP_VERSION"
+
+RUN cd /libtokamap && \
+    cmake -B build \
+    -DENABLE_TESTING=OFF \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_PROFILING=OFF \
+    -DENABLE_DEBIAN_PACKAGING=ON \
+    -DENABLE_CPACK_GENERATORS="DEB;TGZ;ZIP" \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR"
+
+RUN cd /libtokamap && cmake --build build -j $BUILD_CORES --target install
+RUN cd /libtokamap && cmake --build build --target package
+RUN useradd -m linter && su - linter -c "lintian --fail-on error /libtokamap/build/packages/*.deb"

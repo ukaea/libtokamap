@@ -1,0 +1,26 @@
+FROM almalinux:10.1
+
+ARG LIBTOKAMAP_VERSION="main"
+ARG INSTALL_DIR="/usr"
+ARG BUILD_CORES=4
+
+RUN dnf update -y && \
+  dnf group install -y "Development Tools" && \
+  dnf install -y epel-release && \
+  dnf install -y cmake rpmlint
+
+RUN git clone https://github.com/ukaea/libtokamap.git /libtokamap && \
+    git -C /libtokamap checkout "$LIBTOKAMAP_VERSION"
+
+RUN cd /libtokamap && \
+    cmake -B build \
+    -DENABLE_TESTING=OFF \
+    -DENABLE_EXAMPLES=OFF \
+    -DENABLE_PROFILING=OFF \
+    -DENABLE_CPACK_GENERATORS=RPM \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_INSTALL_PREFIX="$INSTALL_DIR"
+
+RUN cd /libtokamap && cmake --build build -j $BUILD_CORES --target install
+RUN cd /libtokamap && cmake --build build --target package
+RUN rpmlint -v /libtokamap/build/packages/*.rpm

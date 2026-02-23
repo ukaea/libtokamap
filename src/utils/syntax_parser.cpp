@@ -2,8 +2,8 @@
 
 #include <cstddef>
 #include <ctre/ctre.hpp>
-#include <format>
 #include <nlohmann/json.hpp>
+#include <spdlog/fmt/fmt.h>
 #include <stack>
 #include <string>
 #include <string_view>
@@ -29,7 +29,7 @@ std::string expand_array(std::string input)
         if (post.ends_with(')')) {
             post = post.substr(0, post.size() - 1);
         }
-        std::string result = std::format("at({}, {}){}", name, index, post);
+        std::string result = fmt::format("at({}, {}){}", name, index, post);
         input = input.replace(match.begin() - input.begin(), match.size(), result);
     }
     return input;
@@ -41,7 +41,7 @@ std::string expand_indices(std::string input)
         std::string_view pre = match.get<1>();
         std::string_view index = match.get<2>();
         std::string_view post = match.get<3>();
-        input = std::format("{}indices.{}{}", pre, index, post);
+        input = fmt::format("{}indices.{}{}", pre, index, post);
     }
 
     return expand_array(input);
