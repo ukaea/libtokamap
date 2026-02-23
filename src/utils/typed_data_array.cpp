@@ -5,13 +5,9 @@
 #include <iomanip>
 #include <ios>
 #include <ostream>
-#include <span>
 #include <sstream>
 #include <string>
-#include <typeindex>
 #include <vector>
-
-#include "utils/os_utils.hpp"
 
 namespace
 {
@@ -134,16 +130,7 @@ std::ostream& operator<<(std::ostream& out, const SpanStreamAdaptor<T>& data)
     return out;
 }
 
-std::string to_string(const std::type_index& value)
-{
-    return libtokamap::demangle(value.name());
-}
 
-std::ostream& operator<<(std::ostream& out, const std::type_index& value)
-{
-    out << libtokamap::demangle(value.name());
-    return out;
-}
 
 template <typename T> void print(std::ostream& out, const char* buffer, size_t size, size_t max_elements, int precision)
 {
@@ -170,8 +157,8 @@ std::vector<size_t> libtokamap::compute_offsets(const std::vector<size_t>& shape
 std::string libtokamap::TypedDataArray::to_string(size_t max_elements, int precision) const
 {
     std::stringstream out;
-    out << "{ type=" << m_type_index << ", size=" << m_size << ", shape=" << m_shape;
-    switch (type_index_map(m_type_index)) {
+    out << "{ type=" << data_type_name(m_data_type) << ", size=" << m_size << ", shape=" << m_shape;
+    switch (m_data_type) {
         case DataType::Char:
             print<char>(out, m_buffer, m_size, max_elements, precision);
             break;
@@ -209,7 +196,7 @@ std::string libtokamap::TypedDataArray::to_string(size_t max_elements, int preci
             print<double>(out, m_buffer, m_size, max_elements, precision);
             break;
         default:
-            throw libtokamap::DataTypeError{"unhandled data type: '" + ::to_string(m_type_index) + "'"};
+            throw libtokamap::DataTypeError{"unhandled data type: '" + data_type_name(m_data_type) + "'"};
     }
     out << " }";
     return out.str();

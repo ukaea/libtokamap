@@ -18,7 +18,6 @@
 #include <string>
 #include <string_view>
 #include <toml.hpp>
-#include <typeindex>
 #include <unordered_map>
 #include <utility>
 #include <valijson_nlohmann_bundled.hpp>
@@ -270,7 +269,7 @@ void libtokamap::MappingHandler::reset()
 }
 
 libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName& experiment, const std::string& path,
-                                                           std::type_index data_type, int rank,
+                                                           libtokamap::DataType data_type, int rank,
                                                            const nlohmann::json& extra_attributes)
 {
     LIBTOKAMAP_PROFILER(profiler);

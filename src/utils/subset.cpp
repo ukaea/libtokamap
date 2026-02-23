@@ -75,7 +75,7 @@ void apply_subset(libtokamap::TypedDataArray& input, const std::optional<std::st
 
     std::vector<libtokamap::SubsetInfo> subset_info = libtokamap::parse_slices(slice.value(), input.shape());
     using libtokamap::DataType;
-    switch (libtokamap::type_index_map(input.type_index())) {
+    switch (input.data_type()) {
         case DataType::Short:
             input.slice<short>(subset_info);
             break;
@@ -118,7 +118,7 @@ void apply_scale_offset(libtokamap::TypedDataArray& input, std::optional<float> 
         return;
     }
     using libtokamap::DataType;
-    switch (libtokamap::type_index_map(input.type_index())) {
+    switch (input.data_type()) {
         case DataType::Short:
             input.apply<short>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;

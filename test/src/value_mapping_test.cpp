@@ -3,24 +3,13 @@
 #include <nlohmann/json.hpp>
 #include <ostream>
 #include <string>
-#include <typeindex>
 #include <unordered_map>
 #include <vector>
 
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/ram_cache.hpp"
-#include "utils/os_utils.hpp"
-
-namespace
-{
-// define this _before_ including catch headers
-std::ostream& operator<<(std::ostream& out, const std::type_index& value)
-{
-    out << libtokamap::demangle(value.name());
-    return out;
-}
-} // namespace
+#include "utils/typed_data_array.hpp"
 
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
@@ -28,23 +17,12 @@ std::ostream& operator<<(std::ostream& out, const std::type_index& value)
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-namespace Catch
-{
-template <> struct StringMaker<std::type_index> {
-    static std::string convert(const std::type_index& value)
-    {
-        int status = 0;
-        return libtokamap::demangle(value.name());
-    }
-};
-} // namespace Catch
-
 using namespace libtokamap;
 
 namespace
 {
 
-libtokamap::MapArguments make_map_arguments(const std::type_index data_type, const int rank)
+libtokamap::MapArguments make_map_arguments(const DataType data_type, const int rank)
 {
     static std::unordered_map<std::string, std::unique_ptr<Mapping>> empty_entries;
     static nlohmann::json empty_global_data = nlohmann::json::object();
@@ -110,11 +88,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(int)}, 0);
+        MapArguments map_args = make_map_arguments(DataType::Int, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(int)});
+        REQUIRE(array.data_type() == DataType::Int);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(array.buffer()) == 42);
     }
@@ -126,11 +104,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(int)}, 0);
+        MapArguments map_args = make_map_arguments(DataType::Int, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(int)});
+        REQUIRE(array.data_type() == DataType::Int);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(array.buffer()) == -42);
     }
@@ -142,11 +120,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(const char)}, 1);
+        MapArguments map_args = make_map_arguments(DataType::Char, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(const char)});
+        REQUIRE(array.data_type() == DataType::Char);
         REQUIRE(array.rank() == 1);
         REQUIRE_THAT(array.buffer(), Catch::Matchers::Equals("Hello World!"));
     }
@@ -158,11 +136,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(float)}, 0);
+        MapArguments map_args = make_map_arguments(DataType::Float, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == DataType::Float);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const float*>(array.buffer()) == 42.75);
     }
@@ -174,11 +152,11 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(float)}, 0);
+        MapArguments map_args = make_map_arguments(DataType::Float, 0);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == DataType::Float);
         REQUIRE(array.rank() == 0);
         REQUIRE(*reinterpret_cast<const float*>(array.buffer()) == -42.75);
     }
@@ -197,11 +175,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(int)}, 1);
+        MapArguments map_args = make_map_arguments(DataType::Int, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(int)});
+        REQUIRE(array.data_type() == DataType::Int);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const int*>(array.buffer());
         auto vector = std::vector<int>{data, data + array.size()};
@@ -216,11 +194,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(int)}, 1);
+        MapArguments map_args = make_map_arguments(DataType::Int, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(int)});
+        REQUIRE(array.data_type() == DataType::Int);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const int*>(array.buffer());
         auto vector = std::vector<int>{data, data + array.size()};
@@ -235,11 +213,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(float)}, 1);
+        MapArguments map_args = make_map_arguments(DataType::Float, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == DataType::Float);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const float*>(array.buffer());
         auto vector = std::vector<float>{data, data + array.size()};
@@ -254,11 +232,11 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
         const auto& value_json = test_json.at("VALUE");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
-        MapArguments map_args = make_map_arguments(std::type_index{typeid(float)}, 1);
+        MapArguments map_args = make_map_arguments(DataType::Float, 1);
         auto array = mapping->map(map_args);
 
         REQUIRE(!array.empty());
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == DataType::Float);
         REQUIRE(array.rank() == 1);
         const auto* data = reinterpret_cast<const float*>(array.buffer());
         auto vector = std::vector<float>{data, data + array.size()};

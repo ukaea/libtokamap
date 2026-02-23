@@ -15,7 +15,6 @@
 #include <numpy/numpyconfig.h>
 #include <optional>
 #include <string>
-#include <typeindex>
 #include <utility>
 #include <vector>
 
@@ -178,7 +177,7 @@ PyObject* wrap_array(const std::vector<npy_intp>& dims, int npy_type, libtokamap
 
 PyObject* array_to_numpy(libtokamap::TypedDataArray& array)
 {
-    auto type = libtokamap::type_index_map(array.type_index());
+    auto type = array.data_type();
     const auto& shape = array.shape();
     std::vector<npy_intp> dims(shape.size());
     std::ranges::copy(shape, dims.begin());
@@ -671,7 +670,7 @@ PyObject* libtokamap_map(PyObject* Py_UNUSED(module), PyObject* const* args, Py_
 
     try {
         auto* mapper = reinterpret_cast<PyMapper*>(py_mapper);
-        auto data_type = std::type_index{typeid(double)};
+        auto data_type = libtokamap::DataType::Double;
         int rank = 1;
         nlohmann::json attributes = {};
         if (py_attributes != nullptr) {

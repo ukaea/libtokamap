@@ -6,11 +6,11 @@
 #include <cstring>
 #include <limits>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
-#include <typeindex>
 #include <utility>
 #include <vector>
 
@@ -69,45 +69,42 @@ inline size_t data_type_size(DataType type)
     LIBTOKAMAP_UNREACHABLE
 }
 
-inline DataType type_index_map(std::type_index type_index)
+template <typename T>
+constexpr DataType data_type_of()
 {
-    if (type_index == std::type_index{typeid(char)}) {
-        return DataType::Char;
+    if constexpr (std::is_same_v<T, char>) { return DataType::Char; }
+    else if constexpr (std::is_same_v<T, short>) { return DataType::Short; }
+    else if constexpr (std::is_same_v<T, int>) { return DataType::Int; }
+    else if constexpr (std::is_same_v<T, long>) { return DataType::Long; }
+    else if constexpr (std::is_same_v<T, int64_t>) { return DataType::Int64; }
+    else if constexpr (std::is_same_v<T, unsigned char>) { return DataType::UChar; }
+    else if constexpr (std::is_same_v<T, unsigned short>) { return DataType::UShort; }
+    else if constexpr (std::is_same_v<T, unsigned int>) { return DataType::UInt; }
+    else if constexpr (std::is_same_v<T, unsigned long>) { return DataType::ULong; }
+    else if constexpr (std::is_same_v<T, uint64_t>) { return DataType::UInt64; }
+    else if constexpr (std::is_same_v<T, float>) { return DataType::Float; }
+    else if constexpr (std::is_same_v<T, double>) { return DataType::Double; }
+    else { return DataType::Unknown; }
+}
+
+inline std::string data_type_name(DataType type)
+{
+    switch (type) {
+        case DataType::Char:    return "char";
+        case DataType::Short:   return "short";
+        case DataType::Int:     return "int";
+        case DataType::Long:    return "long";
+        case DataType::Int64:   return "int64_t";
+        case DataType::UChar:   return "unsigned char";
+        case DataType::UShort:  return "unsigned short";
+        case DataType::UInt:    return "unsigned int";
+        case DataType::ULong:   return "unsigned long";
+        case DataType::UInt64:  return "uint64_t";
+        case DataType::Float:   return "float";
+        case DataType::Double:  return "double";
+        case DataType::Unknown: return "unknown";
     }
-    if (type_index == std::type_index{typeid(short)}) {
-        return DataType::Short;
-    }
-    if (type_index == std::type_index{typeid(int)}) {
-        return DataType::Int;
-    }
-    if (type_index == std::type_index{typeid(long)}) {
-        return DataType::Long;
-    }
-    if (type_index == std::type_index{typeid(unsigned char)}) {
-        return DataType::UChar;
-    }
-    if (type_index == std::type_index{typeid(unsigned short)}) {
-        return DataType::UShort;
-    }
-    if (type_index == std::type_index{typeid(unsigned int)}) {
-        return DataType::UInt;
-    }
-    if (type_index == std::type_index{typeid(unsigned long)}) {
-        return DataType::ULong;
-    }
-    if (type_index == std::type_index{typeid(float)}) {
-        return DataType::Float;
-    }
-    if (type_index == std::type_index{typeid(double)}) {
-        return DataType::Double;
-    }
-    if (type_index == std::type_index{typeid(int64_t)}) {
-        return DataType::Int64;
-    }
-    if (type_index == std::type_index{typeid(uint64_t)}) {
-        return DataType::UInt64;
-    }
-    return DataType::Unknown;
+    LIBTOKAMAP_UNREACHABLE
 }
 
 class SubsetInfo
@@ -193,11 +190,11 @@ std::vector<size_t> compute_offsets(const std::vector<size_t>& shape, const std:
 class TypedDataArray
 {
   public:
-    TypedDataArray() : m_type_index{typeid(void)}, m_size{0}, m_owning{false} {}
+    TypedDataArray() : m_data_type{DataType::Unknown}, m_size{0}, m_owning{false} {}
 
     template <typename T>
     explicit TypedDataArray(const std::vector<T>& array, std::vector<size_t> shape = {})
-        : m_type_index{typeid(T)}, m_size{array.size()}, m_shape{std::move(shape)}, m_owning{true}
+        : m_data_type{data_type_of<T>()}, m_size{array.size()}, m_shape{std::move(shape)}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(m_size * sizeof(T)));
         std::memcpy(m_buffer, reinterpret_cast<const char*>(array.data()), m_size * sizeof(T));
@@ -208,7 +205,7 @@ class TypedDataArray
 
     template <typename T>
     explicit TypedDataArray(T* array, size_t size, std::vector<size_t> shape, bool owning = true)
-        : m_type_index{typeid(T)}, m_size{size}, m_shape{std::move(shape)}, m_owning{owning}
+        : m_data_type{data_type_of<T>()}, m_size{size}, m_shape{std::move(shape)}, m_owning{owning}
     {
         if (m_owning) {
             m_buffer = static_cast<char*>(malloc(m_size * sizeof(T)));
@@ -219,14 +216,14 @@ class TypedDataArray
     }
 
     template <typename T, std::enable_if_t<std::is_arithmetic_v<T>, bool> = true>
-    explicit TypedDataArray(const T value) : m_type_index{typeid(T)}, m_size{1}, m_owning{true}
+    explicit TypedDataArray(const T value) : m_data_type{data_type_of<T>()}, m_size{1}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(sizeof(T)));
         std::memcpy(m_buffer, reinterpret_cast<const char*>(&value), sizeof(T));
     }
 
     explicit TypedDataArray(const std::string& value)
-        : m_type_index{typeid(char)}, m_size{value.size() + 1}, m_shape{value.size() + 1}, m_owning{true}
+        : m_data_type{DataType::Char}, m_size{value.size() + 1}, m_shape{value.size() + 1}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(m_size * sizeof(char)));
         std::memcpy(m_buffer, value.data(), m_size);
@@ -242,12 +239,11 @@ class TypedDataArray
     [[nodiscard]] TypedDataArray clone() const
     {
         TypedDataArray clone;
-        clone.m_type_index = m_type_index;
+        clone.m_data_type = m_data_type;
         clone.m_size = m_size;
         clone.m_shape = m_shape;
         clone.m_owning = true;
-        auto data_type = type_index_map(m_type_index);
-        size_t type_size = data_type_size(data_type);
+        size_t type_size = data_type_size(m_data_type);
         clone.m_buffer = static_cast<char*>(malloc(m_size * type_size));
         std::memcpy(clone.m_buffer, m_buffer, m_size * type_size);
         clone.m_trace = m_trace;
@@ -256,7 +252,7 @@ class TypedDataArray
 
     template <typename T> void apply(double scale_factor, double offset)
     {
-        if (m_type_index != std::type_index{typeid(T)}) {
+        if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to apply"};
         }
 
@@ -268,7 +264,7 @@ class TypedDataArray
 
     template <typename T> void slice(const std::vector<SubsetInfo>& subsets)
     {
-        if (m_type_index != std::type_index{typeid(T)}) {
+        if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to slice"};
         }
         if (subsets.size() != m_shape.size()) {
@@ -318,7 +314,7 @@ class TypedDataArray
 
     [[nodiscard]] size_t rank() const { return m_shape.size(); }
 
-    [[nodiscard]] std::type_index type_index() const { return m_type_index; }
+    [[nodiscard]] DataType data_type() const { return m_data_type; }
 
     [[nodiscard]] const std::vector<size_t>& shape() const { return m_shape; }
 
@@ -336,13 +332,13 @@ class TypedDataArray
 
     template <typename To, typename From> [[nodiscard]] TypedDataArray convert()
     {
-        if (m_type_index != std::type_index{typeid(From)}) {
+        if (m_data_type != data_type_of<From>()) {
             throw libtokamap::DataTypeError{"invalid type given to convert"};
         }
 
         TypedDataArray new_array;
 
-        new_array.m_type_index = std::type_index{typeid(To)};
+        new_array.m_data_type = data_type_of<To>();
         new_array.m_shape = m_shape;
         new_array.m_size = m_size;
         new_array.m_buffer = new char[m_size * sizeof(To)];
@@ -357,7 +353,7 @@ class TypedDataArray
 #if __cplusplus >= 202002L
     template <typename T> [[nodiscard]] std::span<T> span() const
     {
-        if (m_type_index != std::type_index{typeid(T)}) {
+        if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to span"};
         }
         return std::span<T>{reinterpret_cast<T*>(m_buffer), m_size};
@@ -366,7 +362,7 @@ class TypedDataArray
 
     template <typename T> [[nodiscard]] const T* data() const
     {
-        if (m_type_index != std::type_index{typeid(T)}) {
+        if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to data"};
         }
         return reinterpret_cast<T*>(m_buffer);
@@ -374,7 +370,7 @@ class TypedDataArray
 
     template <typename T> [[nodiscard]] std::vector<T> to_vector() const
     {
-        if (m_type_index != std::type_index{typeid(T)}) {
+        if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to to_vector"};
         }
         const T* ptr = reinterpret_cast<T*>(m_buffer);
@@ -383,7 +379,7 @@ class TypedDataArray
 
     [[nodiscard]] size_t element_size()
     {
-        switch (type_index_map(m_type_index)) {
+        switch (m_data_type) {
             case DataType::Unknown:
                 throw libtokamap::DataTypeError{"unknown data type"};
             case DataType::Char:
@@ -426,7 +422,7 @@ class TypedDataArray
     TypedDataArray(TypedDataArray&& other) noexcept : TypedDataArray()
     {
         std::swap(m_buffer, other.m_buffer);
-        std::swap(m_type_index, other.m_type_index);
+        std::swap(m_data_type, other.m_data_type);
         std::swap(m_size, other.m_size);
         std::swap(m_shape, other.m_shape);
         std::swap(m_owning, other.m_owning);
@@ -435,7 +431,7 @@ class TypedDataArray
     TypedDataArray& operator=(TypedDataArray&& other) noexcept
     {
         std::swap(m_buffer, other.m_buffer);
-        std::swap(m_type_index, other.m_type_index);
+        std::swap(m_data_type, other.m_data_type);
         std::swap(m_size, other.m_size);
         std::swap(m_shape, other.m_shape);
         std::swap(m_owning, other.m_owning);
@@ -448,7 +444,7 @@ class TypedDataArray
 
   private:
     char* m_buffer = nullptr;
-    std::type_index m_type_index;
+    DataType m_data_type;
     size_t m_size;
     std::vector<size_t> m_shape;
     bool m_owning;

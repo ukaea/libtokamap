@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <memory>
 #include <span>
-#include <typeindex>
+
 #include <utility>
 #include <vector>
 
@@ -30,7 +30,7 @@ libtokamap::TypedDataArray dot_product(libtokamap::CustomMappingInputs& inputs,
     if (lhs.rank() != 1 || rhs.rank() != 1) {
         throw libtokamap::TokaMapError("Vectors must be 1-dimensional");
     }
-    if (lhs.type_index() != std::type_index{typeid(float)} || rhs.type_index() != std::type_index{typeid(float)}) {
+    if (lhs.data_type() != libtokamap::DataType::Float || rhs.data_type() != libtokamap::DataType::Float) {
         throw libtokamap::TokaMapError("Vectors must be of type float");
     }
 

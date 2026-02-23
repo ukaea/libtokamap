@@ -1,12 +1,8 @@
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <nlohmann/json.hpp>
-#include <ostream>
 #include <string>
-#include <typeindex>
 #include <unordered_map>
-#include <utility>
 
 #include "exceptions/exceptions.hpp"
 #include "map_types/dim_mapping.hpp"
@@ -14,31 +10,11 @@
 #include "map_types/value_mapping.hpp"
 #include "utils/os_utils.hpp"
 
-namespace
-{
-// define this _before_ including catch headers
-std::ostream& operator<<(std::ostream& out, const std::type_index& value)
-{
-    out << libtokamap::demangle(value.name());
-    return out;
-}
-} // namespace
-
 #include <catch2/catch_message.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_tostring.hpp>
 #include <catch2/matchers/catch_matchers_range_equals.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
-
-namespace Catch
-{
-template <> struct StringMaker<std::type_index> {
-    static std::string convert(const std::type_index& value)
-    {
-        return libtokamap::demangle(value.name());
-    }
-};
-} // namespace Catch
 
 using namespace libtokamap;
 
@@ -47,7 +23,7 @@ namespace
 
 libtokamap::MapArguments
 make_map_arguments(std::unordered_map<std::string, std::unique_ptr<libtokamap::Mapping>>& entries,
-                   const std::type_index data_type, const int rank)
+                   const libtokamap::DataType data_type, const int rank)
 {
     static nlohmann::json empty_global_data = nlohmann::json::object();
 
@@ -91,12 +67,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
         entries["test_signal"] = std::move(value_mapping);
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(uint64_t)}, 1);
+        MapArguments map_args = make_map_arguments(entries, DataType::UInt64, 1);
 
         auto dim_return = dim_mapping->map(map_args);
 
         REQUIRE(!dim_return.empty());
-        REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+        REQUIRE(dim_return.data_type() == DataType::UInt64);
         REQUIRE(dim_return.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 5);
     }
@@ -112,12 +88,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
         entries["test_array"] = std::move(value_mapping);
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(uint64_t)}, 1);
+        MapArguments map_args = make_map_arguments(entries, DataType::UInt64, 1);
 
         auto dim_return = dim_mapping->map(map_args);
 
         REQUIRE(!dim_return.empty());
-        REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+        REQUIRE(dim_return.data_type() == DataType::UInt64);
         REQUIRE(dim_return.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 100);
     }
@@ -131,12 +107,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
         entries["float_array"] = std::move(value_mapping);
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(float)}, 1);
+        MapArguments map_args = make_map_arguments(entries, DataType::Float, 1);
 
         auto dim_return = dim_mapping->map(map_args);
 
         REQUIRE(!dim_return.empty());
-        REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+        REQUIRE(dim_return.data_type() == DataType::UInt64);
         REQUIRE(dim_return.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 3);
     }
@@ -151,12 +127,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
     //
     //     std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
     //     entries["string_array"] = std::move(value_mapping);
-    //     MapArguments map_args = make_map_arguments(std::move(entries), std::type_index{typeid(std::string)}, 1);
+    //     MapArguments map_args = make_map_arguments(std::move(entries), DataType::Unknown, 1);
     //
     //     auto dim_return = dim_mapping->map(map_args);
     //
     //     REQUIRE(!dim_return.empty());
-    //     REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+    //     REQUIRE(dim_return.data_type() == DataType::UInt64);
     //     REQUIRE(dim_return.rank() == 0);
     //     REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 4);
     // }
@@ -170,12 +146,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
         entries["single_element"] = std::move(value_mapping);
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(uint64_t)}, 1);
+        MapArguments map_args = make_map_arguments(entries, DataType::UInt64, 1);
 
         auto dim_return = dim_mapping->map(map_args);
 
         REQUIRE(!dim_return.empty());
-        REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+        REQUIRE(dim_return.data_type() == DataType::UInt64);
         REQUIRE(dim_return.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 1);
     }
@@ -191,12 +167,12 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
         entries["single_scalar"] = std::move(value_mapping);
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(uint64_t)}, 0);
+        MapArguments map_args = make_map_arguments(entries, DataType::UInt64, 0);
 
         auto dim_return = dim_mapping->map(map_args);
 
         REQUIRE(!dim_return.empty());
-        REQUIRE(dim_return.type_index() == std::type_index{typeid(uint64_t)});
+        REQUIRE(dim_return.data_type() == DataType::UInt64);
         REQUIRE(dim_return.rank() == 0);
         REQUIRE(*reinterpret_cast<const int*>(dim_return.buffer()) == 1);
     }
@@ -209,7 +185,7 @@ TEST_CASE("DimMapping error handling", "[dim_mapping_errors]")
         auto dim_mapping = std::make_unique<DimMapping>("nonexistent_probe");
 
         std::unordered_map<std::string, std::unique_ptr<Mapping>> entries;
-        MapArguments map_args = make_map_arguments(entries, std::type_index{typeid(uint64_t)}, 0);
+        MapArguments map_args = make_map_arguments(entries, DataType::UInt64, 0);
 
         REQUIRE_THROWS_AS(dim_mapping->map(map_args), MappingError);
         REQUIRE_THROWS_WITH(dim_mapping->map(map_args),
