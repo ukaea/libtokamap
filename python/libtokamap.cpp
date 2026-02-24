@@ -15,7 +15,6 @@
 #include <numpy/numpyconfig.h>
 #include <optional>
 #include <string>
-#include <typeindex>
 #include <utility>
 #include <vector>
 
@@ -178,7 +177,7 @@ PyObject* wrap_array(const std::vector<npy_intp>& dims, int npy_type, libtokamap
 
 PyObject* array_to_numpy(libtokamap::TypedDataArray& array)
 {
-    auto type = libtokamap::type_index_map(array.type_index());
+    auto type = array.data_type();
     const auto& shape = array.shape();
     std::vector<npy_intp> dims(shape.size());
     std::ranges::copy(shape, dims.begin());
@@ -190,22 +189,20 @@ PyObject* array_to_numpy(libtokamap::TypedDataArray& array)
             return wrap_array(dims, NPY_FLOAT32, array);
         case DataType::Int64:
             return wrap_array(dims, NPY_INT64, array);
-        case DataType::Int:
-        case DataType::Long:
+        case DataType::Int32:
             return wrap_array(dims, NPY_INT32, array);
-        case DataType::Short:
+        case DataType::Int16:
             return wrap_array(dims, NPY_INT16, array);
-        case DataType::Char:
-            return wrap_array(dims, NPY_BYTE, array);
+        case DataType::Int8:
+            return wrap_array(dims, NPY_INT8, array);
         case DataType::UInt64:
             return wrap_array(dims, NPY_UINT64, array);
-        case DataType::UInt:
-        case DataType::ULong:
+        case DataType::UInt32:
             return wrap_array(dims, NPY_UINT32, array);
-        case DataType::UShort:
+        case DataType::UInt16:
             return wrap_array(dims, NPY_UINT16, array);
-        case DataType::UChar:
-            return wrap_array(dims, NPY_UBYTE, array);
+        case DataType::UInt8:
+            return wrap_array(dims, NPY_UINT8, array);
         case DataType::Unknown:
             return nullptr;
     }
@@ -671,7 +668,7 @@ PyObject* libtokamap_map(PyObject* Py_UNUSED(module), PyObject* const* args, Py_
 
     try {
         auto* mapper = reinterpret_cast<PyMapper*>(py_mapper);
-        auto data_type = std::type_index{typeid(double)};
+        auto data_type = libtokamap::DataType::Double;
         int rank = 1;
         nlohmann::json attributes = {};
         if (py_attributes != nullptr) {

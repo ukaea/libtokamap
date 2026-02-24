@@ -5,13 +5,9 @@
 #include <iomanip>
 #include <ios>
 #include <ostream>
-#include <span>
 #include <sstream>
 #include <string>
-#include <typeindex>
 #include <vector>
-
-#include "utils/os_utils.hpp"
 
 namespace
 {
@@ -134,16 +130,7 @@ std::ostream& operator<<(std::ostream& out, const SpanStreamAdaptor<T>& data)
     return out;
 }
 
-std::string to_string(const std::type_index& value)
-{
-    return libtokamap::demangle(value.name());
-}
 
-std::ostream& operator<<(std::ostream& out, const std::type_index& value)
-{
-    out << libtokamap::demangle(value.name());
-    return out;
-}
 
 template <typename T> void print(std::ostream& out, const char* buffer, size_t size, size_t max_elements, int precision)
 {
@@ -170,34 +157,28 @@ std::vector<size_t> libtokamap::compute_offsets(const std::vector<size_t>& shape
 std::string libtokamap::TypedDataArray::to_string(size_t max_elements, int precision) const
 {
     std::stringstream out;
-    out << "{ type=" << m_type_index << ", size=" << m_size << ", shape=" << m_shape;
-    switch (type_index_map(m_type_index)) {
-        case DataType::Char:
-            print<char>(out, m_buffer, m_size, max_elements, precision);
+    out << "{ type=" << data_type_name(m_data_type) << ", size=" << m_size << ", shape=" << m_shape;
+    switch (m_data_type) {
+        case DataType::Int8:
+            print<int8_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::Short:
-            print<short>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::Int16:
+            print<int16_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::Int:
-            print<int>(out, m_buffer, m_size, max_elements, precision);
-            break;
-        case DataType::Long:
-            print<long>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::Int32:
+            print<int32_t>(out, m_buffer, m_size, max_elements, precision);
             break;
         case DataType::Int64:
             print<int64_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UChar:
-            print<unsigned char>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt8:
+            print<uint8_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UShort:
-            print<unsigned short>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt16:
+            print<uint16_t>(out, m_buffer, m_size, max_elements, precision);
             break;
-        case DataType::UInt:
-            print<unsigned int>(out, m_buffer, m_size, max_elements, precision);
-            break;
-        case DataType::ULong:
-            print<unsigned long>(out, m_buffer, m_size, max_elements, precision);
+        case DataType::UInt32:
+            print<uint32_t>(out, m_buffer, m_size, max_elements, precision);
             break;
         case DataType::UInt64:
             print<uint64_t>(out, m_buffer, m_size, max_elements, precision);
@@ -209,7 +190,7 @@ std::string libtokamap::TypedDataArray::to_string(size_t max_elements, int preci
             print<double>(out, m_buffer, m_size, max_elements, precision);
             break;
         default:
-            throw libtokamap::DataTypeError{"unhandled data type: '" + ::to_string(m_type_index) + "'"};
+            throw libtokamap::DataTypeError{"unhandled data type: '" + data_type_name(m_data_type) + "'"};
     }
     out << " }";
     return out.str();

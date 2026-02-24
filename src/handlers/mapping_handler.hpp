@@ -5,7 +5,6 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <typeindex>
 #include <unordered_map>
 #include <vector>
 
@@ -46,7 +45,7 @@ class MappingHandler
     void init(const std::filesystem::path& config_path);
     void init(const nlohmann::json& config);
 
-    [[nodiscard]] TypedDataArray map(const std::string& experiment, const std::string& path, std::type_index data_type,
+    [[nodiscard]] TypedDataArray map(const std::string& experiment, const std::string& path, DataType data_type,
                                      int rank, const nlohmann::json& extra_attributes);
 
     void register_data_source_factory(const std::string& factory_name, const std::filesystem::path& library_path);

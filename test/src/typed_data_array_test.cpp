@@ -5,7 +5,7 @@
 #include <iterator>
 #include <ranges>
 #include <span>
-#include <typeindex>
+
 #include <vector>
 
 #include "map_types/map_arguments.hpp"
@@ -21,7 +21,7 @@ TEST_CASE("Test create array")
         REQUIRE(array.rank() == 0);
         REQUIRE(array.size() == 1);
         REQUIRE(array.shape() == std::vector<size_t>{});
-        REQUIRE(array.type_index() == std::type_index{typeid(int)});
+        REQUIRE(array.data_type() == libtokamap::DataType::Int32);
         REQUIRE(*reinterpret_cast<int*>(array.buffer()) == num);
     }
 
@@ -34,7 +34,7 @@ TEST_CASE("Test create array")
         REQUIRE(array.rank() == 1);
         REQUIRE(array.size() == len);
         REQUIRE(array.shape() == std::vector<size_t>{len});
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == libtokamap::DataType::Float);
         REQUIRE(array.to_vector<float>() == vec);
     }
 
@@ -49,7 +49,7 @@ TEST_CASE("Test create array")
         REQUIRE(array.rank() == 2);
         REQUIRE(array.size() == len);
         REQUIRE(array.shape() == std::vector<size_t>{dim1, dim2});
-        REQUIRE(array.type_index() == std::type_index{typeid(float)});
+        REQUIRE(array.data_type() == libtokamap::DataType::Float);
         REQUIRE(array.to_vector<float>() == vec);
     }
 }
@@ -79,7 +79,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 0);
             REQUIRE(array.size() == 1);
             REQUIRE(array.shape() == std::vector<size_t>{});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
             REQUIRE(*reinterpret_cast<float*>(array.buffer()) == element);
         }
 
@@ -95,7 +95,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 1);
             REQUIRE(array.size() == range_len);
             REQUIRE(array.shape() == std::vector<size_t>{range_len});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(range_len);
             libtokamap::iota(expected, 0);
@@ -114,7 +114,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 1);
             REQUIRE(array.size() == range_len);
             REQUIRE(array.shape() == std::vector<size_t>{range_len});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(range_len);
             libtokamap::iota(expected, 0);
@@ -145,7 +145,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 0);
             REQUIRE(array.size() == 1);
             REQUIRE(array.shape() == std::vector<size_t>{});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
             REQUIRE(*reinterpret_cast<float*>(array.buffer()) == (element1 * dim1) + element2);
         }
 
@@ -161,7 +161,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 1);
             REQUIRE(array.size() == 10);
             REQUIRE(array.shape() == std::vector<size_t>{dim2});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(dim2);
             libtokamap::iota(expected, dim1 * element1);
@@ -183,7 +183,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 2);
             REQUIRE(array.size() == dim2 * range_len);
             REQUIRE(array.shape() == std::vector<size_t>{range_len, dim2});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(dim2 * range_len);
             libtokamap::iota(expected, 0);
@@ -205,7 +205,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 2);
             REQUIRE(array.size() == dim1 * range_len);
             REQUIRE(array.shape() == std::vector<size_t>{dim1, range_len});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(dim1 * range_len);
             size_t idx = 0;
@@ -239,7 +239,7 @@ TEST_CASE("Test array slice")
             REQUIRE(array.rank() == 2);
             REQUIRE(array.size() == range1_len * range2_len);
             REQUIRE(array.shape() == std::vector<size_t>{range1_len, range2_len});
-            REQUIRE(array.type_index() == std::type_index{typeid(float)});
+            REQUIRE(array.data_type() == libtokamap::DataType::Float);
 
             std::vector<float> expected(range1_len * range2_len);
             size_t idx = 0;

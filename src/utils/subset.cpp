@@ -75,27 +75,27 @@ void apply_subset(libtokamap::TypedDataArray& input, const std::optional<std::st
 
     std::vector<libtokamap::SubsetInfo> subset_info = libtokamap::parse_slices(slice.value(), input.shape());
     using libtokamap::DataType;
-    switch (libtokamap::type_index_map(input.type_index())) {
-        case DataType::Short:
-            input.slice<short>(subset_info);
+    switch (input.data_type()) {
+        case DataType::Int8:
+            input.slice<int8_t>(subset_info);
             break;
-        case DataType::Int:
-            input.slice<int>(subset_info);
+        case DataType::Int16:
+            input.slice<int16_t>(subset_info);
             break;
-        case DataType::Long:
-            input.slice<long>(subset_info);
+        case DataType::Int32:
+            input.slice<int32_t>(subset_info);
             break;
         case DataType::Int64:
             input.slice<int64_t>(subset_info);
             break;
-        case DataType::UShort:
-            input.slice<unsigned short>(subset_info);
+        case DataType::UInt8:
+            input.slice<uint8_t>(subset_info);
             break;
-        case DataType::UInt:
-            input.slice<unsigned int>(subset_info);
+        case DataType::UInt16:
+            input.slice<uint16_t>(subset_info);
             break;
-        case DataType::ULong:
-            input.slice<unsigned long>(subset_info);
+        case DataType::UInt32:
+            input.slice<uint32_t>(subset_info);
             break;
         case DataType::UInt64:
             input.slice<uint64_t>(subset_info);
@@ -118,27 +118,27 @@ void apply_scale_offset(libtokamap::TypedDataArray& input, std::optional<float> 
         return;
     }
     using libtokamap::DataType;
-    switch (libtokamap::type_index_map(input.type_index())) {
-        case DataType::Short:
-            input.apply<short>(scale_factor.value_or(1.0), offset.value_or(0.0));
+    switch (input.data_type()) {
+        case DataType::Int8:
+            input.apply<int8_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
-        case DataType::Int:
-            input.apply<int>(scale_factor.value_or(1.0), offset.value_or(0.0));
+        case DataType::Int16:
+            input.apply<int16_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
-        case DataType::Long:
-            input.apply<long>(scale_factor.value_or(1.0), offset.value_or(0.0));
+        case DataType::Int32:
+            input.apply<int32_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
         case DataType::Int64:
             input.apply<int64_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
-        case DataType::UShort:
-            input.apply<unsigned short>(scale_factor.value_or(1.0), offset.value_or(0.0));
+        case DataType::UInt8:
+            input.apply<uint8_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
-        case DataType::UInt:
-            input.apply<unsigned int>(scale_factor.value_or(1.0), offset.value_or(0.0));
+        case DataType::UInt16:
+            input.apply<uint16_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
-        case DataType::ULong:
-            input.apply<unsigned long>(scale_factor.value_or(1.0), offset.value_or(0.0));
+        case DataType::UInt32:
+            input.apply<uint32_t>(scale_factor.value_or(1.0), offset.value_or(0.0));
             break;
         case DataType::UInt64:
             input.apply<uint64_t>(scale_factor.value_or(1.0), offset.value_or(0.0));

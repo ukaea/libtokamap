@@ -9,7 +9,7 @@
 #include <libtokamap.hpp>
 #include <nlohmann/json.hpp>
 #include <string>
-#include <typeindex>
+
 #include <vector>
 
 #include "config_path.hpp"
@@ -20,7 +20,7 @@ namespace
 uint64_t map(libtokamap::MappingHandler& mapping_handler, nlohmann::json& trace, const std::string& mapping,
              const std::string& path)
 {
-    std::type_index data_type = std::type_index{typeid(char)};
+    libtokamap::DataType data_type = libtokamap::DataType::Int8;
     int rank = 1;
     nlohmann::json extra_attributes = {{"shot", 42}};
 
@@ -35,7 +35,7 @@ uint64_t map(libtokamap::MappingHandler& mapping_handler, nlohmann::json& trace,
         trace[path] = result.trace();
     }
 
-    if (result.type_index() == std::type_index{typeid(uint64_t)}) {
+    if (result.data_type() == libtokamap::DataType::UInt64) {
         return *std::bit_cast<uint64_t*>(result.buffer());
     }
     return 0;

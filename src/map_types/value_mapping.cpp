@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
-#include <typeindex>
 #include <vector>
 
 #include "exceptions/exceptions.hpp"
@@ -100,8 +99,9 @@ libtokamap::TypedDataArray type_deduce_array(const nlohmann::json& temp_val)
 }
 
 libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val, const nlohmann::json& global_data,
-                                                 std::type_index data_type, int rank)
+                                                 libtokamap::DataType data_type, int rank)
 {
+    using libtokamap::DataType;
     switch (temp_val.type()) {
         case nlohmann::json::value_t::number_float:
             return libtokamap::TypedDataArray{temp_val.get<float>()};
@@ -120,10 +120,9 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
             // inja templating may replace with number
             try {
                 if (rank == 0) {
-                    using libtokamap::DataType;
-                    switch (libtokamap::type_index_map(data_type)) {
-                        case DataType::Int:
-                            return libtokamap::TypedDataArray{try_convert<int>(rendered_string)};
+                    switch (data_type) {
+                        case DataType::Int32:
+                            return libtokamap::TypedDataArray{try_convert<int32_t>(rendered_string)};
                         case DataType::Float:
                             return libtokamap::TypedDataArray{try_convert<float>(rendered_string)};
                         case DataType::Double:
@@ -132,10 +131,9 @@ libtokamap::TypedDataArray type_deduce_primitive(const nlohmann::json& temp_val,
                             return libtokamap::TypedDataArray{rendered_string};
                     }
                 } else {
-                    using libtokamap::DataType;
-                    switch (libtokamap::type_index_map(data_type)) {
-                        case DataType::Int:
-                            return libtokamap::TypedDataArray{try_convert<int[]>(rendered_string)};
+                    switch (data_type) {
+                        case DataType::Int32:
+                            return libtokamap::TypedDataArray{try_convert<int32_t[]>(rendered_string)};
                         case DataType::Float:
                             return libtokamap::TypedDataArray{try_convert<float[]>(rendered_string)};
                         case DataType::Double:
