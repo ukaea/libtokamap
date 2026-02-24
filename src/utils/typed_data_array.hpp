@@ -230,7 +230,7 @@ class TypedDataArray
     }
 
     explicit TypedDataArray(const std::string& value)
-        : m_data_type{DataType::Int8}, m_size{value.size() + 1}, m_shape{value.size() + 1}, m_owning{true}
+        : m_data_type{DataType::Int8}, m_size{value.size()}, m_shape{value.size()}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(m_size * sizeof(char)));
         std::memcpy(m_buffer, value.data(), m_size);
