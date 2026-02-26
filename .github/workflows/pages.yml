@@ -1,41 +1,41 @@
 name: Publish Pages
+
 on:
   push:
     branches:
       - feature/docs
     tags:
       - v*
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - uses: actions/checkout@v3
+
       - name: Git Version
         id: version
-        run: >
+        run: |
           GIT_VERSION=$(git describe --tags --abbrev=0)
           GIT_LONG_VERSION=$(git describe --tags --long)
-          DISTANCE=${GIT_LONG_VERSION#*-}     # remove up to first dash → "11-gfec4382"
-          DISTANCE=${DISTANCE%%-*}            # remove from next dash → "11"
+          DISTANCE=${GIT_LONG_VERSION#*-}
+          DISTANCE=${DISTANCE%%-*}
           echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
           echo "long_version=${GIT_VERSION}.${DISTANCE}" >> $GITHUB_OUTPUT
 
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Install Dependencies
+        run: pip install mkdocs mkdocs-material mkdocstrings mike
+
       - name: Deploy Live Documentation
-        if: startsWith(github.ref, 'refs/tags/v*')
-        steps:
-          - uses: actions/checkout@v6
-          - uses: actions/setup-python@v6
-            with:
-              python-version: 3.x
-          - run: pip install mkdocs mkdocs-material mkdocstrings mike
-          - run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
 
       - name: Deploy Development Documentation
         if: startsWith(github.ref, 'refs/heads/feature/docs')
-        runs-on: ubuntu-latest
-        steps:
-          - uses: actions/checkout@v3
-          - uses: actions/setup-python@v4
-            with:
-              python-version: 3.x
-          - run: pip install mkdocs mkdocs-material mkdocstrings mike
-          - run: mike deploy --push --update-aliases ${{ steps.version.outputs.long_version }} develop
+        run: mike deploy --push --update-aliases ${{ steps.version.outputs.long_version }} develop
