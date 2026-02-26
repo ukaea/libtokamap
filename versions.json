@@ -1,7 +1,8 @@
 [
   {
     "version": "develop",
-    "title": "develop"
+    "title": "develop",
+    "aliases": []
   },
   {
     "version": "0.1",
