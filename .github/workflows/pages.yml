@@ -51,4 +51,4 @@ jobs:
 
       - name: Deploy Development Documentation
         if: startsWith(github.ref, 'refs/heads/feature/docs')
-        run: mike deploy --push --update-aliases ${{ steps.version.outputs.long_version }} develop
+        run: mike deploy --push develop
