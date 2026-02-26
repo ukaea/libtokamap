@@ -25,8 +25,12 @@ jobs:
           GIT_LONG_VERSION=$(git describe --tags --long)
           DISTANCE=${GIT_LONG_VERSION#*-}
           DISTANCE=${DISTANCE%%-*}
+          GIT_COMMIT_EMAIL=$(git log -1 --format:'%ae')
+          GIT_COMMIT_NAME=$(git log -1 --format:'%an')
           echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
           echo "long_version=${GIT_VERSION}.${DISTANCE}" >> $GITHUB_OUTPUT
+          echo "commit_email=$GIT_COMMIT_EMAIL" >> $GITHUB_OUTPUT
+          echo "commit_name=$GIT_COMMIT_NAME" >> $GITHUB_OUTPUT
 
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -35,6 +39,11 @@ jobs:
 
       - name: Install Dependencies
         run: pip install mkdocs mkdocs-material mkdocstrings mike
+
+      - name: Setup doc deploy
+        run: |
+          git config --global user.name ${{ steps.version.outputs.commit_name }}
+          git config --global user.email ${{ steps.version.outputs.commit_email }}
 
       - name: Deploy Live Documentation
         if: startsWith(github.ref, 'refs/tags/v')
