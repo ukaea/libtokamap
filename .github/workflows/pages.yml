@@ -7,6 +7,7 @@ on:
       - v*
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     steps:
       - name: Git Version
         id: version
@@ -20,7 +21,6 @@ jobs:
 
       - name: Deploy Live Documentation
         if: startsWith(github.ref, 'refs/tags/v*')
-        runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v6
           - uses: actions/setup-python@v6
