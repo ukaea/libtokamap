@@ -1812,7 +1812,7 @@
 </li>
 <li>
 <p><strong>Create Sequence Diagrams</strong>
-   <div class="highlight"><pre><span></span><code>sequenceDiagram
+   <pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant MH as MappingHandler
     participant ER as ExperimentRegister
@@ -1822,8 +1822,7 @@
     MH-&gt;&gt;ER: getExperiment(name)
     ER--&gt;&gt;MH: ExperimentMappings
     MH-&gt;&gt;DSR: getDataSource(type)
-    DSR--&gt;&gt;MH: DataSource*
-</code></pre></div></p>
+    DSR--&gt;&gt;MH: DataSource*</code></pre></p>
 </li>
 <li>
 <p><strong>Enhance Inline Documentation</strong>

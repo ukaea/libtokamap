@@ -1425,19 +1425,19 @@
 <p>This document provides detailed relationship diagrams and interaction patterns between components in the LibTokaMap library.</p>
 <h2 id="core-component-relationships">Core Component Relationships<a class="headerlink" href="#core-component-relationships" title="Permanent link">&para;</a></h2>
 <h3 id="1-high-level-system-architecture">1. High-Level System Architecture<a class="headerlink" href="#1-high-level-system-architecture" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TB
-    subgraph &quot;Client Interface&quot;
+<pre class="mermaid"><code>graph TB
+    subgraph "Client Interface"
         API[Public API]
         CONFIG[Configuration]
     end
 
-    subgraph &quot;Core Engine&quot;
+    subgraph "Core Engine"
         MH[MappingHandler]
         ER[ExperimentRegister]
         DSR[DataSourceRegistry]
     end
 
-    subgraph &quot;Mapping System&quot;
+    subgraph "Mapping System"
         VM[ValueMapping]
         DSM[DataSourceMapping]
         EM[ExprMapping]
@@ -1445,13 +1445,13 @@
         CM[CustomMapping]
     end
 
-    subgraph &quot;Data Layer&quot;
+    subgraph "Data Layer"
         DS[DataSource]
         TDA[TypedDataArray]
         RC[RamCache]
     end
 
-    subgraph &quot;Utilities&quot;
+    subgraph "Utilities"
         SUBSET[Subset Operations]
         SCALE[Scale/Offset]
         RENDER[Template Rendering]
@@ -1473,20 +1473,19 @@
     DSM --&gt; SUBSET
     DSM --&gt; SCALE
     EM --&gt; RENDER
-    MH --&gt; VALID
-</code></pre></div>
+    MH --&gt; VALID</code></pre>
 <h3 id="2-mapping-handler-dependencies">2. Mapping Handler Dependencies<a class="headerlink" href="#2-mapping-handler-dependencies" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph LR
-    subgraph &quot;MappingHandler Core&quot;
+<pre class="mermaid"><code>graph LR
+    subgraph "MappingHandler Core"
         MH[MappingHandler]
-        INIT[&quot;init()&quot;]
-        RESET[&quot;reset()&quot;]
-        MAP[&quot;map()&quot;]
-        REG_DS[&quot;register_data_source()&quot;]
-        REG_CF[&quot;register_custom_function()&quot;]
+        INIT["init()"]
+        RESET["reset()"]
+        MAP["map()"]
+        REG_DS["register_data_source()"]
+        REG_CF["register_custom_function()"]
     end
 
-    subgraph &quot;Internal State&quot;
+    subgraph "Internal State"
         DSR[m_data_sources]
         ERS[m_experiment_register]
         RC[m_ram_cache]
@@ -1494,7 +1493,7 @@
         LF[m_library_functions]
     end
 
-    subgraph &quot;External Dependencies&quot;
+    subgraph "External Dependencies"
         FS[Filesystem]
         JSON[nlohmann::json]
         VALIJSON[valijson]
@@ -1517,10 +1516,9 @@
     INIT -.-&gt; RC
     MAP -.-&gt; ERS
     REG_DS -.-&gt; DSR
-    REG_CF -.-&gt; LF
-</code></pre></div>
+    REG_CF -.-&gt; LF</code></pre>
 <h3 id="3-data-flow-through-mapping-types">3. Data Flow Through Mapping Types<a class="headerlink" href="#3-data-flow-through-mapping-types" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant MH as MappingHandler
     participant ER as ExperimentRegister
@@ -1559,11 +1557,10 @@
     end
 
     M--&gt;&gt;MH: TypedDataArray
-    MH--&gt;&gt;Client: final result
-</code></pre></div>
+    MH--&gt;&gt;Client: final result</code></pre>
 <h2 id="detailed-component-interactions">Detailed Component Interactions<a class="headerlink" href="#detailed-component-interactions" title="Permanent link">&para;</a></h2>
 <h3 id="1-typeddataarray-lifecycle">1. TypedDataArray Lifecycle<a class="headerlink" href="#1-typeddataarray-lifecycle" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>stateDiagram-v2
+<pre class="mermaid"><code>stateDiagram-v2
     [*] --&gt; Created: Constructor
     Created --&gt; Populated: Data assignment
     Populated --&gt; Transformed: apply() / slice()
@@ -1583,11 +1580,10 @@
     note right of Moved
         Original becomes
         non-owning
-    end note
-</code></pre></div>
+    end note</code></pre>
 <h3 id="2-experiment-loading-process">2. Experiment Loading Process<a class="headerlink" href="#2-experiment-loading-process" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>flowchart TD
-    START[&quot;load_experiment()&quot;] --&gt; CHECK{Experiment loaded?}
+<pre class="mermaid"><code>flowchart TD
+    START["load_experiment()"] --&gt; CHECK{Experiment loaded?}
     CHECK --&gt;|Yes| RETURN[Return existing]
     CHECK --&gt;|No| LOAD_CFG[Load mappings.cfg.json]
     LOAD_CFG --&gt; VALIDATE_CFG[Validate config schema]
@@ -1606,10 +1602,9 @@
     MORE_PARTITIONS --&gt;|No| MORE_GROUPS{More groups?}
     MORE_GROUPS --&gt;|Yes| ITERATE_GROUPS
     MORE_GROUPS --&gt;|No| MARK_LOADED[Mark experiment as loaded]
-    MARK_LOADED --&gt; RETURN
-</code></pre></div>
+    MARK_LOADED --&gt; RETURN</code></pre>
 <h3 id="3-data-source-integration-pattern">3. Data Source Integration Pattern<a class="headerlink" href="#3-data-source-integration-pattern" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>classDiagram
+<pre class="mermaid"><code>classDiagram
     class DataSourceRegistry {
         -unordered_map~string,unique_ptr~DataSource~~ sources
         +register_source(name, source)
@@ -1667,27 +1662,26 @@
     DataSource &lt;|-- JSONDataSource
     DataSource &lt;|-- HDF5DataSource
     DataSourceMapping --&gt; DataSource
-    DataSourceMapping ..&gt; DataSourceRegistry : uses
-</code></pre></div>
+    DataSourceMapping ..&gt; DataSourceRegistry : uses</code></pre>
 <h3 id="4-cache-integration">4. Cache Integration<a class="headerlink" href="#4-cache-integration" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TB
-    subgraph &quot;Cache Architecture&quot;
+<pre class="mermaid"><code>graph TB
+    subgraph "Cache Architecture"
         RC[RamCache]
         CK[CacheKey]
         CE[CacheEntry]
         LRU[LRU Policy]
     end
 
-    subgraph &quot;Data Sources&quot;
+    subgraph "Data Sources"
         DS[DataSource]
         DSM[DataSourceMapping]
     end
 
-    subgraph &quot;Cache Operations&quot;
-        GET[&quot;get()&quot;]
-        PUT[&quot;put()&quot;]
-        EVICT[&quot;evict()&quot;]
-        CLEAR[&quot;clear()&quot;]
+    subgraph "Cache Operations"
+        GET["get()"]
+        PUT["put()"]
+        EVICT["evict()"]
+        CLEAR["clear()"]
     end
 
     DSM --&gt;|check cache| RC
@@ -1705,11 +1699,10 @@
     RC --&gt; CLEAR
 
     CK -.-&gt;|generates hash| CE
-    LRU -.-&gt;|manages| CE
-</code></pre></div>
+    LRU -.-&gt;|manages| CE</code></pre>
 <h2 id="cross-component-communication-patterns">Cross-Component Communication Patterns<a class="headerlink" href="#cross-component-communication-patterns" title="Permanent link">&para;</a></h2>
 <h3 id="1-observer-pattern-for-cache-events">1. Observer Pattern for Cache Events<a class="headerlink" href="#1-observer-pattern-for-cache-events" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant DSM as DataSourceMapping
     participant RC as RamCache
     participant DS as DataSource
@@ -1733,23 +1726,22 @@
         end
 
         RC--&gt;&gt;DSM: fresh_data
-    end
-</code></pre></div>
+    end</code></pre>
 <h3 id="2-template-resolution-chain">2. Template Resolution Chain<a class="headerlink" href="#2-template-resolution-chain" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>flowchart LR
-    subgraph &quot;Template Context&quot;
+<pre class="mermaid"><code>flowchart LR
+    subgraph "Template Context"
         GA[Global Attributes]
         LA[Local Attributes]
         RA[Runtime Attributes]
     end
 
-    subgraph &quot;Resolution Process&quot;
+    subgraph "Resolution Process"
         PARSE[Parse Template]
         RESOLVE[Resolve Variables]
         RENDER[Render Result]
     end
 
-    subgraph &quot;Variable Sources&quot;
+    subgraph "Variable Sources"
         GLOBALS[globals.json]
         PARTITION[partition globals]
         RUNTIME[extra_attributes]
@@ -1766,11 +1758,10 @@
     COMPUTED --&gt; RESOLVE
 
     PARSE --&gt; RESOLVE
-    RESOLVE --&gt; RENDER
-</code></pre></div>
+    RESOLVE --&gt; RENDER</code></pre>
 <h3 id="3-error-propagation-chain">3. Error Propagation Chain<a class="headerlink" href="#3-error-propagation-chain" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TB
-    subgraph &quot;Error Sources&quot;
+<pre class="mermaid"><code>graph TB
+    subgraph "Error Sources"
         JSON_ERR[JSON Parse Error]
         SCHEMA_ERR[Schema Validation Error]
         FILE_ERR[File System Error]
@@ -1778,7 +1769,7 @@
         PARAM_ERR[Parameter Error]
     end
 
-    subgraph &quot;Exception Types&quot;
+    subgraph "Exception Types"
         VALIDATION[ValidationError]
         DATA_SOURCE[DataSourceError]
         MAPPING[MappingError]
@@ -1787,7 +1778,7 @@
         PARAMETER[ParameterError]
     end
 
-    subgraph &quot;Error Handling&quot;
+    subgraph "Error Handling"
         CATCH[Exception Handler]
         LOG[Error Logging]
         CLEANUP[Resource Cleanup]
@@ -1809,25 +1800,24 @@
 
     CATCH --&gt; LOG
     CATCH --&gt; CLEANUP
-    CATCH --&gt; PROPAGATE
-</code></pre></div>
+    CATCH --&gt; PROPAGATE</code></pre>
 <h2 id="resource-management-patterns">Resource Management Patterns<a class="headerlink" href="#resource-management-patterns" title="Permanent link">&para;</a></h2>
 <h3 id="1-memory-ownership-model">1. Memory Ownership Model<a class="headerlink" href="#1-memory-ownership-model" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TD
-    subgraph &quot;Owned Resources&quot;
-        TDA_OWN[&quot;TypedDataArray (owning)&quot;]
-        BUFFER_MALLOC[malloc&#39;d buffer]
+<pre class="mermaid"><code>graph TD
+    subgraph "Owned Resources"
+        TDA_OWN["TypedDataArray (owning)"]
+        BUFFER_MALLOC[malloc'd buffer]
         UNIQUE_PTR[unique_ptr wrappers]
     end
 
-    subgraph &quot;Borrowed Resources&quot;
-        TDA_REF[&quot;TypedDataArray (non-owning)&quot;]
+    subgraph "Borrowed Resources"
+        TDA_REF["TypedDataArray (non-owning)"]
         RAW_PTR[raw pointers]
         SPAN_VIEW[span views]
     end
 
-    subgraph &quot;Shared Resources&quot;
-        CACHE[&quot;RamCache (shared_ptr)&quot;]
+    subgraph "Shared Resources"
+        CACHE["RamCache (shared_ptr)"]
         CONFIG[Configuration data]
         SCHEMAS[Validation schemas]
     end
@@ -1838,41 +1828,39 @@
     SPAN_VIEW -.-&gt; TDA_REF
 
     CACHE -.-&gt;|reference counted| CONFIG
-    SCHEMAS -.-&gt;|singleton pattern| CONFIG
-</code></pre></div>
+    SCHEMAS -.-&gt;|singleton pattern| CONFIG</code></pre>
 <h3 id="2-library-loading-lifecycle">2. Library Loading Lifecycle<a class="headerlink" href="#2-library-loading-lifecycle" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>stateDiagram-v2
+<pre class="mermaid"><code>stateDiagram-v2
     [*] --&gt; Scanning: Scan library paths
-    Scanning --&gt; Loading: &quot;dlopen()&quot;
-    Loading --&gt; Resolving: &quot;dlsym()&quot;
+    Scanning --&gt; Loading: "dlopen()"
+    Loading --&gt; Resolving: "dlsym()"
     Resolving --&gt; Validating: Check signature
     Validating --&gt; Registered: Add to registry
     Registered --&gt; InUse: Function calls
     InUse --&gt; InUse: Multiple calls
     InUse --&gt; Unloading: Explicit unregister
-    Unloading --&gt; [*]: &quot;dlclose()&quot;
+    Unloading --&gt; [*]: "dlclose()"
 
     Loading --&gt; Error: Load failure
     Resolving --&gt; Error: Symbol not found
     Validating --&gt; Error: Invalid signature
-    Error --&gt; [*]: Cleanup
-</code></pre></div>
+    Error --&gt; [*]: Cleanup</code></pre>
 <h3 id="3-configuration-validation-pipeline">3. Configuration Validation Pipeline<a class="headerlink" href="#3-configuration-validation-pipeline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>flowchart LR
-    subgraph &quot;Input Validation&quot;
+<pre class="mermaid"><code>flowchart LR
+    subgraph "Input Validation"
         TOML_PARSE[Parse TOML/JSON]
         SCHEMA_LOAD[Load Schema]
         VALIDATE[Validate Against Schema]
     end
 
-    subgraph &quot;Semantic Validation&quot;
+    subgraph "Semantic Validation"
         REF_CHECK[Reference Checking]
         TYPE_CHECK[Type Compatibility]
         RANGE_CHECK[Range Validation]
         FACTORY_CHECK[Factory Validation]
     end
 
-    subgraph &quot;Runtime Validation&quot;
+    subgraph "Runtime Validation"
         PATH_CHECK[Path Existence]
         PERM_CHECK[Permission Check]
         DEP_CHECK[Dependency Check]
@@ -1901,12 +1889,11 @@
     PATH_CHECK --&gt; FAIL
     PERM_CHECK --&gt; FAIL
     DEP_CHECK --&gt; FAIL
-    LIBRARY_CHECK --&gt; FAIL
-</code></pre></div>
+    LIBRARY_CHECK --&gt; FAIL</code></pre>
 <h2 id="enhanced-subset-operations">Enhanced Subset Operations<a class="headerlink" href="#enhanced-subset-operations" title="Permanent link">&para;</a></h2>
 <h3 id="4-advanced-slicing-architecture">4. Advanced Slicing Architecture<a class="headerlink" href="#4-advanced-slicing-architecture" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>stateDiagram-v2
-    [*] --&gt; ParseSlice: parse_slices(\&quot;[#colon;][9]\&quot;, shape)
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; ParseSlice: parse_slices(\"[#colon;][9]\", shape)
     ParseSlice --&gt; ValidateSlice: SubsetInfo validation
     ValidateSlice --&gt; NegativeStrideCheck: Check stride direction
 
@@ -1928,10 +1915,9 @@
         Enhanced validation for
         negative strides with
         proper boundary checking
-    end note
-</code></pre></div>
+    end note</code></pre>
 <h3 id="5-factory-loading-lifecycle">5. Factory Loading Lifecycle<a class="headerlink" href="#5-factory-loading-lifecycle" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Config as TOML Config
     participant MH as MappingHandler
     participant FR as FactoryRegistry
@@ -1939,22 +1925,21 @@
     participant DS as DataSource
 
     Config-&gt;&gt;MH: data_source_factories config
-    MH-&gt;&gt;FR: &quot;register_factory(name, path)&quot;
-    FR-&gt;&gt;Lib: &quot;dlopen(library_path)&quot;
+    MH-&gt;&gt;FR: "register_factory(name, path)"
+    FR-&gt;&gt;Lib: "dlopen(library_path)"
     Lib--&gt;&gt;FR: library handle
-    FR-&gt;&gt;Lib: &quot;dlsym(\&quot;create_data_source\&quot;)&quot;
+    FR-&gt;&gt;Lib: "dlsym(\"create_data_source\")"
     Lib--&gt;&gt;FR: factory function
 
     Config-&gt;&gt;MH: data_sources config
-    MH-&gt;&gt;FR: &quot;get_factory(factory_name)&quot;
+    MH-&gt;&gt;FR: "get_factory(factory_name)"
     FR--&gt;&gt;MH: factory function
-    MH-&gt;&gt;FR: &quot;factory(args)&quot;
+    MH-&gt;&gt;FR: "factory(args)"
     FR-&gt;&gt;DS: create DataSource
     DS--&gt;&gt;MH: DataSource instance
-    MH-&gt;&gt;MH: &quot;register_data_source(name, ds)&quot;
+    MH-&gt;&gt;MH: "register_data_source(name, ds)"
 
-    note over Lib: Hot-reloadable libraries with proper cleanup
-</code></pre></div>
+    note over Lib: Hot-reloadable libraries with proper cleanup</code></pre>
 <p>This component relationship documentation provides a comprehensive view of how different parts of LibTokaMap interact, including the new factory pattern and enhanced subset operations, making it easier to understand the system for maintenance, debugging, and refactoring purposes.</p>
 
 

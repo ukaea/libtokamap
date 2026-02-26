@@ -2106,7 +2106,7 @@
 <p>This knowledge graph captures the architectural components, relationships, and data flow patterns within the LibTokaMap library. It serves as a comprehensive reference for understanding the system architecture and planning refactoring efforts.</p>
 <h2 id="core-architecture">Core Architecture<a class="headerlink" href="#core-architecture" title="Permanent link">&para;</a></h2>
 <h3 id="1-main-components">1. Main Components<a class="headerlink" href="#1-main-components" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TB
+<pre class="mermaid"><code>graph TB
     MH[MappingHandler] --&gt; |manages| ER[ExperimentRegister]
     MH --&gt; |uses| DSR[DataSourceRegistry]
     MH --&gt; |utilizes| RC[RamCache]
@@ -2116,10 +2116,9 @@
     EM --&gt; |organized by| GM[GroupMappings]
     GM --&gt; |partitioned by| PM[PartitionMappings]
     PM --&gt; |stores| MS[MappingStore]
-    MS --&gt; |contains| M[Mapping implementations]
-</code></pre></div>
+    MS --&gt; |contains| M[Mapping implementations]</code></pre>
 <h3 id="2-mapping-type-hierarchy">2. Mapping Type Hierarchy<a class="headerlink" href="#2-mapping-type-hierarchy" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>classDiagram
+<pre class="mermaid"><code>classDiagram
     class Mapping {
         &lt;&lt;abstract&gt;&gt;
         +map(MapArguments) TypedDataArray
@@ -2163,10 +2162,9 @@
     Mapping &lt;|-- DataSourceMapping
     Mapping &lt;|-- ExprMapping
     Mapping &lt;|-- DimMapping
-    Mapping &lt;|-- CustomMapping
-</code></pre></div>
+    Mapping &lt;|-- CustomMapping</code></pre>
 <h3 id="3-data-source-architecture">3. Data Source Architecture<a class="headerlink" href="#3-data-source-architecture" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph LR
+<pre class="mermaid"><code>graph LR
     DSR[DataSourceRegistry] --&gt; |contains| DS[DataSource implementations]
     DSF[DataSourceFactory] --&gt; |creates| DS
     MH[MappingHandler] --&gt; |manages| DSF
@@ -2176,13 +2174,13 @@
     DSM --&gt; |applies| SL[Slicing]
     DSM --&gt; |uses| RC[RamCache]
 
-    subgraph &quot;Factory Pattern&quot;
+    subgraph "Factory Pattern"
         JSON_FACTORY[JSON Factory]
         HDF5_FACTORY[HDF5 Factory]
         CUSTOM_FACTORY[Custom Factories]
     end
 
-    subgraph &quot;Data Source Implementations&quot;
+    subgraph "Data Source Implementations"
         JSON[JSONDataSource]
         HDF5[HDF5DataSource]
         CUSTOM[CustomDataSources]
@@ -2194,8 +2192,7 @@
 
     JSON_FACTORY --&gt; JSON
     HDF5_FACTORY --&gt; HDF5
-    CUSTOM_FACTORY --&gt; CUSTOM
-</code></pre></div>
+    CUSTOM_FACTORY --&gt; CUSTOM</code></pre>
 <h2 id="data-structures-and-types">Data Structures and Types<a class="headerlink" href="#data-structures-and-types" title="Permanent link">&para;</a></h2>
 <h3 id="1-core-data-types">1. Core Data Types<a class="headerlink" href="#1-core-data-types" title="Permanent link">&para;</a></h3>
 <table>
@@ -2288,7 +2285,7 @@
 </code></pre></div>
 <h2 id="data-flow-and-processing-pipeline">Data Flow and Processing Pipeline<a class="headerlink" href="#data-flow-and-processing-pipeline" title="Permanent link">&para;</a></h2>
 <h3 id="1-initialization-flow">1. Initialization Flow<a class="headerlink" href="#1-initialization-flow" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant MH as MappingHandler
     participant EM as ExperimentMappings
@@ -2300,10 +2297,9 @@
     MH-&gt;&gt;MH: setup cache
     MH-&gt;&gt;EM: load experiment configs
     EM-&gt;&gt;VS: validate configs
-    MH--&gt;&gt;Client: ready
-</code></pre></div>
+    MH--&gt;&gt;Client: ready</code></pre>
 <h3 id="2-mapping-resolution-flow">2. Mapping Resolution Flow<a class="headerlink" href="#2-mapping-resolution-flow" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>sequenceDiagram
+<pre class="mermaid"><code>sequenceDiagram
     participant Client
     participant MH as MappingHandler
     participant EM as ExperimentMappings
@@ -2319,17 +2315,16 @@
     DS--&gt;&gt;M: TypedDataArray
     M-&gt;&gt;M: apply transformations
     M--&gt;&gt;MH: final TypedDataArray
-    MH--&gt;&gt;Client: result
-</code></pre></div>
+    MH--&gt;&gt;Client: result</code></pre>
 <h3 id="3-data-transformation-pipeline">3. Data Transformation Pipeline<a class="headerlink" href="#3-data-transformation-pipeline" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph LR
+<pre class="mermaid"><code>graph LR
     DS[Data Source] --&gt; RAW[Raw Data]
     RAW --&gt; SLICE[Apply Slicing]
     SLICE --&gt; SCALE[Apply Scale/Offset]
     SCALE --&gt; CACHE[Cache Result]
     CACHE --&gt; TDA[TypedDataArray]
 
-    subgraph &quot;Transformation Options&quot;
+    subgraph "Transformation Options"
         SUBSET[Subset Operations]
         LINEAR[Linear Transforms]
         TEMPLATE[Template Rendering]
@@ -2337,8 +2332,7 @@
 
     SLICE -.-&gt; SUBSET
     SCALE -.-&gt; LINEAR
-    RAW -.-&gt; TEMPLATE
-</code></pre></div>
+    RAW -.-&gt; TEMPLATE</code></pre>
 <h2 id="directory-structure-and-organization">Directory Structure and Organization<a class="headerlink" href="#directory-structure-and-organization" title="Permanent link">&para;</a></h2>
 <h3 id="1-project-layout">1. Project Layout<a class="headerlink" href="#1-project-layout" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>libtokamap/
@@ -2421,7 +2415,7 @@
 <li>Dynamic path construction</li>
 </ul>
 <h3 id="3-caching-strategy">3. Caching Strategy<a class="headerlink" href="#3-caching-strategy" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>graph TD
+<pre class="mermaid"><code>graph TD
     REQUEST[Data Request] --&gt; CACHE{In Cache?}
     CACHE --&gt;|Yes| RETURN[Return Cached]
     CACHE --&gt;|No| FETCH[Fetch from Source]
@@ -2429,8 +2423,7 @@
     STORE --&gt; RETURN
 
     CACHE --&gt; LRU[LRU Eviction]
-    LRU --&gt; CAPACITY[Check Capacity]
-</code></pre></div>
+    LRU --&gt; CAPACITY[Check Capacity]</code></pre>
 <h2 id="extension-points-and-plugin-architecture">Extension Points and Plugin Architecture<a class="headerlink" href="#extension-points-and-plugin-architecture" title="Permanent link">&para;</a></h2>
 <h3 id="1-custom-data-sources">1. Custom Data Sources<a class="headerlink" href="#1-custom-data-sources" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CustomDataSource</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">DataSource</span><span class="w"> </span><span class="p">{</span>
@@ -2465,7 +2458,7 @@
 <span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_custom_function</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="error-handling-and-exception-hierarchy">Error Handling and Exception Hierarchy<a class="headerlink" href="#error-handling-and-exception-hierarchy" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>classDiagram
+<pre class="mermaid"><code>classDiagram
     class TokaMapError {
         +string message
     }
@@ -2499,8 +2492,7 @@
     TokaMapError &lt;|-- ProcessingError
     TokaMapError &lt;|-- ValidationError
     TokaMapError &lt;|-- DataTypeError
-    TokaMapError &lt;|-- ParameterError
-</code></pre></div>
+    TokaMapError &lt;|-- ParameterError</code></pre>
 <h2 id="dependencies-and-external-libraries">Dependencies and External Libraries<a class="headerlink" href="#dependencies-and-external-libraries" title="Permanent link">&para;</a></h2>
 <h3 id="1-core-dependencies">1. Core Dependencies<a class="headerlink" href="#1-core-dependencies" title="Permanent link">&para;</a></h3>
 <table>
