@@ -3,7 +3,7 @@ name: Publish Pages
 on:
   push:
     branches:
-      - feature/docs
+      - develop
     tags:
       - v*
 
@@ -40,7 +40,7 @@ jobs:
       - name: Install Dependencies
         run: pip install mkdocs mkdocs-material mkdocstrings mike
 
-      - name: Setup doc deploy
+      - name: Setup Deploy
         run: |
           git config --global user.name ${{ steps.version.outputs.commit_name }}
           git config --global user.email ${{ steps.version.outputs.commit_email }}
@@ -50,5 +50,5 @@ jobs:
         run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
 
       - name: Deploy Development Documentation
-        if: startsWith(github.ref, 'refs/heads/feature/docs')
+        if: startsWith(github.ref, 'refs/heads/develop')
         run: mike deploy --push develop
