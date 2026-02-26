@@ -2,14 +2,38 @@ name: Publish Pages
 on:
   push:
     branches:
-      - main
+      - feature/docs
+    tags:
+      - v*
 jobs:
-  deploy:
+  Git Version:
+    id: version
+    run: >
+      GIT_VERSION=$(git describe --tags --abbrev=0)
+      GIT_LONG_VERSION=$(git describe --tags --long)
+      DISTANCE=${GIT_LONG_VERSION#*-}     # remove up to first dash → "11-gfec4382"
+      DISTANCE=${DISTANCE%%-*}            # remove from next dash → "11"
+      echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
+      echo "long_version=${GIT_VERSION}.${DISTANCE}" >> $GITHUB_OUTPUT
+
+  Deploy Live Documentation:
+    if: startsWith(github.ref, 'refs/tags/v*')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
           python-version: 3.x
-      - run: pip install mkdocs mkdocs-material mkdocstrings
-      - run: mkdocs gh-deploy --force --clean --verbose
+      - run: pip install mkdocs mkdocs-material mkdocstrings mike
+      - run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
+
+  Deploy Development Documentation:
+    if: startsWith(github.ref, 'refs/heads/feature/docs')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - run: pip install mkdocs mkdocs-material mkdocstrings mike
+      - run: mike deploy --push --update-aliases ${{ steps.version.outputs.long_version }} develop

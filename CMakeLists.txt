@@ -27,6 +27,7 @@ include( Utils )
 option( ENABLE_TESTING "Enable unit tests for the projects (from the `test` subfolder)." OFF )
 option( ENABLE_EXAMPLES "Enable examples for the projects (from the `examples` subfolder)." OFF )
 option( ENABLE_PROFILING "Compile with profiling enabled." OFF )
+option( ENABLE_COVERAGE "Enable code coverage." OFF )
 option( ENABLE_DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
 
 ## Generators
