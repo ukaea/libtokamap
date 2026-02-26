@@ -12,7 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
+        # need git tags available to get git version
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Git Version
         id: version
