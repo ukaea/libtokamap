@@ -5,7 +5,7 @@ on:
     branches:
       - develop
     tags:
-      - v*
+      - "*"
 
 jobs:
   deploy:
@@ -46,7 +46,7 @@ jobs:
           git config --global user.email ${{ steps.version.outputs.commit_email }}
 
       - name: Deploy Live Documentation
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/')
         run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
 
       - name: Deploy Development Documentation
