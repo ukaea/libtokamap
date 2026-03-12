@@ -8,9 +8,9 @@ on:
       - "feature/**"
     tags:
       - "*"
-    release:
-      types:
-        - published
+  release:
+    types:
+      - published
   workflow_dispatch:
 
 jobs:
