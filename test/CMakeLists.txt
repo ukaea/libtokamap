@@ -32,6 +32,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable( Catch2 )
 
+# if( CMAKE_VERSION VERSION_GREATER_EQUAL 3.20 )
+#     include( CodeCoverage )
+#     append_coverage_compiler_flags()
+# endif()
+
 # Create test executable
 add_executable( libtokamap_tests ${TEST_SOURCES} )
 
@@ -51,9 +56,24 @@ target_link_libraries( libtokamap_tests
     LibTokaMap::libtokamap
 )
 
+if( ENABLE_COVERAGE )
+    include( Coverage )
+    add_llvm_coverage( libtokamap_tests ${CMAKE_CURRENT_BINARY_DIR}/libtokamap_tests )
+    # target_compile_options( libtokamap_tests PRIVATE -fprofile-instr-generate -fcoverage-mapping )
+    # target_link_options( libtokamap_tests PRIVATE -fprofile-instr-generate )
+endif()
+
 # CTest integration
 list( APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras )
 
 include( Catch )
 catch_discover_tests( libtokamap_tests
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
+
+# if( CMAKE_VERSION VERSION_GREATER_EQUAL 3.20 )
+#     setup_target_for_coverage_lcov(
+#         NAME coverage
+#         EXECUTABLE libtokamap_tests
+#         DEPENDENCIES libtokamap_tests
+#     )
+# endif()

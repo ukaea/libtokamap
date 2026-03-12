@@ -20,3 +20,4 @@ out
 CMakeSettings.json
 build_artifacts
 .DS_Store
+site/

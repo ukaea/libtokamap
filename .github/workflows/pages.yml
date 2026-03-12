@@ -1,15 +1,54 @@
 name: Publish Pages
+
 on:
   push:
     branches:
-      - main
+      - develop
+    tags:
+      - "*"
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+        # need git tags available to get git version
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Git Version
+        id: version
+        run: |
+          GIT_VERSION=$(git describe --tags --abbrev=0)
+          GIT_LONG_VERSION=$(git describe --tags --long)
+          DISTANCE=${GIT_LONG_VERSION#*-}
+          DISTANCE=${DISTANCE%%-*}
+          GIT_COMMIT_EMAIL=$(git log -1 --format='%ae')
+          GIT_COMMIT_NAME=$(git log -1 --format='%an')
+          echo "version=$GIT_VERSION" >> $GITHUB_OUTPUT
+          echo "long_version=${GIT_VERSION}.${DISTANCE}" >> $GITHUB_OUTPUT
+          echo "commit_email=$GIT_COMMIT_EMAIL" >> $GITHUB_OUTPUT
+          echo "commit_name=$GIT_COMMIT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.x
-      - run: pip install mkdocs mkdocs-material mkdocstrings
-      - run: mkdocs gh-deploy --force --clean --verbose
+
+      - name: Install Dependencies
+        run: pip install mkdocs mkdocs-material mkdocstrings mike
+
+      - name: Setup Deploy
+        run: |
+          git config --global user.name ${{ steps.version.outputs.commit_name }}
+          git config --global user.email ${{ steps.version.outputs.commit_email }}
+
+      - name: Deploy Live Documentation
+        if: startsWith(github.ref, 'refs/tags/')
+        run: mike deploy --push --update-aliases ${{ steps.version.outputs.version }} latest
+
+      - name: Deploy Development Documentation
+        if: startsWith(github.ref, 'refs/heads/develop')
+        run: mike deploy --push develop

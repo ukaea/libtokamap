@@ -1,10 +1,10 @@
 # LibTokaMap Documentation
 
-Welcome to the LibTokaMap documentation! LibTokaMap is a C++20 library for flexible data mapping and transformation with support for multiple data sources and mapping types.
+LibTokaMap is a C++20 library for flexible data mapping and transformation with support for multiple data sources and mapping types.
 
 ## What is LibTokaMap?
 
-LibTokaMap provides a plugin-based architecture for data transformation and mapping operations. It allows you to define complex data transformations through JSON-based configuration files and supports various data sources and mapping types.
+LibTokaMap is a library that provides data transformation and mapping capabilities using [TokaMap](https://github.com/ukaea/tokamap) compatible mappings. It provides a plugin-based architecture for defining data sources and custom functions that can be called via the TokaMap `DATA_SOURCE` and `CUSTOM` mapping types.
 
 ### Key Features
 
@@ -18,6 +18,25 @@ LibTokaMap provides a plugin-based architecture for data transformation and mapp
 
 ## Quick Start
 
+An example configuration file:
+
+```toml
+mapping_directory = "/path/to/mappings"
+schemas_directory = "/path/to/tokamap/schemas"
+trace_enabled = true
+cache_enabled = true
+custom_function_libraries = [
+    "custom_function_library.so"
+]
+
+[data_source_factories]
+data_source_factory_name = "data_source_library.so"
+
+[data_sources.JSON]
+factory = "data_source_factory_name"
+args.factory_argument_name = "factory constructor argument"
+```
+
 ```cpp
 #include <libtokamap.hpp>
 
@@ -25,19 +44,16 @@ int main() {
     libtokamap::MappingHandler mapping_handler;
 
     // Initialize with configuration
-    nlohmann::json config = {
-        {"mapping_directory", "/path/to/mappings"}
-    };
-    mapping_handler.init(config);
+    mapping_handler.init("/path/to/config.toml");
 
     // Perform mapping
-    std::type_index data_type = std::type_index{typeid(double)};
+    libtokamap::DataType data_type = libtokamap::DataType::Double;
     int rank = 1;
     nlohmann::json extra_attributes = {{"shot", 12345}};
 
     auto result = mapping_handler.map(
-        "my_mapping",
-        "path/to/data",
+        "my_mapping",   // experiment name
+        "path/to/data", // mapping name
         data_type,
         rank,
         extra_attributes
@@ -98,61 +114,33 @@ mappings/
 
 - C++20 compatible compiler
 - CMake 3.15+
+
+### Bundled Libraries
+
+The following libraries are bundled with LibTokaMap in the ext_include directory:
+
+- CTRE (compile time regex) library
 - nlohmann/json library
 - Pantor/Inja templating engine
-- GSL-lite (Guidelines Support Library)
 - ExprTk expression parsing library
+- spdlog
 
 ### Build Instructions
 
 ```bash
-mkdir build
-cd build
-cmake .. -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
-make
+cmake -Bbuild -DENABLE_TESTING=ON -DENABLE_EXAMPLES=ON
+cmake --build build
 ```
 
 ### CMake Options
 
 - `ENABLE_TESTING`: Build unit tests (default: OFF)
 - `ENABLE_EXAMPLES`: Build example applications (default: OFF)
+- `ENABLE_PROFILING`: Enable code profiling (default: OFF)
+- `ENABLE_COVERAGE`: Enable test coverage (default: OFF)
 
 ## Examples
 
 The `examples/` directory contains working examples:
 
 - `simple_mapper/`: Basic mapping example with JSON data source
-
-## API Reference
-
-### Main Classes
-
-- **MappingHandler**: Main class for handling mapping operations
-- **DataSource**: Base class for implementing custom data sources
-- **Mapping**: Base interface for all mapping types
-- **TypedDataArray**: Container for typed data arrays
-- **RamCache**: Caching system for improved performance
-
-## Contributing
-
-### Code Style
-- Follow C++20 best practices
-- Use clang-format for code formatting
-- Enable all compiler warnings (`-Wall -Werror -Wpedantic`)
-
-### Testing
-
-Run the test suite:
-
-```bash
-cd build
-make test
-```
-
-## License
-
-See the main project LICENSE file for license information.
-
-## Version Information
-
-Current version: 0.1.0

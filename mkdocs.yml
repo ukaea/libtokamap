@@ -2,9 +2,11 @@ site_name: LibTokaMap
 
 theme:
   name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
   palette:
     - scheme: default
-      primary: blue
+      primary: white
       accent: light blue
   features:
     - navigation.tabs
@@ -18,6 +20,15 @@ nav:
   - Home: index.md
   - Getting Started:
       - Using the Library: using-the-library.md
+      - Contributing to LibTokaMap: contributing.md
+  - Developer Resources:
+      - Developer Resources: developer_resources/index.md
+      - Knowledge Graph: developer_resources/knowledge_graph.md
+      - API Patterns: developer_resources/api_patterns.md
+      - Architectural Improvements: developer_resources/architectural_improvements.md
+      - Array Library Alternatives: developer_resources/array_library_alternatives.md
+      - Component Relationships: developer_resources/component_relationships.md
+      - Refactoring Guide: developer_resources/refactoring_guide.md
   - Extending LibTokaMap:
       - Creating a New Data Source: creating-data-source.md
       - Creating Custom Function Libraries: creating-custom-functions.md
@@ -33,7 +44,18 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 plugins:
   - search
   - mkdocstrings
+  - mike
+
+extra:
+  version:
+    provider: mike
+    default: latest
