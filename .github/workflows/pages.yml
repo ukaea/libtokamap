@@ -33,7 +33,7 @@ jobs:
           echo "commit_name=$GIT_COMMIT_NAME" >> $GITHUB_OUTPUT
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: 3.x
 
