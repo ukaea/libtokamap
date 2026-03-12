@@ -52,7 +52,7 @@ jobs:
           docker rm $id
 
       - name: Upload TGZ for ${{ matrix.distro }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-tgz
           path: build_artifacts/${{ matrix.distro }}/packages/*.tar.gz
@@ -60,7 +60,7 @@ jobs:
           retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
 
       - name: Upload ZIP for ${{ matrix.distro }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-zip
           path: build_artifacts/${{ matrix.distro }}/packages/*.zip
@@ -68,7 +68,7 @@ jobs:
           retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
 
       - name: Upload RPM for ${{ matrix.distro }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-rpm
           path: build_artifacts/${{ matrix.distro }}/packages/*.rpm
@@ -76,7 +76,7 @@ jobs:
           retention-days: ${{ github.ref_type == 'tag' && 30 || 7 }}
 
       - name: Upload DEB for ${{ matrix.distro }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: libtokamap-${{ steps.version.outputs.version }}-${{ matrix.distro }}-deb
           path: build_artifacts/${{ matrix.distro }}/packages/*deb
