@@ -1,0 +1,2054 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../developer_resources/refactoring_guide/">
+      
+      
+        <link rel="next" href="../creating-custom-functions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Creating a New Data Source - LibTokaMap</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#creating-a-new-data-source" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LibTokaMap" class="md-header__button md-logo" aria-label="LibTokaMap" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LibTokaMap
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Creating a New Data Source
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../using-the-library/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../developer_resources/" class="md-tabs__link">
+          
+  
+  
+  Developer Resources
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Extending LibTokaMap
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LibTokaMap" class="md-nav__button md-logo" aria-label="LibTokaMap" data-md-component="logo">
+      
+  <img src="../assets/logo.png" alt="logo">
+
+    </a>
+    LibTokaMap
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../using-the-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using the Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing to LibTokaMap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Resources
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/knowledge_graph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/api_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/architectural_improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectural Improvements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/array_library_alternatives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Array Library Alternatives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/component_relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Component Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer_resources/refactoring_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending LibTokaMap
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Extending LibTokaMap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a New Data Source
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a New Data Source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-data-source-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Data Source Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Data Source Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-header-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Create the Header File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-the-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Implement the Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-data-source-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Data Source Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Data Source Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-different-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handling Different Data Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-maparguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using MapArguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-direct-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Direct Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-factory-function-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Factory Function Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-dynamic-library-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 3: Dynamic Library (Plugin)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-World Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json-file-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON File Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-in-mappings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration in Mappings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-flexibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Flexibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../creating-custom-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Custom Function Libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-data-source-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Data Source Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Data Source Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-header-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Create the Header File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-implement-the-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Implement the Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-data-source-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Data Source Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced Data Source Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-different-data-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handling Different Data Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-maparguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using MapArguments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#method-1-direct-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 1: Direct Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-2-factory-function-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 2: Factory Function Registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-3-dynamic-library-plugin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method 3: Dynamic Library (Plugin)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-World Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#json-file-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON File Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-data-source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Database Data Source
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-in-mappings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration in Mappings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#performance-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#error-handling_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-flexibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Flexibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="creating-a-new-data-source">Creating a New Data Source<a class="headerlink" href="#creating-a-new-data-source" title="Permanent link">&para;</a></h1>
+<p>This guide explains how to implement custom data sources for LibTokaMap. Data sources are pluggable components that retrieve data from various backends such as databases, files, network APIs, or any custom data format.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>A data source in LibTokaMap is a class that inherits from <code>libtokamap::DataSource</code> and implements the <code>get()</code> method to retrieve data based on mapping arguments.</p>
+<h2 id="basic-data-source-implementation">Basic Data Source Implementation<a class="headerlink" href="#basic-data-source-implementation" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-create-the-header-file">Step 1: Create the Header File<a class="headerlink" href="#step-1-create-the-header-file" title="Permanent link">&para;</a></h3>
+<p>Create a header file for your data source (e.g., <code>my_data_source.hpp</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#pragma once</span>
+
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libtokamap.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;unordered_map&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDataSource</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSource</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Constructor - configure your data source</span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">MyDataSource</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">connection_string</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Destructor</span>
+<span class="w">    </span><span class="o">~</span><span class="n">MyDataSource</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Main method - implement data retrieval logic</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="k">override</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_connection_string</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Add any private members needed for your data source</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="step-2-implement-the-data-source">Step 2: Implement the Data Source<a class="headerlink" href="#step-2-implement-the-data-source" title="Permanent link">&para;</a></h3>
+<p>Create the implementation file (e.g., <code>my_data_source.cpp</code>):</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
+
+<span class="n">MyDataSource</span><span class="o">::</span><span class="n">MyDataSource</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">connection_string</span><span class="p">)</span>
+<span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">m_connection_string</span><span class="p">(</span><span class="n">connection_string</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Initialize your data source</span>
+<span class="w">    </span><span class="c1">// Validate connection, open files, establish connections, etc.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connection_string</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Connection string cannot be empty&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">MyDataSource</span><span class="o">::</span><span class="n">get</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// 1. Parse arguments from map_args</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_path</span><span class="p">;</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Missing &#39;path&#39; argument&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// 2. Use cache if available</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">cache_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_cache_key</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">cached_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ram_cache</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">cache_key</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cached_data</span><span class="p">.</span><span class="n">has_value</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">cached_data</span><span class="p">.</span><span class="n">value</span><span class="p">();</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// 3. Retrieve data from your source</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// 4. Create TypedDataArray result</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// 5. Store in cache</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ram_cache</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">(</span><span class="n">cache_key</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Failed to retrieve data: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Private helper methods</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">MyDataSource</span><span class="o">::</span><span class="n">generate_cache_key</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Create a unique cache key based on path and arguments</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_connection_string</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Add relevant arguments to key if needed</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">key</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyDataSource</span><span class="o">::</span><span class="n">retrieve_data</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Implement your actual data retrieval logic here</span>
+<span class="w">    </span><span class="c1">// This could involve:</span>
+<span class="w">    </span><span class="c1">// - Reading from files</span>
+<span class="w">    </span><span class="c1">// - Querying databases</span>
+<span class="w">    </span><span class="c1">// - Making network requests</span>
+<span class="w">    </span><span class="c1">// - Processing binary data</span>
+<span class="w">    </span><span class="c1">// etc.</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">};</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="advanced-data-source-features">Advanced Data Source Features<a class="headerlink" href="#advanced-data-source-features" title="Permanent link">&para;</a></h2>
+<h3 id="handling-different-data-types">Handling Different Data Types<a class="headerlink" href="#handling-different-data-types" title="Permanent link">&para;</a></h3>
+<p>Your data source should be able to return different data types based on the content:</p>
+<div class="highlight"><pre><span></span><code><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">MyDataSource::get</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_double_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;int&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_int_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;string&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_string_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Unsupported data type: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">data_type</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="using-maparguments">Using MapArguments<a class="headerlink" href="#using-maparguments" title="Permanent link">&para;</a></h3>
+<p>The <code>MapArguments</code> parameter contains context information that can be used for data retrieval:</p>
+<div class="highlight"><pre><span></span><code><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">MyDataSource::get</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Access shot number, timestamp, or other contextual information</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;shot&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">shot_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;shot&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Use shot number to determine data location</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;timestamp&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// Filter data by timestamp</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Use the data_path from arguments</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">full_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">data_path</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Implement your data retrieval logic...</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h3>
+<p>Implement comprehensive error handling:</p>
+<div class="highlight"><pre><span></span><code><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">MyDataSource::get</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Validate required arguments</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Missing required &#39;path&#39; argument&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Validate path</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">path</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Path cannot be empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Attempt data retrieval</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_data</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">);</span>
+
+<span class="w">        </span><span class="c1">// Validate data</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;No data found for path: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
+
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Re-throw LibTokaMap errors</span>
+<span class="w">        </span><span class="k">throw</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Wrap other exceptions</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Data retrieval failed: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="registration-methods">Registration Methods<a class="headerlink" href="#registration-methods" title="Permanent link">&para;</a></h2>
+<h3 id="method-1-direct-registration">Method 1: Direct Registration<a class="headerlink" href="#method-1-direct-registration" title="Permanent link">&para;</a></h3>
+<p>Register your data source directly with the mapping handler:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Create your data source</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;connection_string&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Register it with the system</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceMapping</span><span class="o">::</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data_source</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// Initialize mapping handler</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// ... continue with normal usage</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="method-2-factory-function-registration">Method 2: Factory Function Registration<a class="headerlink" href="#method-2-factory-function-registration" title="Permanent link">&para;</a></h3>
+<p>For more flexibility, create a factory function:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// In your data source file</span>
+<span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create_my_data_source</span><span class="p">(</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">connection_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">get_arg</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;connection_string&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="n">connection_string</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Register the factory</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceMapping</span><span class="o">::</span><span class="n">register_data_source_factory</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">create_my_data_source</span>
+<span class="w">    </span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Now you can configure the data source through JSON</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="method-3-dynamic-library-plugin">Method 3: Dynamic Library (Plugin)<a class="headerlink" href="#method-3-dynamic-library-plugin" title="Permanent link">&para;</a></h3>
+<p>For maximum flexibility, create a shared library:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// my_data_source_plugin.cpp</span>
+<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FactoryEntryInterface</span><span class="o">*</span><span class="w"> </span><span class="nf">get_factory_entry</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FactoryEntryInterface</span><span class="w"> </span><span class="n">entry</span><span class="p">;</span>
+<span class="w">        </span><span class="n">entry</span><span class="p">.</span><span class="n">function</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">create_my_data_source</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="n">entry</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Build as a shared library and load it dynamically:</p>
+<div class="highlight"><pre><span></span><code>g++<span class="w"> </span>-shared<span class="w"> </span>-fPIC<span class="w"> </span>-o<span class="w"> </span>my_data_source.so<span class="w"> </span>my_data_source_plugin.cpp
+</code></pre></div>
+<h2 id="real-world-examples">Real-World Examples<a class="headerlink" href="#real-world-examples" title="Permanent link">&para;</a></h2>
+<h3 id="json-file-data-source">JSON File Data Source<a class="headerlink" href="#json-file-data-source" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">JSONDataSource</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSource</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">JSONDataSource</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data_root</span><span class="p">)</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">m_data_root</span><span class="p">(</span><span class="n">data_root</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">exists</span><span class="p">(</span><span class="n">m_data_root</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">&quot;Data root does not exist&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">get</span><span class="p">(</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="k">override</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;file&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">json_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="n">full_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data_root</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">filename</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Load JSON file</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="n">full_path</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">&quot;Cannot open file: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">full_path</span><span class="p">.</span><span class="n">string</span><span class="p">());</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="w">        </span><span class="n">file</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Navigate to specified path</span>
+<span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">::</span><span class="n">json_pointer</span><span class="w"> </span><span class="nf">ptr</span><span class="p">(</span><span class="n">json_path</span><span class="p">);</span>
+<span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">];</span>
+
+<span class="w">        </span><span class="c1">// Convert to appropriate data type</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">is_array</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">is_number_float</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">result</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">()};</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">is_number_integer</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">result</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">()};</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Unsupported JSON data type&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="n">m_data_root</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="database-data-source">Database Data Source<a class="headerlink" href="#database-data-source" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SQLiteDataSource</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSource</span>
+<span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">SQLiteDataSource</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">db_path</span><span class="p">)</span>
+<span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">m_db_path</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Initialize database connection</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_open</span><span class="p">(</span><span class="n">db_path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_db</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Cannot open database: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="o">~</span><span class="n">SQLiteDataSource</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_db</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">sqlite3_close</span><span class="p">(</span><span class="n">m_db</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">get</span><span class="p">(</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="k">override</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;column&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Build query</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SELECT &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; FROM &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">table</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// Add WHERE clause based on arguments</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;shot&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">shot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;shot&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">            </span><span class="n">query</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot; WHERE shot = &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">shot</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Execute query</span>
+<span class="w">        </span><span class="n">sqlite3_stmt</span><span class="o">*</span><span class="w"> </span><span class="n">stmt</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_prepare_v2</span><span class="p">(</span><span class="n">m_db</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">stmt</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SQLITE_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;SQL error: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="p">;</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">sqlite3_step</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SQLITE_ROW</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">double</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_column_double</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">            </span><span class="n">results</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">sqlite3_finalize</span><span class="p">(</span><span class="n">stmt</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">results</span><span class="p">};</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_db_path</span><span class="p">;</span>
+<span class="w">    </span><span class="n">sqlite3</span><span class="o">*</span><span class="w"> </span><span class="n">m_db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h2 id="configuration-in-mappings">Configuration in Mappings<a class="headerlink" href="#configuration-in-mappings" title="Permanent link">&para;</a></h2>
+<p>Once registered, use your data source in mapping configurations:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;my_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MY_SOURCE&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sensors/temperature&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;delimiter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;,&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="performance-optimization">Performance Optimization<a class="headerlink" href="#performance-optimization" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Implement caching</strong>: Always use the provided RAM cache</li>
+<li><strong>Minimize I/O</strong>: Batch operations when possible</li>
+<li><strong>Connection pooling</strong>: Reuse database connections</li>
+<li><strong>Lazy loading</strong>: Load data only when needed</li>
+</ol>
+<h3 id="error-handling_1">Error Handling<a class="headerlink" href="#error-handling_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Validate inputs</strong>: Check all required arguments</li>
+<li><strong>Use appropriate exceptions</strong>: Use LibTokaMap exception types</li>
+<li><strong>Provide context</strong>: Include helpful error messages</li>
+<li><strong>Handle resources</strong>: Ensure proper cleanup in destructors</li>
+</ol>
+<h3 id="configuration-flexibility">Configuration Flexibility<a class="headerlink" href="#configuration-flexibility" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Support multiple formats</strong>: Allow different data formats</li>
+<li><strong>Parameterize behavior</strong>: Use arguments for configuration</li>
+<li><strong>Document arguments</strong>: Clearly document expected arguments</li>
+<li><strong>Provide defaults</strong>: Set reasonable default values</li>
+</ol>
+<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
+<p>Create unit tests for your data source:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;gtest/gtest.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDataSourceTest</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="w"> </span><span class="p">{</span>
+<span class="k">protected</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">SetUp</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;test_connection&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data_source</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">MyDataSourceTest</span><span class="p">,</span><span class="w"> </span><span class="n">RetrievesValidData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test/data&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
+<span class="w">    </span><span class="n">arguments</span><span class="p">.</span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test/data&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">holds_alternative</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">());</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="n">EXPECT_FALSE</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">empty</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="n">TEST_F</span><span class="p">(</span><span class="n">MyDataSourceTest</span><span class="p">,</span><span class="w"> </span><span class="n">ThrowsOnInvalidPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">EXPECT_THROW</span><span class="p">(</span>
+<span class="w">        </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span>
+<span class="w">    </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Registration not found</strong>: Ensure data source is registered before use</li>
+<li><strong>Missing arguments</strong>: Check that all required arguments are provided</li>
+<li><strong>Type mismatches</strong>: Verify returned data type matches expected type</li>
+<li><strong>Memory leaks</strong>: Ensure proper resource management in destructor</li>
+<li><strong>Thread safety</strong>: Consider thread safety if used in multi-threaded environments</li>
+</ol>
+<h3 id="debugging-tips">Debugging Tips<a class="headerlink" href="#debugging-tips" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Add logging</strong>: Use appropriate logging framework</li>
+<li><strong>Test incrementally</strong>: Test each component separately</li>
+<li><strong>Use debugger</strong>: Step through data retrieval logic</li>
+<li><strong>Validate data</strong>: Check data integrity at each step</li>
+<li><strong>Monitor performance</strong>: Profile data access patterns</li>
+</ol>
+<p>This guide provides a comprehensive foundation for creating custom data sources in LibTokaMap. Adapt the examples to your specific data backend requirements.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

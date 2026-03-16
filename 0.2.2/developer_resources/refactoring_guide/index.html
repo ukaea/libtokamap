@@ -1,0 +1,3720 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../component_relationships/">
+      
+      
+        <link rel="next" href="../../creating-data-source/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Refactoring Guide - LibTokaMap</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#libtokamap-refactoring-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LibTokaMap" class="md-header__button md-logo" aria-label="LibTokaMap" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LibTokaMap
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Refactoring Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="light-blue"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../using-the-library/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Developer Resources
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../creating-data-source/" class="md-tabs__link">
+          
+  
+  
+  Extending LibTokaMap
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LibTokaMap" class="md-nav__button md-logo" aria-label="LibTokaMap" data-md-component="logo">
+      
+  <img src="../../assets/logo.png" alt="logo">
+
+    </a>
+    LibTokaMap
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../using-the-library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using the Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing to LibTokaMap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Resources
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Resources
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../knowledge_graph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Knowledge Graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_patterns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Patterns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architectural_improvements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architectural Improvements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../array_library_alternatives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Array Library Alternatives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../component_relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Component Relationships
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Refactoring Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recent-improvements-from-develop-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recent Improvements from Develop Branch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recent Improvements from Develop Branch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-factory-pattern-implementation-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Factory Pattern Implementation ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Factory Pattern Implementation ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enhanced-subset-operations-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enhanced Subset Operations ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Enhanced Subset Operations ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuration-system-modernization-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration System Modernization ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration System Modernization ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-priority-refactoring-opportunities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High Priority Refactoring Opportunities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="High Priority Refactoring Opportunities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-type-system-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Type System Modernization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Type System Modernization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-error-handling-with-stdexpected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Error Handling with std::expected
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Error Handling with std::expected">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-immutable-configuration-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Immutable Configuration Objects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Immutable Configuration Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-modern-string-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Modern String Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Modern String Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-concepts-and-template-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Concepts and Template Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Concepts and Template Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medium-priority-architectural-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium Priority Architectural Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Medium Priority Architectural Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-functional-mapping-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Functional Mapping Composition
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Functional Mapping Composition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-async-data-loading-with-coroutines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Async Data Loading with Coroutines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Async Data Loading with Coroutines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-plugin-hot-reloading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Plugin Hot-Reloading
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Plugin Hot-Reloading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Optimizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-memory-pool-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Memory Pool Allocation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Memory Pool Allocation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-simd-optimized-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SIMD-Optimized Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SIMD-Optimized Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-lock-free-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Lock-Free Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Lock-Free Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-evolution-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Evolution Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Evolution Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-versioned-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Versioned APIs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-gradual-feature-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Gradual Feature Migration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Gradual Feature Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-infrastructure-3-6-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Infrastructure (3-6 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-core-features-6-9-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Core Features (6-9 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-advanced-features-9-12-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Advanced Features (9-12 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-compatibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Compatibility Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-quality-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Quality Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Quality Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-static-analysis-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Static Analysis Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comprehensive-testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Comprehensive Testing Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-and-developer-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation and Developer Experience
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation and Developer Experience">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-interactive-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Interactive Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-migration-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Migration Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risk-mitigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Mitigation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Risk Mitigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-backwards-compatibility-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Backwards Compatibility Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance-regression-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Performance Regression Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Roadmap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Roadmap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quarter-1-foundation-largely-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 1: Foundation ✅ LARGELY COMPLETED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-2-core-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 2: Core Modernization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-3-advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 3: Advanced Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-4-integration-and-polish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 4: Integration and Polish
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recent-success-metrics-achieved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recent Success Metrics Achieved:
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remaining-success-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remaining Success Targets:
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending LibTokaMap
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Extending LibTokaMap
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../creating-data-source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating a New Data Source
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../creating-custom-functions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Custom Function Libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recent-improvements-from-develop-branch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recent Improvements from Develop Branch
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recent Improvements from Develop Branch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-factory-pattern-implementation-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Factory Pattern Implementation ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Factory Pattern Implementation ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-enhanced-subset-operations-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Enhanced Subset Operations ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Enhanced Subset Operations ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-configuration-system-modernization-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration System Modernization ✅ COMPLETED
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration System Modernization ✅ COMPLETED">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-was-accomplished_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Accomplished
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#high-priority-refactoring-opportunities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High Priority Refactoring Opportunities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="High Priority Refactoring Opportunities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-type-system-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Type System Modernization
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Type System Modernization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-error-handling-with-stdexpected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Error Handling with std::expected
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Error Handling with std::expected">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#migration-strategy_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-immutable-configuration-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Immutable Configuration Objects
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Immutable Configuration Objects">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-modern-string-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Modern String Handling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Modern String Handling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-concepts-and-template-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Concepts and Template Constraints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Concepts and Template Constraints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#medium-priority-architectural-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Medium Priority Architectural Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Medium Priority Architectural Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-functional-mapping-composition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Functional Mapping Composition
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Functional Mapping Composition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-async-data-loading-with-coroutines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Async Data Loading with Coroutines
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Async Data Loading with Coroutines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-plugin-hot-reloading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Plugin Hot-Reloading
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Plugin Hot-Reloading">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-optimizations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Optimizations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Optimizations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-memory-pool-allocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Memory Pool Allocation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Memory Pool Allocation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-simd-optimized-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. SIMD-Optimized Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. SIMD-Optimized Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-lock-free-data-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Lock-Free Data Structures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Lock-Free Data Structures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-state_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proposed-changes_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Proposed Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-evolution-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Evolution Strategy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Evolution Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-versioned-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Versioned APIs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-gradual-feature-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Gradual Feature Migration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Gradual Feature Migration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-infrastructure-3-6-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 1: Infrastructure (3-6 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-core-features-6-9-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 2: Core Features (6-9 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-advanced-features-9-12-months" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Phase 3: Advanced Features (9-12 months)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-compatibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Compatibility Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-quality-improvements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code Quality Improvements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Code Quality Improvements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-static-analysis-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Static Analysis Integration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-comprehensive-testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Comprehensive Testing Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-and-developer-experience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation and Developer Experience
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation and Developer Experience">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-interactive-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Interactive Documentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-migration-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Migration Tools
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risk-mitigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Risk Mitigation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Risk Mitigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-backwards-compatibility-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Backwards Compatibility Testing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-performance-regression-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Performance Regression Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Roadmap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Roadmap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quarter-1-foundation-largely-completed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 1: Foundation ✅ LARGELY COMPLETED
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-2-core-modernization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 2: Core Modernization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-3-advanced-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 3: Advanced Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quarter-4-integration-and-polish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quarter 4: Integration and Polish
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recent-success-metrics-achieved" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recent Success Metrics Achieved:
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remaining-success-targets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remaining Success Targets:
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="libtokamap-refactoring-guide">LibTokaMap Refactoring Guide<a class="headerlink" href="#libtokamap-refactoring-guide" title="Permanent link">&para;</a></h1>
+<p>This guide identifies key refactoring opportunities in the LibTokaMap codebase and provides practical migration paths to improve maintainability, performance, and modern C++ usage.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Based on the analysis of the codebase and recent develop branch improvements, this guide covers:
+- Recently completed modernization efforts
+- Remaining modernization opportunities<br />
+- Architectural improvements
+- Performance optimizations
+- API evolution strategies
+- Migration timelines and compatibility considerations</p>
+<h2 id="recent-improvements-from-develop-branch">Recent Improvements from Develop Branch<a class="headerlink" href="#recent-improvements-from-develop-branch" title="Permanent link">&para;</a></h2>
+<h3 id="1-factory-pattern-implementation-completed">1. Factory Pattern Implementation ✅ COMPLETED<a class="headerlink" href="#1-factory-pattern-implementation-completed" title="Permanent link">&para;</a></h3>
+<p>The develop branch has successfully implemented a factory pattern for data sources:</p>
+<h4 id="what-was-accomplished">What Was Accomplished<a class="headerlink" href="#what-was-accomplished" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Data Source Factories</strong>: Dynamic loading of data source implementations</li>
+<li><strong>TOML Configuration</strong>: Modern configuration format with schema validation</li>
+<li><strong>Plugin Architecture</strong>: Hot-loadable data source libraries</li>
+<li><strong>Enhanced Configuration Schema</strong>: Support for factory registration and data source configuration</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">// New factory-based approach</span>
+<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source_factory</span><span class="p">(</span><span class="s">&quot;json_factory&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/libjson.so&quot;</span><span class="p">);</span>
+<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">&quot;JSON&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;json_factory&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">factory_args</span><span class="p">);</span>
+
+<span class="c1">// TOML configuration support</span>
+<span class="cm">/*</span>
+<span class="cm">[data_source_factories]</span>
+<span class="cm">json_factory = &quot;/path/to/libjson_source.so&quot;</span>
+
+<span class="cm">[data_sources.JSON]</span>
+<span class="cm">factory = &quot;json_factory&quot;</span>
+<span class="cm">args.data_root = &quot;/path/to/data&quot;</span>
+<span class="cm">*/</span>
+</code></pre></div>
+<h3 id="2-enhanced-subset-operations-completed">2. Enhanced Subset Operations ✅ COMPLETED<a class="headerlink" href="#2-enhanced-subset-operations-completed" title="Permanent link">&para;</a></h3>
+<p>Significant improvements to array slicing and subset operations:</p>
+<h4 id="what-was-accomplished_1">What Was Accomplished<a class="headerlink" href="#what-was-accomplished_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>Negative Stride Support</strong>: Proper handling of reverse iteration</li>
+<li><strong>Multi-dimensional Slicing</strong>: Advanced 2D→1D, 3D→2D transformations</li>
+<li><strong>Comprehensive Validation</strong>: Enhanced boundary checking and error handling</li>
+<li><strong>TypedDataArray Clone Method</strong>: Safe array copying for operations</li>
+<li><strong>Extensive Test Coverage</strong>: 998 lines of new subset tests</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="c1">// Enhanced slicing capabilities</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">subsets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parse_slices</span><span class="p">(</span><span class="s">&quot;[:][9]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">shape</span><span class="p">());</span><span class="w"> </span><span class="c1">// Column selection</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">subsets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parse_slices</span><span class="p">(</span><span class="s">&quot;[10:0:-1]&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">shape</span><span class="p">());</span><span class="w"> </span><span class="c1">// Negative stride</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">cloned</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span><span class="w"> </span><span class="c1">// Safe cloning</span>
+</code></pre></div>
+<h3 id="3-configuration-system-modernization-completed">3. Configuration System Modernization ✅ COMPLETED<a class="headerlink" href="#3-configuration-system-modernization-completed" title="Permanent link">&para;</a></h3>
+<p>Migration to modern configuration management:</p>
+<h4 id="what-was-accomplished_2">What Was Accomplished<a class="headerlink" href="#what-was-accomplished_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>TOML Primary Format</strong>: Human-readable configuration files</li>
+<li><strong>JSON Legacy Support</strong>: Backward compatibility maintained</li>
+<li><strong>Enhanced Schema Validation</strong>: Comprehensive configuration validation</li>
+<li><strong>Environment-Aware Configuration</strong>: Development vs production settings</li>
+</ul>
+<h2 id="high-priority-refactoring-opportunities">High Priority Refactoring Opportunities<a class="headerlink" href="#high-priority-refactoring-opportunities" title="Permanent link">&para;</a></h2>
+<h3 id="1-type-system-modernization">1. Type System Modernization<a class="headerlink" href="#1-type-system-modernization" title="Permanent link">&para;</a></h3>
+<h4 id="current-state">Current State<a class="headerlink" href="#current-state" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Mixed usage of <code>std::type_index</code> and <code>DataType</code> enum</li>
+<li>Manual type mapping with switch statements</li>
+<li>Runtime type checking with potential errors</li>
+</ul>
+<h4 id="proposed-changes">Proposed Changes<a class="headerlink" href="#proposed-changes" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Current approach</span>
+<span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="p">{</span><span class="k">typeid</span><span class="p">(</span><span class="kt">double</span><span class="p">)};</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">data_type</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+
+<span class="c1">// Proposed approach with strong typing</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="n">TypedDataArray</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                      </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                      </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span>
+<span class="w">                      </span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">attrs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">constexpr</span><span class="w"> </span><span class="n">DataType</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">type_to_enum_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">map_impl</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Usage becomes type-safe at compile time</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+</code></pre></div>
+<h4 id="migration-strategy">Migration Strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Phase 1</strong>: Add templated overloads alongside existing API</li>
+<li><strong>Phase 2</strong>: Deprecate <code>std::type_index</code> versions</li>
+<li><strong>Phase 3</strong>: Remove deprecated API in next major version</li>
+</ol>
+<h3 id="2-error-handling-with-stdexpected">2. Error Handling with std::expected<a class="headerlink" href="#2-error-handling-with-stdexpected" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_1">Current State<a class="headerlink" href="#current-state_1" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Exception-based error handling</li>
+<li>Limited error context information</li>
+<li>Performance overhead in hot paths</li>
+</ul>
+<h4 id="proposed-changes_1">Proposed Changes<a class="headerlink" href="#proposed-changes_1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Current approach</span>
+<span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="w">    </span><span class="n">process</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TokaMapError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">handle_error</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Proposed approach with std::expected (C++23)</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">try_map</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">process</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">value</span><span class="p">());</span>
+<span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">handle_error</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">error</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// Error type with rich context</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">MappingError</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ErrorCode</span><span class="w"> </span><span class="n">code</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">message</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">source_location</span><span class="w"> </span><span class="n">location</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">exception_ptr</span><span class="o">&gt;</span><span class="w"> </span><span class="n">cause</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h4 id="migration-strategy_1">Migration Strategy<a class="headerlink" href="#migration-strategy_1" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Add <code>try_*</code> variants returning <code>std::expected</code></li>
+<li>Maintain exception-based API for backward compatibility</li>
+<li>Gradually migrate internal error handling</li>
+<li>Eventually make exception API opt-in</li>
+</ol>
+<h3 id="3-immutable-configuration-objects">3. Immutable Configuration Objects<a class="headerlink" href="#3-immutable-configuration-objects" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_2">Current State<a class="headerlink" href="#current-state_2" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Mutable configuration state</li>
+<li>Potential race conditions</li>
+<li>Complex state management</li>
+</ul>
+<h4 id="proposed-changes_2">Proposed Changes<a class="headerlink" href="#proposed-changes_2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Current mutable approach</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">m_config</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// ... mutable state</span>
+<span class="p">};</span>
+
+<span class="c1">// Proposed immutable approach</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImmutableConfig</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="n">ConfigBuilder</span><span class="w"> </span><span class="n">builder</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// All getters, no setters</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">mapping_directory</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">cache_enabled</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="nf">cache_size</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="c1">// Immutable after construction</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="n">m_mapping_directory</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">m_cache_enabled</span><span class="p">;</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">m_cache_size</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">};</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">MappingHandler</span><span class="p">(</span><span class="n">ImmutableConfig</span><span class="w"> </span><span class="n">config</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// No init() method needed</span>
+<span class="p">};</span>
+</code></pre></div>
+<h4 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Thread safety by design</li>
+<li>Clearer ownership semantics</li>
+<li>Easier testing and reasoning</li>
+<li>Prevents configuration drift</li>
+</ul>
+<h3 id="4-modern-string-handling">4. Modern String Handling<a class="headerlink" href="#4-modern-string-handling" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_3">Current State<a class="headerlink" href="#current-state_3" title="Permanent link">&para;</a></h4>
+<ul>
+<li>String concatenation for formatting</li>
+<li>Manual string building</li>
+<li>Inconsistent string_view usage</li>
+</ul>
+<h4 id="proposed-changes_3">Proposed Changes<a class="headerlink" href="#proposed-changes_3" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Current approach</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">create_cache_key</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">                           </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">experiment</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;|&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;|&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">type</span><span class="p">.</span><span class="n">hash_code</span><span class="p">());</span>
+<span class="p">}</span>
+
+<span class="c1">// Proposed with std::format (C++20)</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">create_cache_key</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">DataType</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;{}|{}|{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">type</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="c1">// For performance-critical paths, use format_to</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">append_cache_key</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">buffer</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                     </span><span class="n">DataType</span><span class="w"> </span><span class="n">type</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">format_to</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">back_inserter</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span><span class="w"> </span>
+<span class="w">                   </span><span class="s">&quot;{}|{}|{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">type</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="5-concepts-and-template-constraints">5. Concepts and Template Constraints<a class="headerlink" href="#5-concepts-and-template-constraints" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_4">Current State<a class="headerlink" href="#current-state_4" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Unconstrained templates</li>
+<li>Runtime type checking</li>
+<li>Generic error messages</li>
+</ul>
+<h4 id="proposed-changes_4">Proposed Changes<a class="headerlink" href="#proposed-changes_4" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Define concepts for better constraints</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="k">concept</span><span class="w"> </span><span class="nc">SupportedDataType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">requires</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">requires</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">is_arithmetic_v</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">DataSource</span><span class="o">&gt;</span>
+<span class="k">concept</span><span class="w"> </span><span class="nc">ValidDataSource</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">requires</span><span class="p">(</span><span class="n">DataSource</span><span class="w"> </span><span class="n">ds</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                 </span><span class="k">const</span><span class="w"> </span><span class="n">DataSourceArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">,</span>
+<span class="w">                                 </span><span class="k">const</span><span class="w"> </span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span>
+<span class="w">                                 </span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">ds</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">map_args</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">same_as</span><span class="o">&lt;</span><span class="n">TypedDataArray</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage with concepts</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="n">SupportedDataType</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span>
+<span class="n">TypedDataArray</span><span class="w"> </span><span class="n">create_typed_array</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="n">ValidDataSource</span><span class="w"> </span><span class="n">DS</span><span class="o">&gt;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">register_data_source</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                         </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DS</span><span class="o">&gt;</span><span class="w"> </span><span class="n">source</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Implementation with compile-time guarantees</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="medium-priority-architectural-improvements">Medium Priority Architectural Improvements<a class="headerlink" href="#medium-priority-architectural-improvements" title="Permanent link">&para;</a></h2>
+<h3 id="1-functional-mapping-composition">1. Functional Mapping Composition<a class="headerlink" href="#1-functional-mapping-composition" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_5">Current State<a class="headerlink" href="#current-state_5" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Imperative mapping pipeline</li>
+<li>Tight coupling between steps</li>
+<li>Limited reusability</li>
+</ul>
+<h4 id="proposed-changes_5">Proposed Changes<a class="headerlink" href="#proposed-changes_5" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Functional pipeline approach</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MappingPipeline</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">Transform</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="n">TypedDataArray</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">TypedDataArray</span><span class="o">&amp;</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">MappingPipeline</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">then</span><span class="p">(</span><span class="n">Transform</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;</span><span class="w"> </span><span class="n">transform</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">transforms_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">transform</span><span class="p">));</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="k">this</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">transforms_</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">transforms_</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>
+<span class="w">                          </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">input</span><span class="p">),</span>
+<span class="w">                          </span><span class="p">[](</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">transform</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                              </span><span class="k">return</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
+<span class="w">                          </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Transform</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">transforms_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MappingPipeline</span><span class="p">{}</span>
+<span class="w">    </span><span class="p">.</span><span class="n">then</span><span class="p">(</span><span class="n">apply_scale_offset</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">then</span><span class="p">(</span><span class="n">apply_slice</span><span class="p">(</span><span class="s">&quot;[0:10:2]&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">then</span><span class="p">(</span><span class="n">apply_validation</span><span class="p">());</span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pipeline</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">raw_data</span><span class="p">);</span>
+</code></pre></div>
+<h3 id="2-async-data-loading-with-coroutines">2. Async Data Loading with Coroutines<a class="headerlink" href="#2-async-data-loading-with-coroutines" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_6">Current State<a class="headerlink" href="#current-state_6" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Synchronous data loading</li>
+<li>Blocking I/O operations</li>
+<li>Limited parallelization</li>
+</ul>
+<h4 id="proposed-changes_6">Proposed Changes<a class="headerlink" href="#proposed-changes_6" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Coroutine-based async loading</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;coroutine&gt;</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncMappingHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">AsyncResult</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">promise_type</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">AsyncResult</span><span class="w"> </span><span class="nf">get_return_object</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">AsyncResult</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">coroutine_handle</span><span class="o">&lt;</span><span class="n">promise_type</span><span class="o">&gt;::</span><span class="n">from_promise</span><span class="p">(</span><span class="o">*</span><span class="k">this</span><span class="p">)};</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">suspend_never</span><span class="w"> </span><span class="nf">initial_suspend</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">suspend_never</span><span class="w"> </span><span class="nf">final_suspend</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{};</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="nf">return_value</span><span class="p">(</span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">                </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">result</span><span class="p">);</span><span class="w"> </span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="kt">void</span><span class="w"> </span><span class="nf">unhandled_exception</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span>
+<span class="w">                </span><span class="n">exception</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">current_exception</span><span class="p">();</span><span class="w"> </span>
+<span class="w">            </span><span class="p">}</span>
+
+<span class="w">            </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">value</span><span class="p">;</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">exception_ptr</span><span class="w"> </span><span class="n">exception</span><span class="p">;</span>
+<span class="w">        </span><span class="p">};</span>
+
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">coroutine_handle</span><span class="o">&lt;</span><span class="n">promise_type</span><span class="o">&gt;</span><span class="w"> </span><span class="n">coro</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">coro</span><span class="p">.</span><span class="n">done</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="c1">// Wait for completion or implement proper awaiting</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">coro</span><span class="p">.</span><span class="n">promise</span><span class="p">().</span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">std</span><span class="o">::</span><span class="n">rethrow_exception</span><span class="p">(</span><span class="n">coro</span><span class="p">.</span><span class="n">promise</span><span class="p">().</span><span class="n">exception</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">coro</span><span class="p">.</span><span class="n">promise</span><span class="p">().</span><span class="n">value</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="n">AsyncResult</span><span class="w"> </span><span class="nf">map_async</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">                         </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">DataType</span><span class="w"> </span><span class="n">type</span><span class="p">,</span>
+<span class="w">                         </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span>
+<span class="w">                         </span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">attrs</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Coroutine implementation</span>
+<span class="w">        </span><span class="k">co_return</span><span class="w"> </span><span class="k">co_await</span><span class="w"> </span><span class="n">load_data_async</span><span class="p">(</span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="3-plugin-hot-reloading">3. Plugin Hot-Reloading<a class="headerlink" href="#3-plugin-hot-reloading" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_7">Current State<a class="headerlink" href="#current-state_7" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Static plugin registration</li>
+<li>Requires restart for plugin changes</li>
+<li>Limited development flexibility</li>
+</ul>
+<h4 id="proposed-changes_7">Proposed Changes<a class="headerlink" href="#proposed-changes_7" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HotReloadablePluginManager</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">PluginInfo</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="n">library_path</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">file_time_type</span><span class="w"> </span><span class="n">last_modified</span><span class="p">;</span>
+<span class="w">        </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">handle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">exported_functions</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">enable_hot_reload</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">milliseconds</span><span class="w"> </span><span class="n">check_interval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="n">ms</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">hot_reload_enabled_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">reload_thread_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="p">([</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">check_interval</span><span class="p">](</span><span class="n">std</span><span class="o">::</span><span class="n">stop_token</span><span class="w"> </span><span class="n">token</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">token</span><span class="p">.</span><span class="n">stop_requested</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">check_and_reload_plugins</span><span class="p">();</span>
+<span class="w">                </span><span class="n">std</span><span class="o">::</span><span class="n">this_thread</span><span class="o">::</span><span class="n">sleep_for</span><span class="p">(</span><span class="n">check_interval</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">register_plugin_directory</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&amp;</span><span class="w"> </span><span class="n">dir</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">watch_directories_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">dir</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">check_and_reload_plugins</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="p">[</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">plugins_</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">current_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">last_write_time</span><span class="p">(</span><span class="n">info</span><span class="p">.</span><span class="n">library_path</span><span class="p">);</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">current_time</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">last_modified</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">reload_plugin</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unordered_map</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">PluginInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="n">plugins_</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="o">&gt;</span><span class="w"> </span><span class="n">watch_directories_</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">jthread</span><span class="w"> </span><span class="n">reload_thread_</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">hot_reload_enabled_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h2 id="performance-optimizations">Performance Optimizations<a class="headerlink" href="#performance-optimizations" title="Permanent link">&para;</a></h2>
+<h3 id="1-memory-pool-allocation">1. Memory Pool Allocation<a class="headerlink" href="#1-memory-pool-allocation" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_8">Current State<a class="headerlink" href="#current-state_8" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Frequent malloc/free calls</li>
+<li>Memory fragmentation</li>
+<li>Cache misses</li>
+</ul>
+<h4 id="proposed-changes_8">Proposed Changes<a class="headerlink" href="#proposed-changes_8" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">MemoryPool</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">PoolAllocator</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="o">:</span>
+<span class="w">        </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+
+<span class="w">        </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">pool_</span><span class="o">-&gt;</span><span class="n">allocate</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">),</span><span class="w"> </span><span class="k">alignof</span><span class="p">(</span><span class="n">T</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="kt">void</span><span class="w"> </span><span class="nf">deallocate</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">pool_</span><span class="o">-&gt;</span><span class="n">deallocate</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="o">:</span>
+<span class="w">        </span><span class="n">MemoryPool</span><span class="o">*</span><span class="w"> </span><span class="n">pool_</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">alignment</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">deallocate</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">reset</span><span class="p">();</span><span class="w"> </span><span class="c1">// Clear all allocations</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">byte</span><span class="o">&gt;</span><span class="w"> </span><span class="n">buffer_</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">current_offset_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">void</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">free_blocks_</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// Usage in TypedDataArray</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypedDataArray</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">explicit</span><span class="w"> </span><span class="n">TypedDataArray</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                           </span><span class="n">MemoryPool</span><span class="o">*</span><span class="w"> </span><span class="n">pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pool</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">m_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pool</span><span class="o">-&gt;</span><span class="n">allocate</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">),</span><span class="w"> </span><span class="k">alignof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+<span class="w">            </span><span class="n">m_pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pool</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">m_buffer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// ... rest of construction</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">MemoryPool</span><span class="o">*</span><span class="w"> </span><span class="n">m_pool</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span><span class="w"> </span><span class="c1">// Optional pool</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="2-simd-optimized-operations">2. SIMD-Optimized Operations<a class="headerlink" href="#2-simd-optimized-operations" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_9">Current State<a class="headerlink" href="#current-state_9" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Scalar operations in hot paths</li>
+<li>Missed vectorization opportunities</li>
+</ul>
+<h4 id="proposed-changes_9">Proposed Changes<a class="headerlink" href="#proposed-changes_9" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;immintrin.h&gt;</span><span class="c1"> // For AVX/SSE</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SIMDOperations</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">apply_scale_offset_avx</span><span class="p">(</span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                      </span><span class="kt">double</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">__m256d</span><span class="w"> </span><span class="n">scale_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_set1_pd</span><span class="p">(</span><span class="n">scale</span><span class="p">);</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">__m256d</span><span class="w"> </span><span class="n">offset_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_set1_pd</span><span class="p">(</span><span class="n">offset</span><span class="p">);</span>
+
+<span class="w">        </span><span class="kt">size_t</span><span class="w"> </span><span class="n">simd_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="o">~</span><span class="mi">3</span><span class="p">;</span><span class="w"> </span><span class="c1">// Round down to multiple of 4</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">simd_size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">__m256d</span><span class="w"> </span><span class="n">data_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_load_pd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">            </span><span class="n">data_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">_mm256_fmadd_pd</span><span class="p">(</span><span class="n">data_vec</span><span class="p">,</span><span class="w"> </span><span class="n">scale_vec</span><span class="p">,</span><span class="w"> </span><span class="n">offset_vec</span><span class="p">);</span>
+<span class="w">            </span><span class="n">_mm256_store_pd</span><span class="p">(</span><span class="o">&amp;</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">data_vec</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="c1">// Handle remaining elements</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simd_size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">offset</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Dispatch based on CPU capabilities</span>
+<span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">apply_scale_offset</span><span class="p">(</span><span class="kt">double</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">size</span><span class="p">,</span>
+<span class="w">                                  </span><span class="kt">double</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">offset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cpu_supports_avx</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">apply_scale_offset_avx</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cpu_supports_sse</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">apply_scale_offset_sse</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">apply_scale_offset_scalar</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="3-lock-free-data-structures">3. Lock-Free Data Structures<a class="headerlink" href="#3-lock-free-data-structures" title="Permanent link">&para;</a></h3>
+<h4 id="current-state_10">Current State<a class="headerlink" href="#current-state_10" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Mutex-based synchronization</li>
+<li>Potential contention points</li>
+<li>Limited scalability</li>
+</ul>
+<h4 id="proposed-changes_10">Proposed Changes<a class="headerlink" href="#proposed-changes_10" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LockFreeCacheEntry</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">Node</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">T</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">next</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="w"> </span><span class="n">deleted</span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="nf">try_insert</span><span class="p">(</span><span class="n">T</span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">new_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Node</span><span class="p">;</span>
+<span class="w">        </span><span class="n">new_node</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">value</span><span class="p">)});</span>
+
+<span class="w">        </span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">head_</span><span class="p">.</span><span class="n">compare_exchange_weak</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">new_node</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">try_get</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Node</span><span class="o">*</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">head_</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
+<span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">deleted</span><span class="p">.</span><span class="n">load</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
+<span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">;</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">current</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">.</span><span class="n">load</span><span class="p">();</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">atomic</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">*&gt;</span><span class="w"> </span><span class="n">head_</span><span class="p">{</span><span class="k">nullptr</span><span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div>
+<h2 id="api-evolution-strategy">API Evolution Strategy<a class="headerlink" href="#api-evolution-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="1-versioned-apis">1. Versioned APIs<a class="headerlink" href="#1-versioned-apis" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">libtokamap</span><span class="o">::</span><span class="nn">v1</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Current API for backward compatibility</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">MappingHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="nf">map</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">                          </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">                          </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="w"> </span><span class="n">type</span><span class="p">,</span>
+<span class="w">                          </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span>
+<span class="w">                          </span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">libtokamap</span><span class="o">::</span><span class="nn">v2</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// New API with modern features</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">class</span><span class="w"> </span><span class="nc">TypedMappingHandler</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">expected</span><span class="o">&lt;</span><span class="n">TypedDataArray</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">MappingError</span><span class="o">&gt;</span><span class="w"> </span>
+<span class="w">        </span><span class="n">map</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">path</span><span class="p">,</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="n">ImmutableAttributes</span><span class="o">&amp;</span><span class="w"> </span><span class="n">attrs</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="p">}</span>
+
+<span class="c1">// Compatibility layer</span>
+<span class="k">namespace</span><span class="w"> </span><span class="nn">libtokamap</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="n">MappingHandler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v1</span><span class="o">::</span><span class="n">MappingHandler</span><span class="p">;</span><span class="w"> </span><span class="c1">// Default to v1</span>
+
+<span class="w">    </span><span class="c1">// Migration helper</span>
+<span class="w">    </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">upgrade_handler</span><span class="p">(</span><span class="n">v1</span><span class="o">::</span><span class="n">MappingHandler</span><span class="o">&amp;</span><span class="w"> </span><span class="n">old_handler</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">v2</span><span class="o">::</span><span class="n">TypedMappingHandler</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Convert configuration and state</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="2-gradual-feature-migration">2. Gradual Feature Migration<a class="headerlink" href="#2-gradual-feature-migration" title="Permanent link">&para;</a></h3>
+<h4 id="phase-1-infrastructure-3-6-months">Phase 1: Infrastructure (3-6 months)<a class="headerlink" href="#phase-1-infrastructure-3-6-months" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] Implement new type system with DataType enum</li>
+<li>[ ] Add std::format support for string operations</li>
+<li>[ ] Introduce concepts for template constraints</li>
+<li>[x] ~~Create factory pattern for data sources~~ ✅ COMPLETED</li>
+<li>[x] ~~Enhanced subset operations with negative strides~~ ✅ COMPLETED</li>
+<li>[x] ~~TOML configuration support~~ ✅ COMPLETED</li>
+<li>[x] ~~Comprehensive test suite for subset operations~~ ✅ COMPLETED</li>
+</ul>
+<h4 id="phase-2-core-features-6-9-months">Phase 2: Core Features (6-9 months)<a class="headerlink" href="#phase-2-core-features-6-9-months" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] Add std::expected error handling</li>
+<li>[ ] Implement memory pool allocation</li>
+<li>[ ] Add SIMD-optimized operations</li>
+<li>[ ] Create async/coroutine support</li>
+<li>[x] ~~Plugin architecture for data sources~~ ✅ COMPLETED</li>
+</ul>
+<h4 id="phase-3-advanced-features-9-12-months">Phase 3: Advanced Features (9-12 months)<a class="headerlink" href="#phase-3-advanced-features-9-12-months" title="Permanent link">&para;</a></h4>
+<ul>
+<li>[ ] Plugin hot-reloading system (foundation exists with factory pattern)</li>
+<li>[ ] Lock-free data structures</li>
+<li>[ ] Functional mapping composition</li>
+<li>[ ] Performance monitoring integration</li>
+</ul>
+<h2 id="migration-compatibility-matrix">Migration Compatibility Matrix<a class="headerlink" href="#migration-compatibility-matrix" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>v1 Compatibility</th>
+<th>Migration Effort</th>
+<th>Breaking Changes</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Factory Pattern</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (additive)</td>
+<td>✅ COMPLETED</td>
+</tr>
+<tr>
+<td>TOML Configuration</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (JSON still supported)</td>
+<td>✅ COMPLETED</td>
+</tr>
+<tr>
+<td>Enhanced Subsets</td>
+<td>Full</td>
+<td>None</td>
+<td>None (internal improvements)</td>
+<td>✅ COMPLETED</td>
+</tr>
+<tr>
+<td>Type System</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (additive)</td>
+<td>In Progress</td>
+</tr>
+<tr>
+<td>std::expected</td>
+<td>Full</td>
+<td>Medium</td>
+<td>None (new API)</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>std::format</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (internal)</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>Concepts</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (better errors)</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>Async APIs</td>
+<td>Full</td>
+<td>High</td>
+<td>None (new API)</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>Memory Pools</td>
+<td>Full</td>
+<td>Medium</td>
+<td>Optional feature</td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>SIMD Ops</td>
+<td>Full</td>
+<td>Low</td>
+<td>None (internal)</td>
+<td>Planned</td>
+</tr>
+</tbody>
+</table>
+<h2 id="code-quality-improvements">Code Quality Improvements<a class="headerlink" href="#code-quality-improvements" title="Permanent link">&para;</a></h2>
+<h3 id="1-static-analysis-integration">1. Static Analysis Integration<a class="headerlink" href="#1-static-analysis-integration" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c"># Enhanced CMakeLists.txt</span>
+<span class="nb">option</span><span class="p">(</span><span class="s">ENABLE_STATIC_ANALYSIS</span><span class="w"> </span><span class="s2">&quot;Enable static analysis tools&quot;</span><span class="w"> </span><span class="s">ON</span><span class="p">)</span>
+
+<span class="nb">if</span><span class="p">(</span><span class="s">ENABLE_STATIC_ANALYSIS</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">find_program</span><span class="p">(</span><span class="s">CLANG_TIDY_EXE</span><span class="w"> </span><span class="s">NAMES</span><span class="w"> </span><span class="s2">&quot;clang-tidy&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s">CLANG_TIDY_EXE</span><span class="p">)</span>
+<span class="w">        </span><span class="nb">set</span><span class="p">(</span><span class="s">CLANG_TIDY_COMMAND</span><span class="w"> </span>
+<span class="w">            </span><span class="s2">&quot;${CLANG_TIDY_EXE}&quot;</span>
+<span class="w">            </span><span class="s2">&quot;-checks=-*,modernize-*,performance-*,readability-*&quot;</span>
+<span class="w">            </span><span class="s2">&quot;-header-filter=.*&quot;</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">        </span><span class="nb">set_target_properties</span><span class="p">(</span><span class="s">libtokamap</span><span class="w"> </span><span class="s">PROPERTIES</span>
+<span class="w">            </span><span class="s">CXX_CLANG_TIDY</span><span class="w"> </span><span class="s2">&quot;${CLANG_TIDY_COMMAND}&quot;</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+
+<span class="w">    </span><span class="nb">find_program</span><span class="p">(</span><span class="s">CPPCHECK_EXE</span><span class="w"> </span><span class="s">NAMES</span><span class="w"> </span><span class="s2">&quot;cppcheck&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="nb">if</span><span class="p">(</span><span class="s">CPPCHECK_EXE</span><span class="p">)</span>
+<span class="w">        </span><span class="nb">add_custom_target</span><span class="p">(</span><span class="s">cppcheck</span>
+<span class="w">            </span><span class="s">COMMAND</span><span class="w"> </span><span class="o">${</span><span class="nv">CPPCHECK_EXE</span><span class="o">}</span>
+<span class="w">            </span><span class="s">--enable=all</span>
+<span class="w">            </span><span class="s">--std=c++20</span>
+<span class="w">            </span><span class="s">--suppress=missingInclude</span>
+<span class="w">            </span><span class="o">${</span><span class="nv">CMAKE_SOURCE_DIR</span><span class="o">}</span><span class="s">/src</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="nb">endif</span><span class="p">()</span>
+<span class="nb">endif</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="2-comprehensive-testing-strategy">2. Comprehensive Testing Strategy<a class="headerlink" href="#2-comprehensive-testing-strategy" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Property-based testing example</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;catch2/catch.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;catch2/generators/catch_generators.hpp&gt;</span>
+
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;TypedDataArray operations are consistent&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[property]&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GENERATE</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">));</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">scale</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GENERATE</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="mf">-10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">10.0</span><span class="p">));</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">offset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GENERATE</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="mf">-5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">));</span>
+
+<span class="w">    </span><span class="n">SECTION</span><span class="p">(</span><span class="s">&quot;Scale and offset operations commute with vector operations&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">original_data</span><span class="p">(</span><span class="n">data_size</span><span class="p">);</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">iota</span><span class="p">(</span><span class="n">original_data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">original_data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+
+<span class="w">        </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">array1</span><span class="p">{</span><span class="n">original_data</span><span class="p">};</span>
+<span class="w">        </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">array2</span><span class="p">{</span><span class="n">original_data</span><span class="p">};</span>
+
+<span class="w">        </span><span class="c1">// Apply operations in different orders</span>
+<span class="w">        </span><span class="n">array1</span><span class="p">.</span><span class="n">apply</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array1</span><span class="p">.</span><span class="n">to_vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="n">array2</span><span class="p">.</span><span class="n">apply</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">offset</span><span class="p">);</span>
+<span class="w">        </span><span class="n">array2</span><span class="p">.</span><span class="n">apply</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">array2</span><span class="p">.</span><span class="n">to_vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="w">        </span><span class="c1">// Results should be equivalent within floating point precision</span>
+<span class="w">        </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">result1</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">result2</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">result1</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="n">result1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">result2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1e-10</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="documentation-and-developer-experience">Documentation and Developer Experience<a class="headerlink" href="#documentation-and-developer-experience" title="Permanent link">&para;</a></h2>
+<h3 id="1-interactive-documentation">1. Interactive Documentation<a class="headerlink" href="#1-interactive-documentation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Example with embedded documentation tests</span>
+<span class="cm">/**</span>
+<span class="cm"> * @brief Maps experiment data to typed arrays</span>
+<span class="cm"> * </span>
+<span class="cm"> * @example</span>
+<span class="cm"> * ```cpp</span>
+<span class="cm"> * MappingHandler handler{config};</span>
+<span class="cm"> * auto result = handler.map&lt;double&gt;(&quot;ITER_001&quot;, &quot;magnetics/flux&quot;, 2, {});</span>
+<span class="cm"> * </span>
+<span class="cm"> * // Access data safely</span>
+<span class="cm"> * if (result.has_value()) {</span>
+<span class="cm"> *     auto data = result.value().to_vector&lt;double&gt;();</span>
+<span class="cm"> *     process_magnetic_data(data);</span>
+<span class="cm"> * }</span>
+<span class="cm"> * ```</span>
+<span class="cm"> * </span>
+<span class="cm"> * @doctest This example is tested automatically</span>
+<span class="cm"> */</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">expected</span><span class="o">&lt;</span><span class="n">TypedDataArray</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">MappingError</span><span class="o">&gt;</span>
+<span class="n">map</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">experiment</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span><span class="w"> </span><span class="n">path</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Attributes</span><span class="o">&amp;</span><span class="w"> </span><span class="n">attrs</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span>
+</code></pre></div>
+<h3 id="2-migration-tools">2. Migration Tools<a class="headerlink" href="#2-migration-tools" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="c1"># migrate_to_v2.sh - Automated migration script</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;LibTokaMap v1 -&gt; v2 Migration Tool&quot;</span>
+
+<span class="c1"># Find all usage patterns</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Scanning for v1 API usage...&quot;</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;MappingHandler.*map.*std::type_index&quot;</span><span class="w"> </span>src/<span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.cpp&quot;</span><span class="w"> </span>--include<span class="o">=</span><span class="s2">&quot;*.hpp&quot;</span>
+
+<span class="c1"># Suggest replacements</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Suggested replacements:&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  handler.map(exp, path, std::type_index{typeid(T)}, rank, attrs)&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;  -&gt; handler.map&lt;T&gt;(exp, path, rank, attrs)&quot;</span>
+
+<span class="c1"># Generate migration patches</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Generating migration patches...&quot;</span>
+<span class="c1"># ... automated refactoring logic</span>
+</code></pre></div>
+<h2 id="risk-mitigation">Risk Mitigation<a class="headerlink" href="#risk-mitigation" title="Permanent link">&para;</a></h2>
+<h3 id="1-backwards-compatibility-testing">1. Backwards Compatibility Testing<a class="headerlink" href="#1-backwards-compatibility-testing" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Compatibility test suite</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">V1CompatibilityTest</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">test_all_v1_scenarios</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">test_basic_mapping</span><span class="p">();</span>
+<span class="w">        </span><span class="n">test_data_source_registration</span><span class="p">();</span>
+<span class="w">        </span><span class="n">test_error_handling</span><span class="p">();</span>
+<span class="w">        </span><span class="n">test_configuration_loading</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">test_basic_mapping</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Ensure v1 API still works exactly as before</span>
+<span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">v1</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// ... test implementation</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="2-performance-regression-detection">2. Performance Regression Detection<a class="headerlink" href="#2-performance-regression-detection" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;benchmark/benchmark.h&gt;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">BM_MappingPerformance_V1</span><span class="p">(</span><span class="n">benchmark</span><span class="o">::</span><span class="n">State</span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">v1</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">{</span><span class="n">config</span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="w">        </span><span class="n">benchmark</span><span class="o">::</span><span class="n">DoNotOptimize</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">BM_MappingPerformance_V2</span><span class="p">(</span><span class="n">benchmark</span><span class="o">::</span><span class="n">State</span><span class="o">&amp;</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">v2</span><span class="o">::</span><span class="n">TypedMappingHandler</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">handler</span><span class="p">{</span><span class="n">config</span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span><span class="s">&quot;EXP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">rank</span><span class="p">,</span><span class="w"> </span><span class="n">attrs</span><span class="p">);</span>
+<span class="w">        </span><span class="n">benchmark</span><span class="o">::</span><span class="n">DoNotOptimize</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">BENCHMARK</span><span class="p">(</span><span class="n">BM_MappingPerformance_V1</span><span class="p">);</span>
+<span class="n">BENCHMARK</span><span class="p">(</span><span class="n">BM_MappingPerformance_V2</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="implementation-roadmap">Implementation Roadmap<a class="headerlink" href="#implementation-roadmap" title="Permanent link">&para;</a></h2>
+<h3 id="quarter-1-foundation-largely-completed">Quarter 1: Foundation ✅ LARGELY COMPLETED<a class="headerlink" href="#quarter-1-foundation-largely-completed" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[x] ~~Factory pattern for data sources~~ ✅ COMPLETED</li>
+<li>[x] ~~TOML configuration system~~ ✅ COMPLETED  </li>
+<li>[x] ~~Enhanced subset operations~~ ✅ COMPLETED</li>
+<li>[x] ~~Comprehensive test suite~~ ✅ COMPLETED</li>
+<li>[ ] Set up enhanced build system with static analysis</li>
+<li>[ ] Implement DataType enum and type system</li>
+</ul>
+<h3 id="quarter-2-core-modernization">Quarter 2: Core Modernization<a class="headerlink" href="#quarter-2-core-modernization" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] Implement concepts and template constraints</li>
+<li>[ ] Add std::format support for string operations</li>
+<li>[ ] Add std::expected error handling</li>
+<li>[ ] Begin performance optimization work</li>
+<li>[ ] Immutable configuration objects</li>
+</ul>
+<h3 id="quarter-3-advanced-features">Quarter 3: Advanced Features<a class="headerlink" href="#quarter-3-advanced-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] Implement memory pool allocation</li>
+<li>[ ] Add SIMD-optimized operations</li>
+<li>[ ] Create async/coroutine support</li>
+<li>[ ] Begin API v2 development</li>
+<li>[ ] Enhance plugin hot-reloading (build on existing factory pattern)</li>
+</ul>
+<h3 id="quarter-4-integration-and-polish">Quarter 4: Integration and Polish<a class="headerlink" href="#quarter-4-integration-and-polish" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] Lock-free data structures</li>
+<li>[ ] Functional mapping composition</li>
+<li>[ ] Documentation and migration tools</li>
+<li>[ ] Performance testing and optimization</li>
+</ul>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>This refactoring guide provides a structured approach to modernizing LibTokaMap while maintaining backward compatibility and improving performance. The key principles are:</p>
+<ol>
+<li><strong>Gradual Migration</strong>: Introduce new features alongside existing APIs ✅ Successfully demonstrated</li>
+<li><strong>Type Safety</strong>: Leverage C++20 features for compile-time guarantees  </li>
+<li><strong>Performance</strong>: Focus on hot paths and memory efficiency ✅ Subset operations optimized</li>
+<li><strong>Developer Experience</strong>: Better APIs, documentation, and tooling ✅ TOML config, factory pattern</li>
+<li><strong>Quality</strong>: Comprehensive testing and static analysis ✅ 998 new test cases added</li>
+</ol>
+<h2 id="recent-success-metrics-achieved">Recent Success Metrics Achieved:<a class="headerlink" href="#recent-success-metrics-achieved" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ 100% backward compatibility maintained during factory pattern introduction</li>
+<li>✅ Significant improvement in subset operation robustness and capabilities</li>
+<li>✅ Enhanced developer experience with TOML configuration</li>
+<li>✅ Comprehensive test coverage for critical operations</li>
+<li>✅ Plugin architecture foundation established</li>
+</ul>
+<h2 id="remaining-success-targets">Remaining Success Targets:<a class="headerlink" href="#remaining-success-targets" title="Permanent link">&para;</a></h2>
+<ul>
+<li>100% backward compatibility maintained during remaining transitions</li>
+<li>
+<blockquote>
+<p>20% performance improvement in core operations</p>
+</blockquote>
+</li>
+<li>Reduced compilation times with modules</li>
+<li>Further improved developer productivity with type safety</li>
+<li>Zero runtime crashes in production deployments</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
