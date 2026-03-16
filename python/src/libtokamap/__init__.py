@@ -34,13 +34,40 @@ class Mapper:
     This class provides a way to map data from multiple data sources based on a mapping configuration.
     """
 
-    def __init__(self, mapping_path: str):
+    def __init__(self,
+                 mapping_path: str | None = None,
+                 schemas_path: str | None = None,
+                 config_path: str | None = None
+                 ):
         """Initialize a new Mapper instance.
+
+        A Mapper can be initialized in one of two ways:
+
+        1. TOML configuration
+           Provide ``config_path`` pointing to a ``config.toml`` file. In this
+           mode all configuration (including mapping and schema locations) is
+           read from the TOML file.
+
+        2. Directory-based configuration
+           Provide ``mapping_path`` and optionally ``schemas_path``. The mapper
+           will load mapping definitions from the mapping directory and use the
+           provided schemas directory, if supplied, for schema validation. If no
+           schema location is provided a default path is attempted.
+    
+        These two initialization routes are mutually exclusive: if ``config_path``
+        is provided, ``mapping_path`` and ``schemas_path`` are ignored.
 
         Args:
             mapping_path: The path to the directory containing the mapping files.
+            schemas_path: The path to the directory containing the JSON-schema definition.
+            config_path: The path to a config.toml file defining all set-up parameters.
         """
-        self._mapper = clibtokamap.create(mapping_path)
+        if config_path:
+            self._mapper = clibtokamap.create_from_toml(config_path)
+        elif mapping_path and not schemas_path:
+            self._mapper = clibtokamap.create(mapping_path, schemas_path=schemas_path)
+        elif mapping_path:
+            self._mapper = clibtokamap.create(mapping_path)
 
     def register_data_source_factory(self, factory_name: str, factory_library: str) -> None:
         clibtokamap.register_data_source_factory(self._mapper, factory_name, factory_library)

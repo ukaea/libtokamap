@@ -24,7 +24,8 @@ namespace
 {
 PyObject* LibTokaMapError = nullptr;
 
-PyObject* libtokamap_create(PyObject* module, PyObject* args);
+PyObject* libtokamap_create(PyObject* module, PyObject* args, PyObject* kwds);
+PyObject* libtokamap_create_from_toml(PyObject* module, PyObject* args);
 PyObject* libtokamap_register_data_source_factory(PyObject* module, PyObject* args);
 PyObject* libtokamap_register_data_source(PyObject* module, PyObject* args);
 PyObject* libtokamap_register_python_data_source(PyObject* module, PyObject* args);
@@ -33,7 +34,14 @@ PyObject* libtokamap_register_custom_function(PyObject* module, PyObject* args);
 PyObject* libtokamap_map(PyObject* module, PyObject* const* args, Py_ssize_t nargs);
 
 PyMethodDef libtokamap_methods[] = {
-    {"create", libtokamap_create, METH_O, "Create a new Mapper."},
+    {"create", 
+        reinterpret_cast<PyCFunction>(libtokamap_create), 
+        METH_VARARGS | METH_KEYWORDS, 
+        "Create a new Mapper(mapping_path, schemas_path=None)."},
+    {"create_from_toml", 
+        libtokamap_create_from_toml,
+        METH_O,
+        "Create a new Mapper from a TOML configuration file."},
     {"register_data_source_factory", libtokamap_register_data_source_factory, METH_VARARGS,
      "Register a DataSource factory."},
     {"register_data_source", libtokamap_register_data_source, METH_VARARGS, "Register a DataSource."},
@@ -297,21 +305,54 @@ PyObject* PyMapper_new(PyTypeObject* type, PyObject* Py_UNUSED(args), PyObject* 
     return reinterpret_cast<PyObject*>(self);
 }
 
-int PyMapper_init(PyMapper* self, PyObject* args, PyObject* Py_UNUSED(kwds))
+int PyMapper_init(PyMapper* self, PyObject* args, PyObject* kwds)
 {
     char* mapping_directory = nullptr;
-    if (!PyArg_ParseTuple(args, "s", &mapping_directory)) {
+    char* schemas_directory = nullptr;
+    const char* config_path = nullptr;
+
+    static const char* kwlist[] = {
+        "mapping_directory",
+        "schemas_directory",
+        "config_path",
+        nullptr
+    };
+
+    if (!PyArg_ParseTupleAndKeywords(
+            args,
+            kwds,
+            "|zzz",
+            const_cast<char**>(kwlist),
+            &mapping_directory,
+            &schemas_directory),
+            &config_path) {
         return -1;
     }
 
     try {
         self->cpp_mapper = new libtokamap::MappingHandler();
 
-        auto root = std::filesystem::path{__FILE__};
-        root = std::filesystem::absolute(root).parent_path().parent_path();
-        auto schema_root = root / "schemas";
-        nlohmann::json config = {{"mapping_directory", mapping_directory}, {"schemas_directory", schema_root.string()}};
-        self->cpp_mapper->init(config);
+        // either initialise from toml config file or require 
+        // mapping and schema paths to be set in python mapper
+        // object constructor
+
+        if (config_path != nullptr) {
+            self->cpp_mapper->init(std::filesystem::path{config_path});
+        } else {
+            nlohmann::json config = {
+                {"mapping_directory", mapping_directory}
+            };
+            if (schemas_directory != nullptr) {
+                config["schemas_directory"] = schemas_directory;
+            } else {
+                // fallback behaviour
+                auto root = std::filesystem::path{__FILE__};
+                root = std::filesystem::absolute(root).parent_path().parent_path();
+                auto schema_root = root / "schemas";
+                config["schemas_directory"] = schema_root.string();
+            }
+            self->cpp_mapper->init(config);
+        }
     } catch (const std::exception& e) {
         PyErr_SetString(LibTokaMapError, e.what());
         return -1;
@@ -330,9 +371,26 @@ PyTypeObject PyMapperType = {
     .tp_new = PyMapper_new,
 };
 
-PyObject* libtokamap_create(PyObject* Py_UNUSED(module), PyObject* args)
+PyObject* libtokamap_create(PyObject* Py_UNUSED(module), PyObject* args, PyObject* kwds)
 {
-    return PyObject_CallOneArg(reinterpret_cast<PyObject*>(&PyMapperType), args);
+    return PyObject_Call(reinterpret_cast<PyObject*>(&PyMapperType), args, kwds);
+}
+
+PyObject* libtokamap_create_from_toml(PyObject* Py_UNUSED(module), PyObject* args)
+{
+    PyObject* kwargs = Py_BuildValue("{s:O}", "config_path", args);
+    if (!kwargs) {
+        return nullptr;
+    }
+
+    PyObject* obj = PyObject_Call(
+        reinterpret_cast<PyObject*>(&PyMapperType),
+        PyTuple_New(0),
+        kwargs
+    );
+
+    Py_DECREF(kwargs);
+    return obj;
 }
 
 PyObject* get_pathlib_path_type()
