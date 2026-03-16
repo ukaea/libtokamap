@@ -64,7 +64,8 @@ class Mapper:
         """
         if config_path:
             self._mapper = clibtokamap.create_from_toml(config_path)
-        elif mapping_path and not schemas_path:
+            # self._mapper = clibtokamap.PyMapper_init(config_path=config_path)
+        elif mapping_path and schemas_path:
             self._mapper = clibtokamap.create(mapping_path, schemas_path=schemas_path)
         elif mapping_path:
             self._mapper = clibtokamap.create(mapping_path)

@@ -309,7 +309,7 @@ int PyMapper_init(PyMapper* self, PyObject* args, PyObject* kwds)
 {
     char* mapping_directory = nullptr;
     char* schemas_directory = nullptr;
-    const char* config_path = nullptr;
+    char* config_path = nullptr;
 
     static const char* kwlist[] = {
         "mapping_directory",
@@ -324,8 +324,8 @@ int PyMapper_init(PyMapper* self, PyObject* args, PyObject* kwds)
             "|zzz",
             const_cast<char**>(kwlist),
             &mapping_directory,
-            &schemas_directory),
-            &config_path) {
+            &schemas_directory,
+            &config_path)) {
         return -1;
     }
 
