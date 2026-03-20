@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/toplevel",
+  "description": "JSON Schema for v1.0 of default top-level globals",
+  "type": "object",
+  "required": ["metadata", "partitions", "groups"],
+  "properties": {
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "partitions": {
+      "$ref": "#/$defs/partitions"
+    },
+    "groups": {
+      "$ref": "#/$defs/groups"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "experiment": { "type": "string" },
+        "author": { "type": "string" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" }
+      }
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "partitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "attribute": { "type": "string" },
+          "selector": { "enum": ["max_below", "min_above", "exact", "closest"] }
+        },
+        "additionalProperties": false,
+        "required": ["attribute", "selector"]
+      }
+    }
+  }
+}

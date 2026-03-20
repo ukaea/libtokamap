@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "/schemas/toplevel",
+  "description": "JSON Schema for v1.0 of mappings",
+  "type": "object",
+  "patternProperties": {
+    "^.*$": {
+      "oneOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "$ref": "#/$defs/map_type" }
+      ]
+    },
+    "additionalProperties": false
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "map_type": {
+      "type": "object",
+      "oneOf": [
+        { "$ref": "#/$defs/dimension" },
+        { "$ref": "#/$defs/value" },
+        { "$ref": "#/$defs/data_source" },
+        { "$ref": "#/$defs/expression" },
+        { "$ref": "#/$defs/custom" }
+      ]
+    },
+    "dimension": {
+      "properties": {
+        "MAP_TYPE": { "const": "DIMENSION" },
+        "DIM_PROBE": { "type": "string" },
+        "COMMENT": { "type": "string" }
+      },
+      "required": ["MAP_TYPE", "DIM_PROBE"],
+      "additionalProperties": false
+    },
+    "value": {
+      "properties": {
+        "MAP_TYPE": { "const": "VALUE" },
+        "VALUE": { "type": ["number", "string", "array", "object"] },
+        "COMMENT": { "type": "string" }
+      },
+      "required": ["MAP_TYPE", "VALUE"],
+      "additionalProperties": false
+    },
+    "data_source": {
+      "properties": {
+        "MAP_TYPE": { "const": "DATA_SOURCE" },
+        "ARGS": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": ["string", "boolean", "number"]
+            }
+          }
+        },
+        "DATA_SOURCE": { "type": "string" },
+        "OFFSET": { "type": ["string", "number"] },
+        "SCALE": { "type": ["string", "number"] },
+        "SLICE": { "type": "string" },
+        "COMMENT": { "type": "string" }
+      },
+      "required": ["MAP_TYPE", "ARGS", "DATA_SOURCE"],
+      "additionalProperties": false
+    },
+    "expression": {
+      "properties": {
+        "MAP_TYPE": { "const": "EXPR" },
+        "PARAMETERS": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": "string"
+            }
+          }
+        },
+        "EXPR": { "type": "string" },
+        "COMMENT": { "type": "string" }
+      },
+      "required": ["MAP_TYPE", "PARAMETERS", "EXPR"],
+      "additionalProperties": false
+    },
+    "custom": {
+      "properties": {
+        "MAP_TYPE": { "const": "CUSTOM" },
+        "LIBRARY": { "type": "string" },
+        "FUNCTION": { "type": "string" },
+        "INPUTS": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": "string"
+            }
+          }
+        },
+        "PARAMETERS": { "type": "object" },
+        "COMMENT": { "type": "string" }
+      },
+      "required": ["MAP_TYPE", "LIBRARY", "FUNCTION", "INPUTS", "PARAMETERS"],
+      "additionalProperties": false
+    }
+  }
+}
