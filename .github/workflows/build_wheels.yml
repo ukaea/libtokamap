@@ -73,10 +73,9 @@ jobs:
       - name: Build manylinux_2_28 wheels
         # hardware emulation for ubuntu on arm64 archiecture is much slower. Do not run that case except for push to tag.
         if: >
-          startswith(matrix.build-platform[2], 'manylinux_2_28') 
-      #  &&
-      #  ! ( startswith(matrix.build-platform[1], 'aarch64') &&
-      #  !startsWith(github.ref, 'refs/tags/') )
+          startswith(matrix.build-platform[2], 'manylinux_2_28') &&
+          ! ( startswith(matrix.build-platform[1], 'aarch64') &&
+          !startsWith(github.ref, 'refs/tags/') )
         uses: pypa/cibuildwheel@v3.4
         with:
           package-dir: ./python
