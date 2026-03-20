@@ -160,12 +160,6 @@ configure_file(
     @ONLY
 )
 
-# configure_file(
-#     ${CMAKE_CURRENT_LIST_DIR}/python/pyproject.toml.in
-#     ${CMAKE_CURRENT_LIST_DIR}/python/pyproject.toml
-#     @ONLY
-# )
-
 add_library( libtokamap ${SOURCES} )
 
 if( MSVC )
