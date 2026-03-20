@@ -6,7 +6,7 @@ authors = [
     { name = "Jonathan Hollocombe", email = "jonathan.hollocombe@ukaea.uk" },
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = ["jsonschema (>=4.25.0,<5.0.0)"]
 
 [tool.poetry]
