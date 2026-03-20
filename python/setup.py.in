@@ -1,0 +1,45 @@
+from pathlib import Path
+
+import os
+import platform
+import numpy
+from setuptools import Extension, setup
+
+def find_file(filename, search_path):
+    return next(search_path.rglob(filename), None)
+
+ROOT = Path("@CMAKE_SOURCE_DIR@")
+LIBRARY_DIR = Path("@CMAKE_BINARY_DIR@")
+LIBRARY_NAME = "@CMAKE_STATIC_LIBRARY_PREFIX@" + "tokamap" + "@CMAKE_STATIC_LIBRARY_SUFFIX@"
+
+# Search in build directory for cases when library has been added to subdirectory
+library = find_file(LIBRARY_NAME, LIBRARY_DIR)
+
+if platform.system() == 'Windows':
+    EXTRA_COMPILE_ARGS = ["/std:c++20", "/O2"]
+    EXTRA_LINK_ARGS= ["Dbghelp.lib"]
+else:
+    EXTRA_COMPILE_ARGS = ["-std=c++20", "-O3"]
+    EXTRA_LINK_ARGS = []
+
+ext_modules = [
+    Extension(
+        "clibtokamap",
+        sources=["libtokamap.cpp"],
+        include_dirs=[
+            str(ROOT / "include"),
+            str(ROOT / "src"),
+            str(ROOT / "ext_include"),
+            str(ROOT / "build" / "include"),
+            numpy.get_include(),
+        ],
+        extra_objects=[str(library)],
+        extra_compile_args=EXTRA_COMPILE_ARGS,
+        extra_link_args=EXTRA_LINK_ARGS,
+    )
+]
+
+setup(
+    name="libtokamap",
+    ext_modules=ext_modules,
+)

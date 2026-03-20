@@ -154,11 +154,11 @@ configure_file(
     @ONLY
 )
 
-# configure_file(
-#     ${CMAKE_CURRENT_LIST_DIR}/python/setup.py.in
-#     ${CMAKE_CURRENT_LIST_DIR}/python/setup.py
-#     @ONLY
-# )
+configure_file(
+    ${CMAKE_CURRENT_LIST_DIR}/python/setup.py.in
+    ${CMAKE_CURRENT_LIST_DIR}/python/setup.py
+    @ONLY
+)
 
 # configure_file(
 #     ${CMAKE_CURRENT_LIST_DIR}/python/pyproject.toml.in
