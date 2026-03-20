@@ -48,6 +48,8 @@ packages = ["libtokamap"]
 "" = "src"
 
 [tool.setuptools_scm]
+root = ".."
+relative_to = "pyproject.toml"
 write_to = "src/libtokamap/_version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
