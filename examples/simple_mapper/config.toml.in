@@ -1,5 +1,5 @@
 mapping_directory = "@CMAKE_CURRENT_SOURCE_DIR@/mappings"
-schemas_directory = "@CMAKE_SOURCE_DIR@/schemas"
+schemas_directory = "@CMAKE_CURRENT_SOURCE_DIR@/schemas"
 trace_enabled = true
 cache_enabled = true
 custom_function_libraries = [
