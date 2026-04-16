@@ -9,6 +9,19 @@ from typing import Callable, Any
 __version__ = clibtokamap.__version__
 LibrarySuffix = clibtokamap.LibrarySuffix
 
+LibTokaMapError = clibtokamap.LibTokaMapError
+ConfigurationError = clibtokamap.ConfigurationError
+MappingError = clibtokamap.MappingError
+MissingMappingError = clibtokamap.MissingMappingError
+DataSourceError = clibtokamap.DataSourceError
+# PythonCallbackError = clibtokamap.PythonCallbackError
+FileError = clibtokamap.FileError
+JsonError = clibtokamap.JsonError
+DataTypeError = clibtokamap.DataTypeError
+PathError = clibtokamap.PathError
+SchemaError = clibtokamap.SchemaError
+ParameterError = clibtokamap.ParameterError
+ProcessingError = clibtokamap.ProcessingError
 
 class DataSource(ABC):
     """Abstract base class for data sources.
