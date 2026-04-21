@@ -61,4 +61,4 @@ local_scheme = "no-local-version"
 
 [tool.cibuildwheel]
 test-requires = ["pytest>=8"]
-test-command = "pytest {project}/tests -q"
+test-command = "pytest {package}/tests -q"
