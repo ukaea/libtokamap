@@ -35,6 +35,11 @@ classifiers = [
     "Topic :: Utilities",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/ukaea/libtokamap"
 "Repository" = "https://github.com/ukaea/libtokamap"
