@@ -58,3 +58,7 @@ relative_to = "pyproject.toml"
 version_file = "src/libtokamap/_version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
+
+[tool.cibuildwheel]
+test-requires = ["pytest>=8"]
+test-command = "pytest {project}/tests -q"
