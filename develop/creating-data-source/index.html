@@ -1871,7 +1871,7 @@
 
 <span class="w">        </span><span class="c1">// Execute query</span>
 <span class="w">        </span><span class="n">sqlite3_stmt</span><span class="o">*</span><span class="w"> </span><span class="n">stmt</span><span class="p">;</span>
-<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_prepare_v2</span><span class="p">(</span><span class="n">m_db</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">stmt</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_prepare_v2</span><span class="p">(</span><span class="n">m_db</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">stmt</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SQLITE_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;SQL error: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
@@ -1888,7 +1888,7 @@
 
 <span class="k">private</span><span class="o">:</span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">m_db_path</span><span class="p">;</span>
-<span class="w">    </span><span class="n">sqlite3</span><span class="o">*</span><span class="w"> </span><span class="n">m_db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nullptr</span><span class="p">;</span>
+<span class="w">    </span><span class="n">sqlite3</span><span class="o">*</span><span class="w"> </span><span class="n">m_db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
 <span class="p">};</span>
 </code></pre></div>
 <h2 id="configuration-in-mappings">Configuration in Mappings<a class="headerlink" href="#configuration-in-mappings" title="Permanent link">&para;</a></h2>
@@ -1951,7 +1951,7 @@
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
 <span class="w">    </span><span class="n">arguments</span><span class="p">.</span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test/data&quot;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 
 <span class="w">    </span><span class="n">ASSERT_TRUE</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">holds_alternative</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">());</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
@@ -1966,7 +1966,7 @@
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
 
 <span class="w">    </span><span class="n">EXPECT_THROW</span><span class="p">(</span>
-<span class="w">        </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="k">nullptr</span><span class="p">),</span>
+<span class="w">        </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">),</span>
 <span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span>
 <span class="w">    </span><span class="p">);</span>
 <span class="p">}</span>
