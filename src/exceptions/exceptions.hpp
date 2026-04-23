@@ -53,6 +53,12 @@ public:
         : TokaMapError("Mapping error: " + message) {}
 };
 
+class MissingMappingError : public MappingError {
+public:
+    explicit MissingMappingError(const std::string& message)
+        : MappingError(message) {}
+};
+
 /**
  * Data source related errors
  *
@@ -68,6 +74,12 @@ class DataSourceError : public TokaMapError {
 public:
     explicit DataSourceError(const std::string& message)
         : TokaMapError("Data source error: " + message) {}
+};
+
+class PythonCallbackError : public DataSourceError {
+public:
+    explicit PythonCallbackError(const std::string& message)
+        : DataSourceError("Python callback failed: " + message) {}
 };
 
 /**
@@ -152,7 +164,7 @@ public:
 class SchemaError : public TokaMapError {
 public:
     explicit SchemaError(const std::string& message)
-        : TokaMapError("Path error: " + message) {}
+        : TokaMapError("Schema error: " + message) {}
 };
 
 /**

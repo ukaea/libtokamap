@@ -1,8 +1,10 @@
+#include "exceptions/exceptions.hpp"
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 #include <Python.h>
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib>
 #include <exception>
 #include <filesystem>
@@ -23,6 +25,20 @@
 namespace
 {
 PyObject* LibTokaMapError = nullptr;
+PyObject* ConfigurationError = nullptr;
+PyObject* MappingError = nullptr;
+PyObject* MissingMappingError = nullptr;
+PyObject* InvalidMappingError = nullptr;
+PyObject* DataSourceError = nullptr;
+// PyObject* PythonCallbackError = nullptr;
+PyObject* FileError = nullptr;
+PyObject* JsonError = nullptr;
+PyObject* DataTypeError = nullptr;
+PyObject* PathError = nullptr;
+PyObject* SchemaError = nullptr;
+PyObject* PythonCallbackError = nullptr;
+PyObject* ParameterError = nullptr;
+PyObject* ProcessingError = nullptr;
 
 PyObject* libtokamap_create(PyObject* module, PyObject* args);
 PyObject* libtokamap_register_data_source_factory(PyObject* module, PyObject* args);
@@ -46,7 +62,7 @@ PyMethodDef libtokamap_methods[] = {
     {nullptr, nullptr, 0, nullptr} /* Sentinel */
 };
 
-libtokamap::TypedDataArray object_to_typed_data_array(PyObject* object)
+libtokamap::TypedDataArray object_to_typed_data_array(PyObject* object, bool allow_object_placeholder = false)
 {
     if (object == nullptr) {
         return {};
@@ -57,6 +73,11 @@ libtokamap::TypedDataArray object_to_typed_data_array(PyObject* object)
     }
 
     auto* array = reinterpret_cast<PyArrayObject*>(object);
+    if (!PyArray_ISCARRAY(array)) {
+        PyErr_SetString(LibTokaMapError, "Expected a C-contiguous NumPy array");
+        return {};
+    }
+
     void* data = PyArray_DATA(array);
     npy_intp size = PyArray_SIZE(array);
     int rank = PyArray_NDIM(array);
@@ -65,12 +86,39 @@ libtokamap::TypedDataArray object_to_typed_data_array(PyObject* object)
 
     std::vector<size_t> shape_vec(shape, shape + rank);
 
+    if (typenum == NPY_BOOL) {
+        auto* bool_data = reinterpret_cast<npy_bool*>(data);
+        std::vector<uint8_t> values(bool_data, bool_data + size);
+        return libtokamap::TypedDataArray(values, shape_vec);
+    }
+    if (typenum == NPY_INT8) {
+        return libtokamap::TypedDataArray(reinterpret_cast<int8_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_INT16) {
+        return libtokamap::TypedDataArray(reinterpret_cast<int16_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_INT32) {
+        return libtokamap::TypedDataArray(reinterpret_cast<int32_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_INT64) {
+        return libtokamap::TypedDataArray(reinterpret_cast<int64_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_UINT8) {
+        return libtokamap::TypedDataArray(reinterpret_cast<uint8_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_UINT16) {
+        return libtokamap::TypedDataArray(reinterpret_cast<uint16_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_UINT32) {
+        return libtokamap::TypedDataArray(reinterpret_cast<uint32_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
+    if (typenum == NPY_UINT64) {
+        return libtokamap::TypedDataArray(reinterpret_cast<uint64_t*>(data), static_cast<size_t>(size), shape_vec);
+    }
     if (typenum == NPY_FLOAT32) {
-        // TODO: bind lifetime of array to self and avoid memory copy
         return libtokamap::TypedDataArray(reinterpret_cast<float*>(data), static_cast<size_t>(size), shape_vec);
     }
     if (typenum == NPY_FLOAT64) {
-        // TODO: bind lifetime of array to self and avoid memory copy
         return libtokamap::TypedDataArray(reinterpret_cast<double*>(data), static_cast<size_t>(size), shape_vec);
     }
     if (typenum == NPY_UNICODE) {
@@ -93,12 +141,10 @@ libtokamap::TypedDataArray object_to_typed_data_array(PyObject* object)
         Py_DECREF(py_unicode);
         return libtokamap::TypedDataArray(string);
     }
-    if (typenum == NPY_OBJECT) {
-        // Return empty TypedDataArray<char> to allow for taking of dimensions
+    if (typenum == NPY_OBJECT && allow_object_placeholder) {
         std::vector<char> vec(size);
         return libtokamap::TypedDataArray(vec, shape_vec);
     }
-
     PyErr_SetString(LibTokaMapError, "Wrong data type");
     return {};
 }
@@ -112,32 +158,16 @@ bool set_dictionary_item(PyObject* dict, const std::string& key, const nlohmann:
         py_value = PyLong_FromLongLong(value.get<int64_t>());
     } else if (value.is_number_float()) {
         py_value = PyFloat_FromDouble(value.get<double>());
+    } else if (value.is_boolean()) {
+        py_value = PyBool_FromLong(value.get<bool>() ? 1 : 0);
     } else {
-        std::string msg = "Value '" + key + "' has an invalid type";
+        std::string msg = "Value '" + key + "' has an invalid type: " + std::string(value.type_name());
         PyErr_SetString(LibTokaMapError, msg.c_str());
         return false;
     }
     PyDict_SetItemString(dict, key.c_str(), py_value);
     Py_DECREF(py_value);
     return true;
-}
-
-PyArray_Descr* get_s1_descr()
-{
-    // Create a Python dtype object for 'S1'
-    PyObject* dtype_obj = PyUnicode_FromString("S1");
-    if (!dtype_obj) {
-        return nullptr;
-    }
-
-    PyArray_Descr* descr = nullptr;
-    if (PyArray_DescrConverter(dtype_obj, &descr) == NPY_FAIL) {
-        Py_DECREF(dtype_obj);
-        return nullptr;
-    }
-
-    Py_DECREF(dtype_obj);
-    return descr;
 }
 
 void free_memory(PyObject* capsule)
@@ -148,11 +178,9 @@ void free_memory(PyObject* capsule)
 
 PyObject* wrap_array(const std::vector<npy_intp>& dims, int npy_type, libtokamap::TypedDataArray& data)
 {
-    PyArray_Descr* descr = nullptr;
-    if (npy_type == NPY_BYTE) {
-        descr = get_s1_descr();
-    } else {
-        descr = PyArray_DescrFromType(npy_type);
+    PyArray_Descr* descr = PyArray_DescrFromType(npy_type);
+    if (descr == nullptr) {
+        return nullptr;
     }
 
     bool is_owning = data.is_owning();
@@ -179,6 +207,20 @@ PyObject* wrap_array(const std::vector<npy_intp>& dims, int npy_type, libtokamap
     return array;
 }
 
+PyObject* wrap_bytes_string(libtokamap::TypedDataArray& data)
+{
+    const bool is_owning = data.is_owning();
+    char* data_ptr = static_cast<char*>(data.release());
+    if (data_ptr == nullptr) {
+        return PyUnicode_FromStringAndSize("", 0);
+    }
+    PyObject* string = PyUnicode_FromStringAndSize(data_ptr, static_cast<Py_ssize_t>(data.size()));
+    if (is_owning) {
+        free(data_ptr);
+    }
+    return string;
+}
+
 PyObject* array_to_numpy(libtokamap::TypedDataArray& array)
 {
     auto type = array.data_type();
@@ -198,7 +240,7 @@ PyObject* array_to_numpy(libtokamap::TypedDataArray& array)
         case DataType::Int16:
             return wrap_array(dims, NPY_INT16, array);
         case DataType::Int8:
-            return wrap_array(dims, NPY_INT8, array);
+            return wrap_bytes_string(array);
         case DataType::UInt64:
             return wrap_array(dims, NPY_UINT64, array);
         case DataType::UInt32:
@@ -224,6 +266,95 @@ bool set_dictionary_item(PyObject* dict, const std::string& key, libtokamap::Typ
     return true;
 }
 
+int add_exception(PyObject* module,
+                  PyObject** out,
+                  const char* qualified_name,
+                  PyObject* base)
+{
+    *out = PyErr_NewException(qualified_name, base, nullptr);
+    if (*out == nullptr) {
+        return -1;
+    }
+
+    const char* short_name = std::strrchr(qualified_name, '.');
+    short_name = short_name ? short_name + 1 : qualified_name;
+
+    if (PyModule_AddObjectRef(module, short_name, *out) < 0) {
+        return -1;
+    }
+    return 0;
+}
+
+void translate_cpp_exception()
+{
+    try {
+        throw;
+    } catch (const libtokamap::MissingMappingError& e) {
+        PyErr_SetString(MissingMappingError, e.what());
+    } catch (const libtokamap::PythonCallbackError& e) {
+        PyErr_SetString(PythonCallbackError, e.what());
+    } catch (const libtokamap::ConfigurationError& e) {
+        PyErr_SetString(ConfigurationError, e.what());
+    } catch (const libtokamap::MappingError& e) {
+        PyErr_SetString(MappingError, e.what());
+    } catch (const libtokamap::DataSourceError& e) {
+        PyErr_SetString(DataSourceError, e.what());
+    } catch (const libtokamap::FileError& e) {
+        PyErr_SetString(FileError, e.what());
+    } catch (const libtokamap::JsonError& e) {
+        PyErr_SetString(JsonError, e.what());
+    } catch (const libtokamap::DataTypeError& e) {
+        PyErr_SetString(DataTypeError, e.what());
+    } catch (const libtokamap::PathError& e) {
+        PyErr_SetString(PathError, e.what());
+    } catch (const libtokamap::SchemaError& e) {
+        PyErr_SetString(SchemaError, e.what());
+    } catch (const libtokamap::ParameterError& e) {
+        PyErr_SetString(ParameterError, e.what());
+    } catch (const libtokamap::ProcessingError& e) {
+        PyErr_SetString(ProcessingError, e.what());
+    } catch (const libtokamap::TokaMapError& e) {
+        PyErr_SetString(LibTokaMapError, e.what());
+    } catch (const std::exception& e) {
+        PyErr_SetString(PyExc_RuntimeError, e.what());
+    } catch (...) {
+        PyErr_SetString(PyExc_RuntimeError, "Unknown C++ exception");
+    }
+}
+
+std::string fetch_python_error_string()
+{
+    PyObject *ptype = nullptr, *pvalue = nullptr, *ptraceback = nullptr;
+    PyErr_Fetch(&ptype, &pvalue, &ptraceback);
+    PyErr_NormalizeException(&ptype, &pvalue, &ptraceback);
+
+    std::string message = "unknown Python error";
+    if (ptype != nullptr) {
+        PyObject* type_str = PyObject_Str(ptype);
+        if (type_str) {
+            message = PyUnicode_AsUTF8(type_str);
+            Py_DECREF(type_str);
+        }
+    }
+
+    if (pvalue != nullptr) {
+        PyObject* s = PyObject_Str(pvalue);
+        if (s != nullptr) {
+            const char* c = PyUnicode_AsUTF8(s);
+            if (c != nullptr) {
+                message += ": ";
+                message += c;
+            }
+            Py_DECREF(s);
+        }
+    }
+
+    Py_XDECREF(ptype);
+    Py_XDECREF(pvalue);
+    Py_XDECREF(ptraceback);
+    return message;
+}
+
 class PythonDataSource : public libtokamap::DataSource
 {
   public:
@@ -245,18 +376,39 @@ class PythonDataSource : public libtokamap::DataSource
     {
         PyObject* kwargs = PyDict_New();
         if (kwargs == nullptr) {
-            PyErr_SetString(LibTokaMapError, "Failed to create dictionary");
-            return {};
+            throw libtokamap::PythonCallbackError{"Failed to create argument dictionary"};
+            // PyErr_SetString(LibTokaMapError, "Failed to create dictionary");
+            // return {};
         }
 
         for (const auto& [key, value] : map_args) {
             if (!set_dictionary_item(kwargs, key, value)) {
-                return {};
+                Py_DECREF(kwargs);
+                throw libtokamap::PythonCallbackError{fetch_python_error_string()};
+                // return {};
             }
         }
 
         PyObject* result = PyObject_CallMethod(_py_data_source, "get", "O", kwargs);
-        return object_to_typed_data_array(result);
+        Py_DECREF(kwargs);
+
+        if (result == nullptr) {
+            if (PyErr_Occurred()) {
+                throw libtokamap::PythonCallbackError{fetch_python_error_string()};
+            } else {
+                throw libtokamap::PythonCallbackError{
+                    "Unkown error: Python callback returned nullptr, indicating a python exception occured by usual CPython conventions, but no corresponding error string has been set."
+                };
+            }
+        }
+        auto out = object_to_typed_data_array(result, true);
+        Py_DECREF(result);
+
+        if (PyErr_Occurred()) {
+            throw libtokamap::PythonCallbackError{fetch_python_error_string()};
+        }
+
+        return out;
     }
 
   private:
@@ -313,7 +465,8 @@ int PyMapper_init(PyMapper* self, PyObject* args, PyObject* Py_UNUSED(kwds))
         std::filesystem::path config_path{config_path_string};
         self->cpp_mapper->init(config_path);
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return -1;
     }
 
@@ -380,6 +533,9 @@ PyObject* libtokamap_register_data_source(PyObject* Py_UNUSED(module), PyObject*
     }
 
     PyObject* path_type = get_pathlib_path_type();
+    if (path_type == nullptr) {
+        return nullptr;
+    }
 
     PyObject* key = nullptr;
     PyObject* value = nullptr;
@@ -387,11 +543,13 @@ PyObject* libtokamap_register_data_source(PyObject* Py_UNUSED(module), PyObject*
     while (PyDict_Next(py_factory_args, &pos, &key, &value)) {
         auto key_string = to_string(key);
         if (!key_string) {
+            Py_DECREF(path_type);
             return nullptr;
         }
         if (PyUnicode_Check(value)) {
             auto value_string = to_string(value);
             if (!value_string) {
+                Py_DECREF(path_type);
                 return nullptr;
             }
             factory_args[key_string.value()] = value_string.value();
@@ -400,21 +558,30 @@ PyObject* libtokamap_register_data_source(PyObject* Py_UNUSED(module), PyObject*
         } else if (PyObject_IsInstance(value, path_type)) {
             PyObject* path_str = PyObject_Str(value);
             if (!path_str) {
+                Py_DECREF(path_type);
                 return nullptr;
             }
-            factory_args[key_string.value()] = std::filesystem::path(to_string(path_str).value());
+            auto path_value = to_string(path_str);
             Py_DECREF(path_str);
+            if (!path_value) {
+                Py_DECREF(path_type);
+                return nullptr;
+            }
+            factory_args[key_string.value()] = std::filesystem::path(path_value.value());
         } else {
             PyErr_SetString(LibTokaMapError, "Dictionary value must be a string or integer");
+            Py_DECREF(path_type);
             return nullptr;
         }
     }
+    Py_DECREF(path_type);
 
     auto* mapper = reinterpret_cast<PyMapper*>(py_mapper);
     try {
         mapper->cpp_mapper->register_data_source(data_source_name, data_source_factory_name, factory_args);
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
 
@@ -441,7 +608,8 @@ PyObject* libtokamap_register_data_source_factory(PyObject* Py_UNUSED(module), P
     try {
         mapper->cpp_mapper->register_data_source_factory(data_source_factory_name, data_source_library_path);
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
 
@@ -502,7 +670,8 @@ PyObject* libtokamap_register_python_data_source(PyObject* Py_UNUSED(module), Py
     try {
         mapper->cpp_mapper->register_data_source(data_source_name, std::move(py_data_source));
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
 
@@ -515,27 +684,58 @@ libtokamap::TypedDataArray call_python_function(PyObject* function, libtokamap::
                                                 const libtokamap::CustomMappingParams& params)
 {
     auto* py_inputs = PyDict_New();
+    if (py_inputs == nullptr) {
+        throw libtokamap::PythonCallbackError{"Failed to create custom function input dictionary"};
+    }
     for (auto& [key, value] : inputs) {
         if (!set_dictionary_item(py_inputs, key, value)) {
-            return {};
+            Py_DECREF(py_inputs);
+            throw libtokamap::PythonCallbackError{fetch_python_error_string()};
         }
     }
 
     auto* py_params = PyDict_New();
+    if (py_params == nullptr) {
+        Py_DECREF(py_inputs);
+        throw libtokamap::PythonCallbackError{"Failed to create custom function parameter dictionary"};
+    }
     for (const auto& [key, value] : params.items()) {
         if (!set_dictionary_item(py_params, key, value)) {
-            return {};
+            Py_DECREF(py_inputs);
+            Py_DECREF(py_params);
+            throw libtokamap::PythonCallbackError{fetch_python_error_string()};
         }
     }
 
     auto* args = PyTuple_New(2);
+    if (args == nullptr) {
+        Py_DECREF(py_inputs);
+        Py_DECREF(py_params);
+        throw libtokamap::PythonCallbackError{"Failed to create custom function argument tuple"};
+    }
     PyTuple_SET_ITEM(args, 0, py_inputs);
     PyTuple_SET_ITEM(args, 1, py_params);
 
     PyObject* result = PyObject_Call(function, args, nullptr);
     Py_DECREF(args);
 
-    return object_to_typed_data_array(result);
+    if (result == nullptr) {
+        if (PyErr_Occurred()) {
+            throw libtokamap::PythonCallbackError{fetch_python_error_string()};
+        }
+        throw libtokamap::PythonCallbackError{
+            "Unknown error: Python custom function returned nullptr without setting a Python exception"
+        };
+    }
+
+    auto out = object_to_typed_data_array(result);
+    Py_DECREF(result);
+
+    if (PyErr_Occurred()) {
+        throw libtokamap::PythonCallbackError{fetch_python_error_string()};
+    }
+
+    return out;
 }
 
 class PythonFunctionWrapper : public libtokamap::LibraryFunctionWrapper
@@ -574,11 +774,16 @@ PyObject* libtokamap_load_custom_function_library(PyObject* Py_UNUSED(module), P
     }
 
     PyObject* path_type = get_pathlib_path_type();
+    if (path_type == nullptr) {
+        return nullptr;
+    }
 
     if (!PyObject_IsInstance(py_library_path, path_type)) {
+        Py_DECREF(path_type);
         PyErr_SetString(LibTokaMapError, "Second argument to register_data_source must be a pathlib.Path");
         return nullptr;
     }
+    Py_DECREF(path_type);
 
     PyObject* py_library_path_str = PyObject_Str(py_library_path);
     if (py_library_path_str == nullptr) {
@@ -586,6 +791,7 @@ PyObject* libtokamap_load_custom_function_library(PyObject* Py_UNUSED(module), P
         return nullptr;
     }
     auto library_path = to_string(py_library_path_str);
+    Py_DECREF(py_library_path_str);
     if (!library_path) {
         PyErr_SetString(LibTokaMapError, "Failed to convert library path to string");
         return nullptr;
@@ -595,7 +801,8 @@ PyObject* libtokamap_load_custom_function_library(PyObject* Py_UNUSED(module), P
     try {
         mapper->cpp_mapper->load_custom_function_library(library_path.value());
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
 
@@ -626,7 +833,8 @@ PyObject* libtokamap_register_custom_function(PyObject* Py_UNUSED(module), PyObj
     try {
         mapper->cpp_mapper->register_custom_function(std::move(library_function));
     } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
 
@@ -688,10 +896,20 @@ PyObject* libtokamap_map(PyObject* Py_UNUSED(module), PyObject* const* args, Py_
                         return nullptr;
                     }
                     attributes[key_string.value()] = value_string.value();
+                } else if (PyBool_Check(value)) {
+                    attributes[key_string.value()] = static_cast<bool>(PyObject_IsTrue(value));
                 } else if (PyLong_Check(value)) {
                     attributes[key_string.value()] = PyLong_AsLong(value);
+                } else if (PyFloat_Check(value) || PyNumber_Check(value)) {
+                    PyObject* float_obj = PyNumber_Float(value);
+                    if (!float_obj) {
+                        PyErr_SetString(LibTokaMapError, "Failed to convert value to float");
+                        return nullptr;
+                    }
+                    attributes[key_string.value()] = PyFloat_AsDouble(float_obj);
+                    Py_DECREF(float_obj);
                 } else {
-                    PyErr_SetString(LibTokaMapError, "Dictionary value must be a string or integer");
+                    PyErr_SetString(LibTokaMapError, "Dictionary value must be a string, bool, float, or integer");
                     return nullptr;
                 }
             }
@@ -708,13 +926,76 @@ PyObject* libtokamap_map(PyObject* Py_UNUSED(module), PyObject* const* args, Py_
         if (!result.empty()) {
             return array_to_numpy(result);
         }
-    } catch (const std::exception& e) {
-        PyErr_SetString(LibTokaMapError, e.what());
+        throw libtokamap::DataSourceError{"No data returned from mapping"};
+    } catch (...) {
+        // PyErr_SetString(LibTokaMapError, e.what());
+        translate_cpp_exception();
         return nullptr;
     }
     
-    PyErr_SetString(LibTokaMapError, "No data returned");
-    return nullptr;
+    // PyErr_SetString(LibTokaMapError, "No data returned");
+    // return nullptr;
+}
+
+int initialise_error_types(PyObject* module)
+{
+    if (add_exception(module, &LibTokaMapError,
+                      "libtokamap.LibTokaMapError", PyExc_Exception) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &ConfigurationError,
+                      "libtokamap.ConfigurationError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &MappingError,
+                      "libtokamap.MappingError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &MissingMappingError,
+                      "libtokamap.MissingMappingError", MappingError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &InvalidMappingError,
+                      "libtokamap.InvalidMappingError", MappingError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &DataSourceError,
+                      "libtokamap.DataSourceError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &PythonCallbackError,
+                      "libtokamap.PythonCallbackError", DataSourceError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &FileError,
+                      "libtokamap.FileError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &JsonError,
+                      "libtokamap.JsonError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &DataTypeError,
+                      "libtokamap.DataTypeError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &PathError,
+                      "libtokamap.PathError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &SchemaError,
+                      "libtokamap.SchemaError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &ParameterError,
+                      "libtokamap.ParameterError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    if (add_exception(module, &ProcessingError,
+                      "libtokamap.ProcessingError", LibTokaMapError) < 0) {
+        return -1;
+    }
+    return 0;
 }
 
 int libtokamap_module_exec(PyObject* module)
@@ -723,8 +1004,7 @@ int libtokamap_module_exec(PyObject* module)
         PyErr_SetString(PyExc_ImportError, "Cannot initialize libtokamap module more than once");
         return -1;
     }
-    LibTokaMapError = PyErr_NewException("libtokamap.LibTokaMapError", nullptr, nullptr);
-    if (PyModule_AddObjectRef(module, "LibTokaMapError", LibTokaMapError) < 0) {
+    if (initialise_error_types(module) != 0) {
         return -1;
     }
 

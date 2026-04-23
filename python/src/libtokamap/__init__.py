@@ -3,12 +3,31 @@ import clibtokamap
 from abc import ABC, abstractmethod
 from pathlib import Path
 import numpy as np
-from typing import Callable, Any
+from typing import Callable, Any, TypeAlias
+
+
+AttributeValue: TypeAlias = str | bool | int | float
+Attributes: TypeAlias = dict[str, AttributeValue]
+MappedValue: TypeAlias = np.ndarray | str
 
 
 __version__ = clibtokamap.__version__
 LibrarySuffix = clibtokamap.LibrarySuffix
 
+LibTokaMapError = clibtokamap.LibTokaMapError
+ConfigurationError = clibtokamap.ConfigurationError
+MappingError = clibtokamap.MappingError
+MissingMappingError = clibtokamap.MissingMappingError
+InvalidMappingError = clibtokamap.InvalidMappingError
+DataSourceError = clibtokamap.DataSourceError
+PythonCallbackError = clibtokamap.PythonCallbackError
+FileError = clibtokamap.FileError
+JsonError = clibtokamap.JsonError
+DataTypeError = clibtokamap.DataTypeError
+PathError = clibtokamap.PathError
+SchemaError = clibtokamap.SchemaError
+ParameterError = clibtokamap.ParameterError
+ProcessingError = clibtokamap.ProcessingError
 
 class DataSource(ABC):
     """Abstract base class for data sources.
@@ -45,7 +64,7 @@ class Mapper:
     def register_data_source_factory(self, factory_name: str, factory_library: str) -> None:
         clibtokamap.register_data_source_factory(self._mapper, factory_name, factory_library)
 
-    def register_data_source(self, name: str, factory_name: str, args: dict[str, str]) -> None:
+    def register_data_source(self, name: str, factory_name: str, args: dict[str, str | int | Path]) -> None:
         clibtokamap.register_data_source(self._mapper, name, factory_name, args)
 
     def register_python_data_source(self, name: str, data_source: DataSource) -> None:
@@ -68,7 +87,12 @@ class Mapper:
         """
         clibtokamap.load_custom_function_library(self._mapper, library_path)
 
-    def register_custom_function(self, library_name: str, function_name: str, function: Callable[[dict[str, np.array], dict[str, Any]], np.array]) -> None:
+    def register_custom_function(
+        self,
+        library_name: str,
+        function_name: str,
+        function: Callable[[dict[str, MappedValue], dict[str, Any]], np.ndarray],
+    ) -> None:
         """Register a custom function with the mapper.
 
         Args:
@@ -78,7 +102,7 @@ class Mapper:
         """
         clibtokamap.register_custom_function(self._mapper, library_name, function_name, function)
 
-    def map(self, experiment: str, path: str, attributes: dict[str, str] | None = None) -> np.ndarray:
+    def map(self, experiment: str, path: str, attributes: Attributes | None = None) -> MappedValue:
         """Map the data from the data sources.
 
         Args:
@@ -87,7 +111,7 @@ class Mapper:
             attributes: A dictionary of attributes to pass to the data sources.
 
         Returns:
-            A numpy array containing the mapped data.
+            A NumPy array containing the mapped data, or a string for mapped string values.
         """
         if attributes is None:
             attributes = {}
