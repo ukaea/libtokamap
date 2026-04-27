@@ -35,6 +35,11 @@ classifiers = [
     "Topic :: Utilities",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/ukaea/libtokamap"
 "Repository" = "https://github.com/ukaea/libtokamap"
@@ -53,3 +58,7 @@ relative_to = "pyproject.toml"
 version_file = "src/libtokamap/_version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
+
+[tool.cibuildwheel]
+test-requires = ["pytest>=8"]
+test-command = "pytest {package}/tests -q"

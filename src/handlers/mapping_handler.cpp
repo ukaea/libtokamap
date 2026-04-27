@@ -314,7 +314,7 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
 
     const std::string map_path = generate_map_path(new_tokens, indices, mappings, path);
     if (map_path.empty()) {
-        throw libtokamap::MappingError{"failed to find mapping for '" + path + "'"};
+        throw libtokamap::MissingMappingError{"failed to find mapping for '" + path + "'"};
     }
 
     if (m_mapping_cache.contains(map_path)) {
