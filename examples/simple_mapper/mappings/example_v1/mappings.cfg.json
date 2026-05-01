@@ -4,6 +4,6 @@
     "author": "John Doe",
     "version": "1.0.1"
   },
-  "partitions": [{ "attribute": "shot", "selector": "max_below" }],
+  "partitions": [{ "attribute": "shot", "selector": "MAX_BELOW" }],
   "groups": ["magnetics"]
 }
