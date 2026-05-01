@@ -22,7 +22,7 @@ if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
   message( SEND_ERROR "In-source builds are not allowed." )
 endif()
 
-find_package( xtensor REQUIRED )
+# find_package( xtensor REQUIRED )
 
 # Set project options
 include( StaticAnalyzers )
