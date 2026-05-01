@@ -359,7 +359,7 @@ std::optional<float> get_float_value(const std::string& name, const nlohmann::js
 void init_value_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                         const nlohmann::json& value)
 {
-    const auto& value_json = value.at("VALUE");
+    const auto& value_json = value.at("value");
     map_store.emplace(mapping_name, std::make_unique<libtokamap::ValueMapping>(value_json));
 }
 
