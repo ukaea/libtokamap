@@ -1,7 +1,7 @@
 {
-  "DATA_SOURCE_CONFIG": {
+  "data_source_config": {
     "JSON": {
-      "ARGS": {
+      "args": {
         "file_name": "data_{{ shot }}.json"
       }
     }

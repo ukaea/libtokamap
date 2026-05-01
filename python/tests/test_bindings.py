@@ -218,10 +218,10 @@ def test_invalid_slice_raises_processing_error(config_path: Path, tmp_path: Path
     mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
     mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
     mappings["bad_slice"] = {
-        "MAP_TYPE": "DATA_SOURCE",
-        "DATA_SOURCE": "JSON",
-        "ARGS": {"signal": "coils/0/flux/data"},
-        "SLICE": "[::0]",
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "coils/0/flux/data"},
+        "slice": "[::0]",
     }
     mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
 
