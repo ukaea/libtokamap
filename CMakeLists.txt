@@ -16,11 +16,13 @@ project(
     LANGUAGES CXX
 )
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set( CMAKE_POSITION_INDEPENDENT_CODE ON )
 
 if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
-    message( SEND_ERROR "In-source builds are not allowed." )
+  message( SEND_ERROR "In-source builds are not allowed." )
 endif()
+
+find_package( xtensor REQUIRED )
 
 # Set project options
 include( StaticAnalyzers )
@@ -34,18 +36,18 @@ option( ENABLE_DEBIAN_PACKAGING "Configure install files for debian packaging" O
 
 ## Generators
 if( UNIX AND NOT APPLE )
-    set( DEFAULT_CPACK_GENERATORS "DEB;RPM;TGZ" )
+  set( DEFAULT_CPACK_GENERATORS "DEB;RPM;TGZ" )
 elseif( APPLE )
-    set( DEFAULT_CPACK_GENERATORS "TGZ;ZIP" )
+  set( DEFAULT_CPACK_GENERATORS "TGZ;ZIP" )
 else()
-    set( DEFAULT_CPACK_GENERATORS "ZIP" )
+  set( DEFAULT_CPACK_GENERATORS "ZIP" )
 endif()
 set( ENABLE_CPACK_GENERATORS "${DEFAULT_CPACK_GENERATORS}" CACHE STRING "enable the cpack generators" )
 
 add_clang_format_target()
 
 if( ENABLE_TESTING )
-    enable_testing()
+  enable_testing()
 endif()
 
 # Specify C++ standard for all targets
@@ -69,9 +71,9 @@ set( UTIL_SOURCES
     src/utils/typed_data_array.cpp
 )
 if( MSVC )
-    list( APPEND UTIL_SOURCES src/utils/windows_utils.cpp )
+  list( APPEND UTIL_SOURCES src/utils/windows_utils.cpp )
 else()
-    list( APPEND UTIL_SOURCES src/utils/unix_utils.cpp )
+  list( APPEND UTIL_SOURCES src/utils/unix_utils.cpp )
 endif()
 
 set( MAP_TYPE_SOURCES
@@ -141,7 +143,7 @@ set( EXT_HEADERS
 )
 
 if( "${PROJECT_VERSION_TWEAK}" STREQUAL "" )
-    set( PROJECT_VERSION_TWEAK 0 )
+  set( PROJECT_VERSION_TWEAK 0 )
 endif()
 
 configure_file(
@@ -165,10 +167,10 @@ configure_file(
 add_library( libtokamap ${SOURCES} )
 
 if( MSVC )
-    target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj /utf-8 )
-    target_link_libraries( libtokamap PRIVATE Dbghelp )
+  target_compile_options( libtokamap PRIVATE /W4 /WX /bigobj /utf-8 )
+  target_link_libraries( libtokamap PRIVATE Dbghelp )
 else()
-    target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
+  target_compile_options( libtokamap PRIVATE -Wall -Wextra -Wpedantic -Werror )
 endif()
 
 target_include_directories( libtokamap
@@ -184,7 +186,7 @@ target_include_directories( libtokamap
       $<INSTALL_INTERFACE:include/libtokamap>
 )
 if( ENABLE_PROFILING )
-    target_compile_definitions( libtokamap PRIVATE LIBTOKAMAP_PROFILE_ENABLED )
+  target_compile_definitions( libtokamap PRIVATE LIBTOKAMAP_PROFILE_ENABLED )
 endif()
 target_sources( libtokamap PUBLIC
     FILE_SET HEADERS
@@ -241,14 +243,14 @@ install( FILES
 
 # Install documentation
 if( ENABLE_DEBIAN_PACKAGING )
-    add_custom_command(
+  add_custom_command(
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog"
         COMMAND ./scripts/git2debchangelog.sh | grep -v -e 'Merge branch' -e 'Merge pull'  > ${CMAKE_CURRENT_BINARY_DIR}/changelog
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
         COMMENT "Generating changelog"
     )
 
-    add_custom_command(
+  add_custom_command(
         OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
         COMMAND gzip -cn9 changelog > changelog.gz
         WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
@@ -256,20 +258,20 @@ if( ENABLE_DEBIAN_PACKAGING )
         COMMENT "Compressing changelog"
     )
 
-    add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
+  add_custom_target( changelog_gz ALL DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz" )
 
-    install( FILES
+  install( FILES
         "${CMAKE_CURRENT_BINARY_DIR}/changelog.gz"
         DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
     )
 
-    install( FILES
+  install( FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
         DESTINATION "${CMAKE_INSTALL_DATADIR}/doc/libtokamap-dev"
         RENAME copyright
     )
 else( ENABLE_DEBIAN_PACKAGING )
-    install( FILES
+  install( FILES
         ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
         ${CMAKE_CURRENT_SOURCE_DIR}/README.md
         DESTINATION "${CMAKE_INSTALL_DOCDIR}"
@@ -278,11 +280,11 @@ endif( ENABLE_DEBIAN_PACKAGING )
 
 # Unit testing setup
 if( ENABLE_TESTING )
-    add_subdirectory( test )
+  add_subdirectory( test )
 endif()
 
 if( ENABLE_EXAMPLES )
-    add_subdirectory( examples/simple_mapper )
+  add_subdirectory( examples/simple_mapper )
 endif()
 
 list( TRANSFORM SOURCES PREPEND ${CMAKE_CURRENT_LIST_DIR}/ )

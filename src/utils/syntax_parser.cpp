@@ -105,13 +105,13 @@ nlohmann::json libtokamap::expand_syntactic_sugar(nlohmann::json input)
         std::string str = input;
         if (!str.empty() && str[0] == '@') {
             str = str.substr(1);
-            input = {{"MAP_TYPE", "FORWARD"}, {"VALUE", str}};
+            input = {{"map_type", "FORWARD"}, {"value", str}};
         } else {
-            input = {{"MAP_TYPE", "VALUE"}, {"VALUE", str}};
+            input = {{"map_type", "VALUE"}, {"value", str}};
         }
     } else if (input.is_primitive()) {
         // parse simple non-string value
-        input = {{"MAP_TYPE", "VALUE"}, {"VALUE", input}};
+        input = {{"map_type", "VALUE"}, {"value", input}};
     }
 
     // walk object looking for strings with #N
