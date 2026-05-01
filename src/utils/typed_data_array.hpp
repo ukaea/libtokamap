@@ -20,8 +20,8 @@
 #  define TM_BIT_CAST reinterpret_cast
 #endif
 
-#include <xtensor/containers/xarray.hpp>
-#include <xtensor/containers/xadapt.hpp>
+// #include <xtensor/containers/xarray.hpp>
+// #include <xtensor/containers/xadapt.hpp>
 
 #include "exceptions/exceptions.hpp"
 #include "utils/compiler.hpp"
@@ -453,23 +453,23 @@ class TypedDataArray
     void set_trace(nlohmann::json trace) { m_trace = std::move(trace); }
     [[nodiscard]] const nlohmann::json& trace() const { return m_trace; }
 
-    template <typename T>
-    xt::xarray<T> as_xtensor() {
-        if (m_data_type != data_type_of<T>()) {
-            throw libtokamap::DataTypeError{"invalid type given to as_xtensor"};
-        }
-        T* data = TM_BIT_CAST<T*>(m_buffer);
-        return xt::adapt(data, m_size, xt::no_ownership{}, m_shape);
-    }
+    // template <typename T>
+    // xt::xarray<T> as_xtensor() {
+    //     if (m_data_type != data_type_of<T>()) {
+    //         throw libtokamap::DataTypeError{"invalid type given to as_xtensor"};
+    //     }
+    //     T* data = TM_BIT_CAST<T*>(m_buffer);
+    //     return xt::adapt(data, m_size, xt::no_ownership{}, m_shape);
+    // }
 
-    template <typename T>
-    xt::xarray<T> to_xtensor() {
-        if (m_data_type != data_type_of<T>()) {
-            throw libtokamap::DataTypeError{"invalid type given to into_xtensor"};
-        }
-        T* data = TM_BIT_CAST<T*>(m_buffer);
-        return xt::adapt(data, m_size, xt::acquire_ownership{}, m_shape);
-    }
+    // template <typename T>
+    // xt::xarray<T> to_xtensor() {
+    //     if (m_data_type != data_type_of<T>()) {
+    //         throw libtokamap::DataTypeError{"invalid type given to into_xtensor"};
+    //     }
+    //     T* data = TM_BIT_CAST<T*>(m_buffer);
+    //     return xt::adapt(data, m_size, xt::acquire_ownership{}, m_shape);
+    // }
 
   private:
     char* m_buffer = nullptr;
