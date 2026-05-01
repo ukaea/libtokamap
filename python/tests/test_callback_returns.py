@@ -19,11 +19,11 @@ def make_custom_mapper(tmp_path, callback: Callback) -> libtokamap.Mapper:
     mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
     mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
     mappings["coil[#]/flux/callback_result"] = {
-        "MAP_TYPE": "CUSTOM",
-        "LIBRARY": "custom",
-        "FUNCTION": "callback_result",
-        "INPUTS": {},
-        "PARAMETERS": {},
+        "map_type": "CUSTOM",
+        "library": "custom",
+        "function": "callback_result",
+        "inputs": {},
+        "parameters": {},
     }
     mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
 

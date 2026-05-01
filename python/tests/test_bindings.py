@@ -151,11 +151,11 @@ def test_custom_function_errors_are_wrapped(config_path: Path, tmp_path: Path) -
     mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
     mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
     mappings["coil[#]/flux/failing_custom"] = {
-        "MAP_TYPE": "CUSTOM",
-        "LIBRARY": "custom",
-        "FUNCTION": "failing_custom",
-        "INPUTS": {"lhs": "coil[#]/flux/time"},
-        "PARAMETERS": {},
+        "map_type": "CUSTOM",
+        "library": "custom",
+        "function": "failing_custom",
+        "inputs": {"lhs": "coil[#]/flux/time"},
+        "parameters": {},
     }
     mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
 
@@ -174,11 +174,11 @@ def test_custom_function_accepts_integer_numpy_return(config_path: Path, tmp_pat
     mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
     mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
     mappings["coil[#]/flux/int_codes"] = {
-        "MAP_TYPE": "CUSTOM",
-        "LIBRARY": "custom",
-        "FUNCTION": "int_codes",
-        "INPUTS": {},
-        "PARAMETERS": {},
+        "map_type": "CUSTOM",
+        "library": "custom",
+        "function": "int_codes",
+        "inputs": {},
+        "parameters": {},
     }
     mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
 
