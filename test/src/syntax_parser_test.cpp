@@ -8,8 +8,8 @@ TEST_CASE("Parse forward mapping", "[syntax_parser]") {
         nlohmann::json input = "@FOO";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "FORWARD" },
-            { "VALUE", "FOO" }
+            { "map_type", "FORWARD" },
+            { "value", "FOO" }
         };
         REQUIRE(result == expected);
     }
@@ -18,8 +18,8 @@ TEST_CASE("Parse forward mapping", "[syntax_parser]") {
         nlohmann::json input = "@/A/B/C";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "FORWARD" },
-            { "VALUE", "/A/B/C" }
+            { "map_type", "FORWARD" },
+            { "value", "/A/B/C" }
         };
         REQUIRE(result == expected);
     }
@@ -30,8 +30,8 @@ TEST_CASE("Parse value mapping", "[syntax_parser]") {
         nlohmann::json input = "foo";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "foo" }
+            { "map_type", "VALUE" },
+            { "value", "foo" }
         };
         REQUIRE(result == expected);
     }
@@ -40,8 +40,8 @@ TEST_CASE("Parse value mapping", "[syntax_parser]") {
         nlohmann::json input = 3;
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", 3 }
+            { "map_type", "VALUE" },
+            { "value", 3 }
         };
         REQUIRE(result == expected);
     }
@@ -50,8 +50,8 @@ TEST_CASE("Parse value mapping", "[syntax_parser]") {
         nlohmann::json input = 3.14;
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", 3.14 }
+            { "map_type", "VALUE" },
+            { "value", 3.14 }
         };
         REQUIRE(result == expected);
     }
@@ -67,8 +67,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "{{ #3 }}";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "{{ indices.3 }}" }
+            { "map_type", "VALUE" },
+            { "value", "{{ indices.3 }}" }
         };
         REQUIRE(result == expected);
     }
@@ -78,8 +78,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "foo/{{ #0 }}/bar";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "foo/{{ indices.0 }}/bar" }
+            { "map_type", "VALUE" },
+            { "value", "foo/{{ indices.0 }}/bar" }
         };
         REQUIRE(result == expected);
     }
@@ -88,23 +88,23 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "foo/{{ #0 }}/bar/{{ #1 }}/baz";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "foo/{{ indices.0 }}/bar/{{ indices.1 }}/baz" }
+            { "map_type", "VALUE" },
+            { "value", "foo/{{ indices.0 }}/bar/{{ indices.1 }}/baz" }
         };
         REQUIRE(result == expected);
     }
 
     SECTION("simple index as nested field") {
         nlohmann::json input = {
-            { "MAP_TYPE", "PLUGIN" },
-            { "ARGS", {
+            { "map_type", "PLUGIN" },
+            { "args", {
                 { "signal", "{{ #0 }}" },
             } }
         };
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "PLUGIN" },
-            { "ARGS", {
+            { "map_type", "PLUGIN" },
+            { "args", {
                 { "signal", "{{ indices.0 }}" },
             } }
         };
@@ -116,8 +116,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "{{ foo[#2] }}";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "{{ at(foo, indices.2) }}" }
+            { "map_type", "VALUE" },
+            { "value", "{{ at(foo, indices.2) }}" }
         };
         REQUIRE(result == expected);
     }
@@ -126,8 +126,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "{{ foo[#1].bar }}";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "{{ at(foo, indices.1).bar }}" }
+            { "map_type", "VALUE" },
+            { "value", "{{ at(foo, indices.1).bar }}" }
         };
         REQUIRE(result == expected);
     }
@@ -136,8 +136,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "{{ (foo[#0].bar)[#1] }}";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "{{ at(at(foo, indices.0).bar, indices.1) }}" }
+            { "map_type", "VALUE" },
+            { "value", "{{ at(at(foo, indices.0).bar, indices.1) }}" }
         };
         REQUIRE(result == expected);
     }
@@ -146,8 +146,8 @@ TEST_CASE("Parse indices expansion", "[syntax_parser]") {
         nlohmann::json input = "{{ (foo[#0].bar)[#1].baz }}";
         nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
         nlohmann::json expected = {
-            { "MAP_TYPE", "VALUE" },
-            { "VALUE", "{{ at(at(foo, indices.0).bar, indices.1).baz }}" }
+            { "map_type", "VALUE" },
+            { "value", "{{ at(at(foo, indices.0).bar, indices.1).baz }}" }
         };
         REQUIRE(result == expected);
     }
