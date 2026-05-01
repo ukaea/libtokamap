@@ -97,7 +97,7 @@ jobs:
           path: release_assets
 
       - name: Upload assets to GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             release_assets/**/*.{deb,rpm,tar.gz,zip}
