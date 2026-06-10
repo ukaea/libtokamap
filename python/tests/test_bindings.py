@@ -24,6 +24,15 @@ class FailingDataSource(libtokamap.DataSource):
         raise ValueError(f"failed for {args['signal']}")
 
 
+class RecordingDataSource(libtokamap.DataSource):
+    def __init__(self) -> None:
+        self.calls: list[dict[str, Any]] = []
+
+    def get(self, args: dict[str, Any]) -> np.ndarray:
+        self.calls.append(dict(args))
+        return np.array([args["shot"]], dtype=np.int64)
+
+
 class RuntimeAttributeDataSource(libtokamap.DataSource):
     def get(self, args: dict[str, Any]) -> np.ndarray:
         return np.array([args["run_id"]], dtype=np.int64)
@@ -168,6 +177,48 @@ def test_python_data_source_errors_are_wrapped(config_path: Path) -> None:
 
     with pytest.raises(libtokamap.PythonCallbackError, match="failed for coils"):
         mapper.map("example", "magnetics/coil", {"shot": 42})
+
+
+def test_python_data_source_receives_runtime_attributes(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    globals_path = mapping_dir / "example_v1/globals.json"
+    globals_json = json.loads(globals_path.read_text(encoding="utf-8"))
+    globals_json["DEG2RAD"] = 0.0174532925199
+    globals_path.write_text(json.dumps(globals_json), encoding="utf-8")
+
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["runtime_attrs"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "runtime_attrs"},
+    }
+    mappings["explicit_args_override_runtime_attrs"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "runtime_attrs", "shot": 7},
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    write_config(config_path, mapping_dir, REPO_ROOT / "examples/simple_mapper/schemas")
+    data_source = RecordingDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    runtime_result = mapper.map("example", "magnetics/runtime_attrs", {"shot": 42})
+    override_result = mapper.map(
+        "example", "magnetics/explicit_args_override_runtime_attrs", {"shot": 42}
+    )
+
+    np.testing.assert_array_equal(runtime_result, np.array([42], dtype=np.int64))
+    np.testing.assert_array_equal(override_result, np.array([7], dtype=np.int64))
+    assert data_source.calls[0]["shot"] == 42
+    assert data_source.calls[0]["signal"] == "runtime_attrs"
+    assert "DEG2RAD" not in data_source.calls[0]
+    assert data_source.calls[1]["shot"] == 7
 
 
 @pytest.mark.cache_regression
