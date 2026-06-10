@@ -2,6 +2,7 @@
 
 #include "map_types/base_mapping.hpp"
 #include "map_types/map_arguments.hpp"
+#include "utils/data_source_cache.hpp"
 #include "utils/ram_cache.hpp"
 #include "utils/typed_data_array.hpp"
 
@@ -18,7 +19,6 @@ namespace libtokamap
 
 using DataSourceName = std::string;
 using DataSourceArgs = std::unordered_map<std::string, nlohmann::json>;
-using DataSourceCacheKey = std::pair<libtokamap::DataSourceName, nlohmann::json>;
 
 class DataSource
 {
@@ -49,19 +49,6 @@ class DataSourceMapping : public Mapping
     std::optional<float> m_offset;
     std::optional<float> m_scale;
     std::optional<std::string> m_slice;
-
-    static constexpr int CacheThreshold = 2;
-    static std::unordered_map<DataSourceCacheKey, int> m_data_source_count;
-    static std::unordered_map<DataSourceCacheKey, TypedDataArray> m_data_source_cache;
 };
 
 } // namespace libtokamap
-
-namespace std
-{
-
-template <> struct hash<libtokamap::DataSourceCacheKey> {
-    size_t operator()(const libtokamap::DataSourceCacheKey& key) const;
-};
-
-} // namespace std

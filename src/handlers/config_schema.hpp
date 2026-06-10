@@ -16,6 +16,15 @@ constexpr auto ConfigSchema = R"(
         "cache_enabled": {
             "type": "boolean"
         },
+        "mapping_cache_enabled": {
+            "type": "boolean"
+        },
+        "data_source_cache_enabled": {
+            "type": "boolean"
+        },
+        "ram_cache_enabled": {
+            "type": "boolean"
+        },
         "cache_size": {
             "type": "integer",
             "minimum": 0

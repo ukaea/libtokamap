@@ -396,14 +396,20 @@ LibTokaMap includes built-in RAM caching to improve performance:
 nlohmann::json config = {
     {"mapping_directory", "/path/to/mappings"},
     {"cache_enabled", true},
+    {"mapping_cache_enabled", true},
+    {"data_source_cache_enabled", true},
+    {"ram_cache_enabled", true},
     {"cache_size", 200}  // Cache up to 200 items
 };
 ```
 
 ### Cache Behavior
 
-- Data is cached based on mapping name and arguments
-- Cache is automatically managed (LRU eviction)
+- `cache_enabled = false` disables all cache layers
+- `mapping_cache_enabled` controls complete mapping-result caching
+- `data_source_cache_enabled` controls raw data-source fetch caching before slice/scale/offset
+- `ram_cache_enabled` controls the `RamCache` pointer passed to data sources
+- `RamCache` entries are automatically managed with LRU eviction
 - Cache can be disabled by setting `cache_enabled` to `false`
 - Cache size can be adjusted with `cache_size` parameter
 

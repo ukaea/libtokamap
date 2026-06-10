@@ -238,11 +238,40 @@ std::string generate_map_path(const std::deque<std::string>& path_tokens, const 
     return found_path;
 }
 
+std::string make_mapping_cache_key(const libtokamap::ExperimentName& experiment, const libtokamap::GroupName& group,
+                                   const nlohmann::json& partition_attributes,
+                                   const libtokamap::MappingName& map_path, const std::vector<int>& indices,
+                                   const nlohmann::json& runtime_attributes, libtokamap::DataType data_type, int rank)
+{
+    nlohmann::json key = {
+        {"experiment", experiment},
+        {"group", group},
+        {"partition", partition_attributes},
+        {"map_path", map_path},
+        {"indices", indices},
+        {"runtime_attributes", runtime_attributes},
+        {"data_type", libtokamap::data_type_name(data_type)},
+        {"rank", rank},
+    };
+    return key.dump();
+}
+
 } // namespace
 
 void libtokamap::MappingHandler::reset()
 {
+    const std::lock_guard experiment_lock{m_experiment_mutex};
     m_experiment_register.clear();
+    {
+        const std::lock_guard lock{m_mapping_cache_mutex};
+        m_mapping_cache.clear();
+    }
+    m_data_source_cache.clear();
+    m_ram_cache = nullptr;
+    m_cache_enabled = false;
+    m_mapping_cache_enabled = false;
+    m_data_source_cache_enabled = false;
+    m_ram_cache_enabled = false;
     m_init = false;
 }
 
@@ -272,8 +301,11 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
         auto msg = "no mappings found for experiment '" + experiment_string + "'";
         throw libtokamap::ParameterError{msg};
     }
+    {
+        const std::lock_guard lock{m_experiment_mutex};
+        load_experiment(experiment_string, extra_attributes);
+    }
     auto& experiment_mappings = m_experiment_register.at(experiment_string);
-    load_experiment(experiment_string, extra_attributes);
 
     if (!experiment_mappings.group_mappings.contains(group_name)) {
         auto msg = "no mappings found for group '" + group_name + "'";
@@ -288,17 +320,25 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
     }
     auto& partition_mappings = group_mappings.at(partition_attributes);
 
-    auto& [attributes, mappings] = partition_mappings;
+    const auto& [base_attributes, mappings] = partition_mappings;
 
     const std::string map_path = generate_map_path(new_tokens, indices, mappings, path);
     if (map_path.empty()) {
         throw libtokamap::MissingMappingError{"failed to find mapping for '" + path + "'"};
     }
 
-    if (m_mapping_cache.contains(map_path)) {
-        LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", true);
-        return m_mapping_cache.at(map_path).clone();
+    const std::string mapping_cache_key =
+        make_mapping_cache_key(experiment_string, group_name, partition_attributes, map_path, indices, extra_attributes,
+                               data_type, rank);
+    if (m_mapping_cache_enabled) {
+        const std::lock_guard lock{m_mapping_cache_mutex};
+        if (m_mapping_cache.contains(mapping_cache_key)) {
+            LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", true);
+            return m_mapping_cache.at(mapping_cache_key).clone();
+        }
     }
+
+    nlohmann::json attributes = base_attributes;
 
     // Add request indices to globals
     attributes["indices"] = indices;
@@ -308,12 +348,15 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
     }
 
     const libtokamap::MapArguments map_arguments{mappings,        attributes,      data_type,        rank,
-                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get()};
+                                                 m_trace_enabled, m_cache_enabled, m_data_source_cache_enabled,
+                                                 m_ram_cache.get(), &m_data_source_cache,
+                                                 extra_attributes};
 
     LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
     auto result = mappings.at(map_path)->map(map_arguments);
-    if (m_cache_enabled && m_mapping_counts.get(map_path) >= MappingCacheThreshold) {
-        m_mapping_cache[map_path] = result.clone();
+    if (m_mapping_cache_enabled && m_mapping_counts.get(map_path) >= MappingCacheThreshold) {
+        const std::lock_guard lock{m_mapping_cache_mutex};
+        m_mapping_cache[mapping_cache_key] = result.clone();
     }
     return result;
 }
@@ -554,9 +597,15 @@ void libtokamap::MappingHandler::init(const nlohmann::json& config)
     m_mapping_dir = config.at("mapping_directory").get<std::string>();
     m_experiment_register = locate_mappings(m_mapping_dir, m_mapping_config_schema);
 
-    bool enable_caching = config.contains("cache_enabled") && config.at("cache_enabled").get<bool>();
+    m_cache_enabled = config.contains("cache_enabled") && config.at("cache_enabled").get<bool>();
+    m_mapping_cache_enabled =
+        m_cache_enabled && (!config.contains("mapping_cache_enabled") || config.at("mapping_cache_enabled").get<bool>());
+    m_data_source_cache_enabled = m_cache_enabled && (!config.contains("data_source_cache_enabled") ||
+                                                      config.at("data_source_cache_enabled").get<bool>());
+    m_ram_cache_enabled =
+        m_cache_enabled && (!config.contains("ram_cache_enabled") || config.at("ram_cache_enabled").get<bool>());
 
-    if (enable_caching) {
+    if (m_ram_cache_enabled) {
         const int cache_size =
             config.contains("cache_size") ? config.at("cache_size").get<int>() : libtokamap::default_size;
         m_ram_cache = std::make_shared<libtokamap::RamCache>(cache_size);
@@ -564,7 +613,6 @@ void libtokamap::MappingHandler::init(const nlohmann::json& config)
         m_ram_cache = nullptr;
     }
 
-    m_cache_enabled = m_ram_cache != nullptr;
     m_init = true;
 
     m_trace_enabled = config.contains("trace_enabled") && config.at("trace_enabled").get<bool>();

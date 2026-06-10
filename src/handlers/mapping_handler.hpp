@@ -3,12 +3,14 @@
 #include <cstddef>
 #include <filesystem>
 #include <memory>
+#include <mutex>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include "map_types/data_source_mapping.hpp"
+#include "utils/data_source_cache.hpp"
 #include "utils/library_loader.hpp"
 #include "utils/ram_cache.hpp"
 #include "utils/typed_data_array.hpp"
@@ -78,6 +80,9 @@ class MappingHandler
     std::filesystem::path m_mapping_dir;
     std::shared_ptr<libtokamap::RamCache> m_ram_cache;
     bool m_cache_enabled = false;
+    bool m_mapping_cache_enabled = false;
+    bool m_data_source_cache_enabled = false;
+    bool m_ram_cache_enabled = false;
     valijson::Schema m_mappings_schema;
     valijson::Schema m_globals_schema;
     valijson::Schema m_mapping_config_schema;
@@ -86,6 +91,9 @@ class MappingHandler
 
     constexpr static int MappingCacheThreshold = 2;
     std::unordered_map<std::string, TypedDataArray> m_mapping_cache;
+    mutable std::mutex m_mapping_cache_mutex;
+    mutable std::mutex m_experiment_mutex;
+    DataSourceCache m_data_source_cache;
 };
 
 } // namespace libtokamap

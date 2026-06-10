@@ -16,10 +16,6 @@
 #include "utils/typed_data_array.hpp"
 #include "utils/profiler.hpp"
 
-std::unordered_map<libtokamap::DataSourceCacheKey, int> libtokamap::DataSourceMapping::m_data_source_count = {};
-std::unordered_map<libtokamap::DataSourceCacheKey, libtokamap::TypedDataArray>
-    libtokamap::DataSourceMapping::m_data_source_cache = {};
-
 libtokamap::TypedDataArray libtokamap::DataSourceMapping::map(const MapArguments& arguments) const
 {
     LIBTOKAMAP_PROFILER(profiler);
@@ -34,13 +30,17 @@ libtokamap::TypedDataArray libtokamap::DataSourceMapping::map(const MapArguments
     }
     LIBTOKAMAP_PROFILER_ATTR(profiler, "args", args);
 
-    DataSourceCacheKey cache_key = {m_name, args};
-    bool cache_hit = false;
-
-    if (arguments.cache_enabled && m_data_source_cache.contains(cache_key)) {
-        array = m_data_source_cache.at(cache_key).clone();
-        cache_hit = true;
-        LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", true);
+    const DataSourceCacheKey cache_key = {m_data_source, m_name, args};
+    if (arguments.data_source_cache_enabled && arguments.data_source_cache != nullptr) {
+        auto cached = arguments.data_source_cache->get(cache_key);
+        if (cached.has_value()) {
+            array = std::move(cached.value());
+            LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", true);
+        } else {
+            array = m_data_source->get(args, arguments, arguments.ram_cache);
+            arguments.data_source_cache->put(cache_key, array);
+            LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
+        }
     } else {
         array = m_data_source->get(args, arguments, arguments.ram_cache);
         LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
@@ -70,11 +70,6 @@ libtokamap::TypedDataArray libtokamap::DataSourceMapping::map(const MapArguments
         array.set_trace(trace);
     }
 
-    DataSourceCacheKey unrendered_cache_key = {m_name, m_data_source_args};
-    if (!cache_hit && m_data_source_count.at(unrendered_cache_key) >= CacheThreshold) {
-        m_data_source_cache[cache_key] = array.clone();
-    }
-
     return array;
 }
 
@@ -87,30 +82,4 @@ libtokamap::DataSourceMapping::DataSourceMapping(DataSourceName name, DataSource
     if (data_source == nullptr) {
         throw TokaMapError{"data_source is nullptr"};
     }
-    DataSourceCacheKey key{m_name, m_data_source_args};
-    m_data_source_count[key]++;
-}
-
-namespace
-{
-
-// taken from boost hash_combine
-template <class T> inline void hash_combine(std::size_t& seed, const T& value)
-{
-    constexpr std::size_t offset = 0x9e3779b9;
-    constexpr std::size_t left_shift = 6;
-    constexpr std::size_t right_shift = 2;
-
-    std::hash<T> hasher;
-    seed ^= hasher(value) + offset + (seed << left_shift) + (seed >> right_shift);
-}
-
-} // namespace
-
-size_t std::hash<libtokamap::DataSourceCacheKey>::operator()(const libtokamap::DataSourceCacheKey& key) const
-{
-    size_t hash = 0;
-    hash_combine(hash, key.first);
-    hash_combine(hash, key.second);
-    return hash;
 }

@@ -2,4 +2,8 @@
 
 #include <string>
 
-bool libtokamap::RamCache::contains(const std::string& key) const { return m_entries.contains(key); }
+bool libtokamap::RamCache::contains(const std::string& key) const
+{
+    const std::lock_guard lock{m_mutex};
+    return m_entries.contains(key);
+}
