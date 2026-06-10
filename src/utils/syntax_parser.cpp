@@ -57,10 +57,6 @@ void walk_json(nlohmann::json& root)
         stack.pop();
 
         for (const auto& element : current->items()) {
-            if (element.key() == "MAP_TYPE") {
-                continue; // Skip MAP_TYPE elements
-            }
-
             auto& node = element.value();
             if (node.is_string()) {
                 node = libtokamap::process_string_node(node);

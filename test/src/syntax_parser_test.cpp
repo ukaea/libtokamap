@@ -3,6 +3,32 @@
 
 #include "utils/syntax_parser.hpp"
 
+namespace
+{
+
+bool contains_key_recursive(const nlohmann::json& node, const std::string& key)
+{
+    if (node.is_object()) {
+        if (node.contains(key)) {
+            return true;
+        }
+        for (const auto& value : node) {
+            if (contains_key_recursive(value, key)) {
+                return true;
+            }
+        }
+    } else if (node.is_array()) {
+        for (const auto& value : node) {
+            if (contains_key_recursive(value, key)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+} // namespace
+
 TEST_CASE("Parse forward mapping", "[syntax_parser]") {
     SECTION("single element") {
         nlohmann::json input = "@FOO";
@@ -54,6 +80,24 @@ TEST_CASE("Parse value mapping", "[syntax_parser]") {
             { "value", 3.14 }
         };
         REQUIRE(result == expected);
+    }
+
+    SECTION("does not emit legacy uppercase keys for integer value sugar") {
+        nlohmann::json input = 1;
+        nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
+        REQUIRE(result.at("map_type") == "VALUE");
+        REQUIRE(result.at("value") == 1);
+        REQUIRE_FALSE(contains_key_recursive(result, "MAP_TYPE"));
+        REQUIRE_FALSE(contains_key_recursive(result, "VALUE"));
+    }
+
+    SECTION("does not emit legacy uppercase keys for string value sugar") {
+        nlohmann::json input = "hello";
+        nlohmann::json result = libtokamap::expand_syntactic_sugar(input);
+        REQUIRE(result.at("map_type") == "VALUE");
+        REQUIRE(result.at("value") == "hello");
+        REQUIRE_FALSE(contains_key_recursive(result, "MAP_TYPE"));
+        REQUIRE_FALSE(contains_key_recursive(result, "VALUE"));
     }
 }
 

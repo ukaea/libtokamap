@@ -59,6 +59,11 @@ version_file = "src/libtokamap/_version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
 
+[tool.pytest.ini_options]
+markers = [
+    "cache_regression: cache behavior regressions that document known failures on develop",
+]
+
 [tool.cibuildwheel]
 test-requires = ["pytest>=8"]
 test-command = "pytest {package}/tests -q"

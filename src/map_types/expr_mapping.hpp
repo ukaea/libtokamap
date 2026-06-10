@@ -21,7 +21,7 @@ namespace libtokamap
 
 /**
  * @class ExprMapping
- * @brief ExprMapping class to the hold the EXPR MAP_TYPE after parsing from the
+ * @brief ExprMapping class to hold expression mappings after parsing from the
  * JSON mapping file
  *
  * The class holds an expression std::string 'm_expr' for evaluation and

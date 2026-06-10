@@ -58,12 +58,11 @@ make_map_arguments(std::unordered_map<std::string, std::unique_ptr<libtokamap::M
 
 TEST_CASE("DimMapping can be constructed from JSON", "[dim_mapping]")
 {
-    // Setup test fixture
-    nlohmann::json test_json = {{"MAP_TYPE", "DIMENSION"}, {"DIM_PROBE", "test_dim/mapping/signal"}};
+    nlohmann::json test_json = {{"map_type", "DIMENSION"}, {"dim_probe", "test_dim/mapping/signal"}};
 
     SECTION("Constructor works with string probe name")
     {
-        auto mapping = std::make_unique<DimMapping>(test_json.at("DIM_PROBE"));
+        auto mapping = std::make_unique<DimMapping>(test_json.at("dim_probe"));
         REQUIRE(mapping != nullptr);
     }
 
@@ -200,7 +199,7 @@ TEST_CASE("DimMapping returns expected dimension sizes", "[dim_mapping]")
 
 TEST_CASE("DimMapping error handling", "[dim_mapping_errors]")
 {
-    SECTION("Throws error when DIM_PROBE not found")
+    SECTION("Throws error when dim_probe not found")
     {
         auto dim_mapping = std::make_unique<DimMapping>("nonexistent_probe");
 
@@ -209,6 +208,6 @@ TEST_CASE("DimMapping error handling", "[dim_mapping_errors]")
 
         REQUIRE_THROWS_AS(dim_mapping->map(map_args), MappingError);
         REQUIRE_THROWS_WITH(dim_mapping->map(map_args),
-                            Catch::Matchers::ContainsSubstring("invalid DIM_PROBE 'nonexistent_probe'"));
+                            Catch::Matchers::ContainsSubstring("invalid dim_probe 'nonexistent_probe'"));
     }
 }

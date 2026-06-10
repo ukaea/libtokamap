@@ -24,6 +24,30 @@ class FailingDataSource(libtokamap.DataSource):
         raise ValueError(f"failed for {args['signal']}")
 
 
+class RuntimeAttributeDataSource(libtokamap.DataSource):
+    def get(self, args: dict[str, Any]) -> np.ndarray:
+        return np.array([args["run_id"]], dtype=np.int64)
+
+
+class ArrayRecordingDataSource(libtokamap.DataSource):
+    def __init__(self) -> None:
+        self.calls: list[dict[str, Any]] = []
+
+    def get(self, args: dict[str, Any]) -> np.ndarray:
+        self.calls.append(dict(args))
+        return np.array([10.0, 20.0, 30.0], dtype=np.float64)
+
+
+class ConstantRecordingDataSource(libtokamap.DataSource):
+    def __init__(self, value: int) -> None:
+        self.value = value
+        self.calls: list[dict[str, Any]] = []
+
+    def get(self, args: dict[str, Any]) -> np.ndarray:
+        self.calls.append(dict(args))
+        return np.array([self.value], dtype=np.int64)
+
+
 def int_codes(_inputs: dict[str, libtokamap.MappedValue], _params: dict[str, Any]) -> np.ndarray:
     return np.array([1, 2, 3], dtype=np.int32)
 
@@ -144,6 +168,258 @@ def test_python_data_source_errors_are_wrapped(config_path: Path) -> None:
 
     with pytest.raises(libtokamap.PythonCallbackError, match="failed for coils"):
         mapper.map("example", "magnetics/coil", {"shot": 42})
+
+
+@pytest.mark.cache_regression
+def test_cache_distinguishes_indices_and_reuses_raw_data_source_fetch(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["cache_probe[#]"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_indexed"},
+        "slice": "[{{ #0 }}]",
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data_source = ArrayRecordingDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    first = mapper.map("example", "magnetics/cache_probe[0]", {"shot": 42})
+    second = mapper.map("example", "magnetics/cache_probe[1]", {"shot": 42})
+
+    assert first.item() == pytest.approx(10.0)
+    assert second.item() == pytest.approx(20.0)
+    assert len(data_source.calls) == 1
+
+
+@pytest.mark.cache_regression
+def test_repeated_identical_data_source_request_reuses_raw_fetch(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["cache_probe"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_repeated"},
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data_source = ArrayRecordingDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    first = mapper.map("example", "magnetics/cache_probe", {"shot": 42})
+    second = mapper.map("example", "magnetics/cache_probe", {"shot": 42})
+
+    np.testing.assert_array_equal(first, np.array([10.0, 20.0, 30.0]))
+    np.testing.assert_array_equal(second, np.array([10.0, 20.0, 30.0]))
+    assert len(data_source.calls) == 1
+
+
+@pytest.mark.cache_regression
+def test_sibling_mappings_with_same_data_source_args_reuse_raw_fetch(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["cache_probe_raw"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_sibling"},
+    }
+    mappings["cache_probe_scaled"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_sibling"},
+        "scale": 2.0,
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data_source = ArrayRecordingDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    raw = mapper.map("example", "magnetics/cache_probe_raw", {"shot": 42})
+    scaled = mapper.map("example", "magnetics/cache_probe_scaled", {"shot": 42})
+
+    np.testing.assert_array_equal(raw, np.array([10.0, 20.0, 30.0]))
+    np.testing.assert_array_equal(scaled, np.array([20.0, 40.0, 60.0]))
+    assert len(data_source.calls) == 1
+
+
+def test_cache_disabled_repeated_data_source_request_fetches_each_time(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["uncached_probe"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_disabled"},
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = false",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data_source = ArrayRecordingDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    mapper.map("example", "magnetics/uncached_probe", {"shot": 42})
+    mapper.map("example", "magnetics/uncached_probe", {"shot": 42})
+
+    assert len(data_source.calls) == 2
+
+
+@pytest.mark.cache_regression
+def test_data_source_cache_does_not_leak_between_mapper_instances(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["pollution_probe"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "cache_probe_pollution"},
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    first_source = ConstantRecordingDataSource(1)
+    first_mapper = libtokamap.Mapper(str(config_path))
+    first_mapper.register_python_data_source("JSON", first_source)
+    first_mapper.register_custom_function("custom", "dot_product", dot_product)
+    np.testing.assert_array_equal(
+        first_mapper.map("example", "magnetics/pollution_probe", {"shot": 42}),
+        np.array([1], dtype=np.int64),
+    )
+
+    second_source = ConstantRecordingDataSource(2)
+    second_mapper = libtokamap.Mapper(str(config_path))
+    second_mapper.register_python_data_source("JSON", second_source)
+    second_mapper.register_custom_function("custom", "dot_product", dot_product)
+    np.testing.assert_array_equal(
+        second_mapper.map("example", "magnetics/pollution_probe", {"shot": 42}),
+        np.array([2], dtype=np.int64),
+    )
+
+    third_source = ConstantRecordingDataSource(3)
+    third_mapper = libtokamap.Mapper(str(config_path))
+    third_mapper.register_python_data_source("JSON", third_source)
+    third_mapper.register_custom_function("custom", "dot_product", dot_product)
+    np.testing.assert_array_equal(
+        third_mapper.map("example", "magnetics/pollution_probe", {"shot": 42}),
+        np.array([3], dtype=np.int64),
+    )
+    assert len(third_source.calls) == 1
+
+
+@pytest.mark.cache_regression
+def test_mapping_cache_key_includes_runtime_attributes(
+    config_path: Path, tmp_path: Path
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    mappings_path = mapping_dir / "example_v1/magnetics/40/mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings["_runtime_attr"] = {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": {"signal": "runtime_attr_key", "run_id": "{{ run_id }}"},
+    }
+    mappings["runtime_attr_ref"] = {
+        "map_type": "EXPR",
+        "expr": "x",
+        "parameters": {"x": "_runtime_attr"},
+    }
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+
+    config_path.write_text(
+        "\n".join(
+            [
+                f'mapping_directory = "{mapping_dir.as_posix()}"',
+                f'schemas_directory = "{(REPO_ROOT / "examples/simple_mapper/schemas").as_posix()}"',
+                "cache_enabled = true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    data_source = RuntimeAttributeDataSource()
+    mapper = libtokamap.Mapper(str(config_path))
+    mapper.register_python_data_source("JSON", data_source)
+    mapper.register_custom_function("custom", "dot_product", dot_product)
+
+    first = mapper.map("example", "magnetics/_runtime_attr", {"shot": 42, "run_id": 1})
+    second = mapper.map("example", "magnetics/_runtime_attr", {"shot": 42, "run_id": 2})
+
+    np.testing.assert_array_equal(first, np.array([1], dtype=np.int64))
+    np.testing.assert_array_equal(second, np.array([2], dtype=np.int64))
 
 
 def test_custom_function_errors_are_wrapped(config_path: Path, tmp_path: Path) -> None:

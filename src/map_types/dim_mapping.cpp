@@ -14,7 +14,7 @@ libtokamap::TypedDataArray libtokamap::DimMapping::map(const MapArguments& argum
     LIBTOKAMAP_PROFILER(profiler);
 
     if (!arguments.entries.contains(m_dim_probe)) {
-        throw libtokamap::MappingError{"invalid DIM_PROBE '" + m_dim_probe + "'"};
+        throw libtokamap::MappingError{"invalid dim_probe '" + m_dim_probe + "'"};
     }
     LIBTOKAMAP_PROFILER_ATTR(profiler, "dim_probe", m_dim_probe);
 
@@ -31,7 +31,7 @@ libtokamap::TypedDataArray libtokamap::DimMapping::map(const MapArguments& argum
         //    // Special case for scalar arrays
         //    return TypedDataArray{static_cast<uint64_t>(1)};
         //}
-        //throw libtokamap::MappingError{"cannot use DIM_PROBE on rank 0 mapping '" + m_dim_probe + "'"};
+        //throw libtokamap::MappingError{"cannot use dim_probe on rank 0 mapping '" + m_dim_probe + "'"};
     }
 
     auto result = TypedDataArray{static_cast<uint64_t>(array.shape()[dim_index])};
