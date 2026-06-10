@@ -39,7 +39,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/github-script@v8
+      - uses: actions/github-script@v9
         with:
           script: |
             core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
@@ -59,7 +59,7 @@ jobs:
 
       - name: Build Windows wheels
         if: runner.OS == 'Windows'
-        uses: pypa/cibuildwheel@v3.4.0
+        uses: pypa/cibuildwheel@v3.4.1
         with:
           package-dir: ${{github.workspace}}/python
           config-file: ${{github.workspace}}/python/pyproject.toml
@@ -76,7 +76,7 @@ jobs:
           startswith(matrix.build-platform[2], 'manylinux_2_28') &&
           ! ( startswith(matrix.build-platform[1], 'aarch64') &&
           !startsWith(github.ref, 'refs/tags/') )
-        uses: pypa/cibuildwheel@v3.4.0
+        uses: pypa/cibuildwheel@v3.4.1
         with:
           package-dir: ./python
           config-file: ./python/pyproject.toml
@@ -107,7 +107,7 @@ jobs:
 
       - name: Build macOS wheels
         if: runner.os == 'macOS'
-        uses: pypa/cibuildwheel@v3.4.0
+        uses: pypa/cibuildwheel@v3.4.1
         with:
           package-dir: ./python
           config-file: ./python/pyproject.toml
