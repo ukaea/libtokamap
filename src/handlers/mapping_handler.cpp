@@ -308,7 +308,8 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
     }
 
     const libtokamap::MapArguments map_arguments{mappings,        attributes,      data_type,        rank,
-                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get()};
+                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get(),
+                                                 extra_attributes};
 
     LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
     auto result = mappings.at(map_path)->map(map_arguments);
