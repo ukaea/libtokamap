@@ -30,6 +30,7 @@
 #include "map_types/data_source_mapping.hpp"
 #include "map_types/dim_mapping.hpp"
 #include "map_types/expr_mapping.hpp"
+#include "map_types/interp_mapping.hpp"
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/algorithm.hpp"
@@ -418,6 +419,18 @@ void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::Ma
     }
 }
 
+void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
+                         const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+{
+   (void)map_store;
+   (void)mapping_name;
+   (void)value;
+   (void)mapping_counts;
+
+   // AJP to implement
+
+}
+
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                          const nlohmann::json& value, const std::vector<libtokamap::LibraryFunction>& library_functions,
                          libtokamap::MappingCounts& mapping_counts)
@@ -479,6 +492,9 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                 break;
             case MappingType::EXPR:
                 init_expr_mapping(map_store, mapping_name, value, m_mapping_counts);
+                break;
+            case MappingType::INTERP:
+                init_interp_mapping(map_store, mapping_name, value, m_mapping_counts);
                 break;
             case MappingType::CUSTOM:
                 init_custom_mapping(map_store, mapping_name, value, m_library_functions, m_mapping_counts);
