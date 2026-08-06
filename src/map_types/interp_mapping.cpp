@@ -43,6 +43,12 @@ void check_increasing(const std::vector<double>& base, const std::string& name)
     }
 }
 
+/**
+ * @brief Indices of the two base points either side of the given point
+ *
+ * Points beyond either end of the base are clamped rather than extrapolated,
+ * and come back as a pair of equal indices for the caller to take as-is
+ */
 std::pair<size_t, size_t> bracket(double point, const std::vector<double>& base)
 {
     // clamp, no extrapolate
@@ -59,6 +65,12 @@ std::pair<size_t, size_t> bracket(double point, const std::vector<double>& base)
     return {high - 1, high};
 }
 
+/**
+ * @brief Straight line between each pair of bracketing base points
+ *
+ * Every target point is an independent lookup into the base, so the targets
+ * need not be ordered
+ */
 std::vector<double> interpolate_linear(const std::vector<double>& target, const std::vector<double>& base,
                                        const std::vector<double>& input)
 {
@@ -75,6 +87,20 @@ std::vector<double> interpolate_linear(const std::vector<double>& target, const 
     return interpolated;
 }
 
+/**
+ * @brief Interpolate the input onto the target points, the base being the
+ * reference the input is defined against
+ *
+ * Each interpolation type owns its own loop, so that types needing a setup pass
+ * over the whole base (splines, for instance) have somewhere to do it once
+ *
+ * @param interp_type which interpolation to run, eg. linear
+ * @param target points to evaluate at, in any order
+ * @param base axis the input is sampled on, strictly increasing and the same
+ *             length as the input
+ * @param input data values being interpolated, one per base point
+ * @return one interpolated value per target point, in target order
+ */
 std::vector<double> interpolate(InterpType interp_type, const std::vector<double>& target,
                                 const std::vector<double>& base, const std::vector<double>& input)
 {
