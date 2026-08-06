@@ -14,6 +14,7 @@ set( TEST_SOURCES
     src/data_source_mapping_test.cpp
     src/dim_mapping_test.cpp
     src/indices_test.cpp
+    src/interp_mapping_test.cpp
     src/mapping_locator_test.cpp
     src/parse_slices_test.cpp
     src/render_test.cpp
