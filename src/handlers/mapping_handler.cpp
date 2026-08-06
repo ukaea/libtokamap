@@ -422,13 +422,26 @@ void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::Ma
 void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                          const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
 {
-   (void)map_store;
-   (void)mapping_name;
-   (void)value;
-   (void)mapping_counts;
+   for (const auto& required : {"input", "base", "target", "type"}) {
+        if (!value.contains(required)) {
+            throw libtokamap::ConfigurationError{"Required " + std::string{required} +
+                                                 " argument not provided in INTERP mapping '" + mapping_name + "'"};
+        }
+    }
 
-   // AJP to implement
+    const auto input = value["input"].get<std::string>();
+    const auto base = value["base"].get<std::string>();
+    const auto target = value["target"].get<std::string>();
+    const auto interp_type = value["type"].get<libtokamap::InterpType>();
 
+    if (interp_type == libtokamap::InterpType::UNKNOWN) {
+        throw libtokamap::ConfigurationError{"Unknown interpolation type in INTERP mapping '" + mapping_name + "'"};
+    }
+
+    map_store.emplace(mapping_name, std::make_unique<libtokamap::InterpMapping>(input, base, target, interp_type));
+    mapping_counts.increment(input);
+    mapping_counts.increment(base);
+    mapping_counts.increment(target);
 }
 
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
