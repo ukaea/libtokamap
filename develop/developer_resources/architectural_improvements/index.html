@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1928,11 +1928,11 @@
 <li>
 <p><strong>Enhanced Error Messages</strong>
    <div class="highlight"><pre><span></span><code><span class="c1">// Before</span>
-<span class="k">throw</span><span class="w"> </span><span class="n">MappingError</span><span class="p">(</span><span class="s">&quot;Type mismatch&quot;</span><span class="p">);</span>
+<span class="k">throw</span><span class="w"> </span><span class="n">MappingError</span><span class="p">(</span><span class="s">"Type mismatch"</span><span class="p">);</span>
 
 <span class="c1">// After</span>
 <span class="k">throw</span><span class="w"> </span><span class="n">MappingError</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">format</span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;Type mismatch: expected {}, got {}&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">"Type mismatch: expected {}, got {}"</span><span class="p">,</span>
 <span class="w">    </span><span class="n">TypeRegistry</span><span class="o">::</span><span class="n">instance</span><span class="p">().</span><span class="n">getTypeName</span><span class="p">(</span><span class="n">expected</span><span class="p">),</span>
 <span class="w">    </span><span class="n">TypeRegistry</span><span class="o">::</span><span class="n">instance</span><span class="p">().</span><span class="n">getTypeName</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span>
 <span class="p">));</span>
@@ -2171,7 +2171,7 @@
 
 <span class="c1">// Usage</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MappingPipeline</span><span class="o">::</span><span class="n">Builder</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">fromMapping</span><span class="p">(</span><span class="s">&quot;temperature_data&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">fromMapping</span><span class="p">(</span><span class="s">"temperature_data"</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">transform</span><span class="p">([](</span><span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">convertUnits</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">filter</span><span class="p">([](</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">isValid</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"> </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">cache</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span>
@@ -2251,8 +2251,8 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">RedisCache</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">CacheStrategy</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">};</span>
 
 <span class="c1">// Configuration</span>
-<span class="n">config</span><span class="p">.</span><span class="n">cache_strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;LRU&quot;</span><span class="p">;</span>
-<span class="n">config</span><span class="p">.</span><span class="n">cache_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="s">&quot;max_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">}};</span>
+<span class="n">config</span><span class="p">.</span><span class="n">cache_strategy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"LRU"</span><span class="p">;</span>
+<span class="n">config</span><span class="p">.</span><span class="n">cache_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="s">"max_size"</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">}};</span>
 </code></pre></div>
 <hr />
 <h3 id="12-add-telemetry-and-metrics-layer">12. Add Telemetry and Metrics Layer<a class="headerlink" href="#12-add-telemetry-and-metrics-layer" title="Permanent link">&para;</a></h3>
@@ -2402,7 +2402,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

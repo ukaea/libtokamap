@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2434,27 +2434,27 @@
 <span class="p">};</span>
 
 <span class="c1">// Method 1: Direct registration</span>
-<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">"MY_SOURCE"</span><span class="p">,</span><span class="w"> </span>
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">CustomDataSource</span><span class="o">&gt;</span><span class="p">());</span>
 
 <span class="c1">// Method 2: Factory-based registration</span>
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create_data_source</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="k">extern</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">DataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create_data_source</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">CustomDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="c1">// Register factory and create data source</span>
-<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source_factory</span><span class="p">(</span><span class="s">&quot;MY_FACTORY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/libcustom.so&quot;</span><span class="p">);</span>
-<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;MY_FACTORY&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">factory_args</span><span class="p">);</span>
+<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source_factory</span><span class="p">(</span><span class="s">"MY_FACTORY"</span><span class="p">,</span><span class="w"> </span><span class="s">"/path/to/libcustom.so"</span><span class="p">);</span>
+<span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">"MY_SOURCE"</span><span class="p">,</span><span class="w"> </span><span class="s">"MY_FACTORY"</span><span class="p">,</span><span class="w"> </span><span class="n">factory_args</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="2-custom-mapping-functions">2. Custom Mapping Functions<a class="headerlink" href="#2-custom-mapping-functions" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// External library function signature</span>
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">my_custom_function</span><span class="p">(</span>
+<span class="k">extern</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="n">TypedDataArray</span><span class="w"> </span><span class="n">my_custom_function</span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CustomMappingInputMap</span><span class="o">&amp;</span><span class="w"> </span><span class="n">inputs</span><span class="p">,</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">CustomMappingParams</span><span class="o">&amp;</span><span class="w"> </span><span class="n">params</span><span class="p">);</span>
 
 <span class="c1">// Dynamic loading and registration</span>
-<span class="n">LibraryFunction</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">load_library_function</span><span class="p">(</span><span class="s">&quot;path/to/lib.so&quot;</span><span class="p">,</span><span class="w"> </span>
-<span class="w">                                           </span><span class="s">&quot;my_custom_function&quot;</span><span class="p">);</span>
+<span class="n">LibraryFunction</span><span class="w"> </span><span class="n">func</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">load_library_function</span><span class="p">(</span><span class="s">"path/to/lib.so"</span><span class="p">,</span><span class="w"> </span>
+<span class="w">                                           </span><span class="s">"my_custom_function"</span><span class="p">);</span>
 <span class="n">mapping_handler</span><span class="p">.</span><span class="n">register_custom_function</span><span class="p">(</span><span class="n">func</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="error-handling-and-exception-hierarchy">Error Handling and Exception Hierarchy<a class="headerlink" href="#error-handling-and-exception-hierarchy" title="Permanent link">&para;</a></h2>
@@ -2711,7 +2711,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -2148,7 +2148,7 @@
 <ol>
 <li>
 <p><strong>Fork the repository</strong>
-   <div class="highlight"><pre><span></span><code><span class="c1"># Visit https://github.com/ukaea/libtokamap and click &quot;Fork&quot;</span>
+   <div class="highlight"><pre><span></span><code><span class="c1"># Visit https://github.com/ukaea/libtokamap and click "Fork"</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -2216,7 +2216,7 @@ git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> 
 <li>
 <p><strong>Commit your changes</strong>
    <div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feature: brief description&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"feature: brief description"</span>
 </code></pre></div></p>
 </li>
 </ol>
@@ -2353,7 +2353,7 @@ clang-format<span class="w"> </span>-i<span class="w"> </span>src/**/*.cpp<span 
 <li>
 <p><strong>Use exceptions</strong> for exceptional conditions
   <div class="highlight"><pre><span></span><code><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file_exists</span><span class="p">(</span><span class="n">path</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;File not found: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"File not found: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div></p>
 </li>
@@ -2396,7 +2396,7 @@ clang-format<span class="w"> </span>-i<span class="w"> </span>src/**/*.cpp<span 
 <span class="cm"> * </span>
 <span class="cm"> * @example</span>
 <span class="cm"> * ```cpp</span>
-<span class="cm"> * auto result = handler.map(&quot;ITER_001&quot;, &quot;magnetics/flux&quot;, </span>
+<span class="cm"> * auto result = handler.map("ITER_001", "magnetics/flux", </span>
 <span class="cm"> *                          std::type_index{typeid(double)}, 2, {});</span>
 <span class="cm"> * ```</span>
 <span class="cm"> */</span>
@@ -2416,10 +2416,10 @@ clang-format<span class="w"> </span>-i<span class="w"> </span>src/**/*.cpp<span 
 <h3 id="writing-tests">Writing Tests<a class="headerlink" href="#writing-tests" title="Permanent link">&para;</a></h3>
 <p>We use Catch2 for testing:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;catch2/catch_test_macros.hpp&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;your_component.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"your_component.hpp"</span>
 
-<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">&quot;Feature works correctly&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[feature]&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">SECTION</span><span class="p">(</span><span class="s">&quot;Basic functionality&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="n">TEST_CASE</span><span class="p">(</span><span class="s">"Feature works correctly"</span><span class="p">,</span><span class="w"> </span><span class="s">"[feature]"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SECTION</span><span class="p">(</span><span class="s">"Basic functionality"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">YourComponent</span><span class="w"> </span><span class="n">component</span><span class="p">;</span>
 <span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">component</span><span class="p">.</span><span class="n">process</span><span class="p">();</span>
 
@@ -2427,7 +2427,7 @@ clang-format<span class="w"> </span>-i<span class="w"> </span>src/**/*.cpp<span 
 <span class="w">        </span><span class="n">REQUIRE</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">expected_size</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">SECTION</span><span class="p">(</span><span class="s">&quot;Error handling&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">SECTION</span><span class="p">(</span><span class="s">"Error handling"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">YourComponent</span><span class="w"> </span><span class="n">component</span><span class="p">;</span>
 <span class="w">        </span><span class="n">REQUIRE_THROWS_AS</span><span class="p">(</span><span class="n">component</span><span class="p">.</span><span class="n">invalid_operation</span><span class="p">(),</span><span class="w"> </span>
 <span class="w">                         </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">ProcessingError</span><span class="p">);</span>
@@ -2544,7 +2544,7 @@ Closes <span class="ni">#123</span>
 <h3 id="addressing-review-comments">Addressing Review Comments<a class="headerlink" href="#addressing-review-comments" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1"># Make requested changes</span>
 git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Address review comments&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Address review comments"</span>
 git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/your-feature-name
 </code></pre></div>
 <h2 id="types-of-contributions">Types of Contributions<a class="headerlink" href="#types-of-contributions" title="Permanent link">&para;</a></h2>
@@ -2581,7 +2581,7 @@ Why is this feature needed?
 How might this be implemented?
 
 <span class="gs">**Alternatives Considered**</span>
-Other approaches you&#39;ve considered
+Other approaches you've considered
 </code></pre></div></p>
 <h3 id="documentation-improvements">Documentation Improvements<a class="headerlink" href="#documentation-improvements" title="Permanent link">&para;</a></h3>
 <p>Documentation improvements are always welcome:
@@ -2720,7 +2720,7 @@ Other approaches you&#39;ve considered
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

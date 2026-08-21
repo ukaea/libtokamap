@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1926,9 +1926,9 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 
 <span class="w">    </span><span class="c1">// Configure the handler</span>
 <span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="s">&quot;mapping_directory&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/your/mappings&quot;</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="s">&quot;cache_enabled&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span><span class="s">&quot;cache_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">}</span>
+<span class="w">        </span><span class="p">{</span><span class="s">"mapping_directory"</span><span class="p">,</span><span class="w"> </span><span class="s">"/path/to/your/mappings"</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s">"cache_enabled"</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span><span class="s">"cache_size"</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">}</span>
 <span class="w">    </span><span class="p">};</span>
 
 <span class="w">    </span><span class="c1">// Initialize with configuration</span>
@@ -1940,13 +1940,13 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h3 id="performing-mappings">Performing Mappings<a class="headerlink" href="#performing-mappings" title="Permanent link">&para;</a></h3>
 <p>Once initialized, you can perform mappings using the <code>map()</code> method:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Define mapping parameters</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">mapping_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;temperature_data&quot;</span><span class="p">;</span>
-<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;sensors/temperature&quot;</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">mapping_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"temperature_data"</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"sensors/temperature"</span><span class="p">;</span>
 <span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="p">{</span><span class="k">typeid</span><span class="p">(</span><span class="kt">double</span><span class="p">)};</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="c1">// 1D array</span>
 <span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">extra_attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="s">&quot;shot&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="s">&quot;timestamp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;2024-01-15T10:30:00Z&quot;</span><span class="p">}</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"shot"</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"timestamp"</span><span class="p">,</span><span class="w"> </span><span class="s">"2024-01-15T10:30:00Z"</span><span class="p">}</span>
 <span class="p">};</span>
 
 <span class="c1">// Perform the mapping</span>
@@ -1965,7 +1965,7 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">        </span><span class="c1">// Process your data...</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TokaMapError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mapping error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Mapping error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
@@ -1988,10 +1988,10 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h3 id="configuration-file-format">Configuration File Format<a class="headerlink" href="#configuration-file-format" title="Permanent link">&para;</a></h3>
 <p>The main configuration passed to <code>init()</code> supports these options:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;mapping_directory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/mappings&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;cache_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;cache_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;max_nesting_depth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">    </span><span class="nt">"mapping_directory"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/mappings"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"cache_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"cache_size"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"max_nesting_depth"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="configuration-options">Configuration Options<a class="headerlink" href="#configuration-options" title="Permanent link">&para;</a></h4>
@@ -2005,12 +2005,12 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h4 id="mappingscfgjson">mappings.cfg.json<a class="headerlink" href="#mappingscfgjson" title="Permanent link">&para;</a></h4>
 <p>Defines the structure and available partitions for an experiment:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;experiment1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;groups&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;group_name1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;partitions&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;partition1_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">]},</span>
-<span class="w">                </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;partition1_100&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;range&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">199</span><span class="p">]}</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"experiment1"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"groups"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"group_name1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"partitions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partition1_0"</span><span class="p">,</span><span class="w"> </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">]},</span>
+<span class="w">                </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partition1_100"</span><span class="p">,</span><span class="w"> </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">199</span><span class="p">]}</span>
 <span class="w">            </span><span class="p">]</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
@@ -2019,23 +2019,23 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h4 id="mappingsjson">mappings.json<a class="headerlink" href="#mappingsjson" title="Permanent link">&para;</a></h4>
 <p>Contains the actual mapping definitions:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;temperature_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sensor_data.json&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;measurements.temperature&quot;</span>
+<span class="w">    </span><span class="nt">"temperature_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DATA_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JSON"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sensor_data.json"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"measurements.temperature"</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">273.15</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;slice&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[0:100]&quot;</span>
+<span class="w">        </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mf">273.15</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"slice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[0:100]"</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;pressure_calculation&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EXPR&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;expr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;temp * 0.1 + offset&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;temp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;temperature_data&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1013.25</span>
+<span class="w">    </span><span class="nt">"pressure_calculation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXPR"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temp * 0.1 + offset"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temperature_data"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mf">1013.25</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -2043,64 +2043,64 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h4 id="globalsjson">globals.json<a class="headerlink" href="#globalsjson" title="Permanent link">&para;</a></h4>
 <p>Defines variables available to all mappings in the scope:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;shot_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;calibration_factor&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;data_root&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/data/experiment1&quot;</span>
+<span class="w">    </span><span class="nt">"shot_number"</span><span class="p">:</span><span class="w"> </span><span class="mi">12345</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"calibration_factor"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"data_root"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/data/experiment1"</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="mapping-types">Mapping Types<a class="headerlink" href="#mapping-types" title="Permanent link">&para;</a></h2>
 <h3 id="value-mapping">Value Mapping<a class="headerlink" href="#value-mapping" title="Permanent link">&para;</a></h3>
 <p>Direct assignment of values from configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;constant_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">42.0</span>
+<span class="w">    </span><span class="nt">"constant_value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VALUE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">42.0</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;array_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VALUE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">]</span>
+<span class="w">    </span><span class="nt">"array_value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VALUE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="data-source-mapping">Data Source Mapping<a class="headerlink" href="#data-source-mapping" title="Permanent link">&para;</a></h3>
 <p>Retrieve data from registered data sources:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;sensor_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data/sensors.json&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;temperature.readings&quot;</span>
+<span class="w">    </span><span class="nt">"sensor_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DATA_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JSON"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data/sensors.json"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temperature.readings"</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;slice&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[10:50:2]&quot;</span>
+<span class="w">        </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"slice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[10:50:2]"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="scale-and-offset">Scale and Offset<a class="headerlink" href="#scale-and-offset" title="Permanent link">&para;</a></h4>
 <p>Apply linear transformation: <code>output = input * scale + offset</code></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;temperature_celsius&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;temp_kelvin.json&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;temperature&quot;</span>
+<span class="w">    </span><span class="nt">"temperature_celsius"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DATA_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JSON"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temp_kelvin.json"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temperature"</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">-273.15</span>
+<span class="w">        </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mf">-273.15</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h4 id="slicing">Slicing<a class="headerlink" href="#slicing" title="Permanent link">&para;</a></h4>
 <p>Extract subsets of data using slice notation:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;data_subset&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;JSON&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data.json&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;measurements&quot;</span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;slice&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[0:100:2]&quot;</span><span class="w">  </span><span class="c1">// Elements 0, 2, 4, ..., 98</span>
+<span class="w">    </span><span class="nt">"data_subset"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DATA_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JSON"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"file"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data.json"</span><span class="p">,</span><span class="w"> </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"measurements"</span><span class="p">},</span>
+<span class="w">        </span><span class="nt">"slice"</span><span class="p">:</span><span class="w"> </span><span class="s2">"[0:100:2]"</span><span class="w">  </span><span class="c1">// Elements 0, 2, 4, ..., 98</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2113,13 +2113,13 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h3 id="expression-mapping">Expression Mapping<a class="headerlink" href="#expression-mapping" title="Permanent link">&para;</a></h3>
 <p>Evaluate mathematical expressions using ExprTk:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;calculated_pressure&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EXPR&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;expr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sqrt(x^2 + y^2) * scale_factor&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;parameters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;x&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sensor_x_data&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;y&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sensor_y_data&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;scale_factor&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span>
+<span class="w">    </span><span class="nt">"calculated_pressure"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXPR"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sqrt(x^2 + y^2) * scale_factor"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"parameters"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sensor_x_data"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sensor_y_data"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"scale_factor"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.05</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -2131,26 +2131,26 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h3 id="dimension-mapping">Dimension Mapping<a class="headerlink" href="#dimension-mapping" title="Permanent link">&para;</a></h3>
 <p>Get dimension information from arrays:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;array_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DIMENSION&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;dim_probe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;large_data_array&quot;</span>
+<span class="w">    </span><span class="nt">"array_size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DIMENSION"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"dim_probe"</span><span class="p">:</span><span class="w"> </span><span class="s2">"large_data_array"</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="custom-mapping">Custom Mapping<a class="headerlink" href="#custom-mapping" title="Permanent link">&para;</a></h3>
 <p>Use custom functions from loaded libraries:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;custom_transform&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CUSTOM&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;custom_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_custom_function&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;library&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_library&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;inputs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;input1&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_data_1&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;input2&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_data_2&quot;</span>
+<span class="w">    </span><span class="nt">"custom_transform"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CUSTOM"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"custom_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my_custom_function"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"library"</span><span class="p">:</span><span class="w"> </span><span class="s2">"my_library"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"inputs"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"input1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"source_data_1"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"input2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"source_data_2"</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;params&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;linear&quot;</span>
+<span class="w">        </span><span class="nt">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"threshold"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -2193,9 +2193,9 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <h3 id="ram-cache">RAM Cache<a class="headerlink" href="#ram-cache" title="Permanent link">&para;</a></h3>
 <p>LibTokaMap includes built-in RAM caching to improve performance:</p>
 <div class="highlight"><pre><span></span><code><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="p">{</span><span class="s">&quot;mapping_directory&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/path/to/mappings&quot;</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="s">&quot;cache_enabled&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span><span class="s">&quot;cache_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">}</span><span class="w">  </span><span class="c1">// Cache up to 200 items</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"mapping_directory"</span><span class="p">,</span><span class="w"> </span><span class="s">"/path/to/mappings"</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"cache_enabled"</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="s">"cache_size"</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">}</span><span class="w">  </span><span class="c1">// Cache up to 200 items</span>
 <span class="p">};</span>
 </code></pre></div>
 <h3 id="cache-behavior">Cache Behavior<a class="headerlink" href="#cache-behavior" title="Permanent link">&para;</a></h3>
@@ -2212,16 +2212,16 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapping_handler</span><span class="p">.</span><span class="n">map</span><span class="p">(...);</span>
 <span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// File not found or access issues</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;File error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"File error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Data source specific errors</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Data source error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Data source error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MappingError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Mapping configuration or execution errors</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mapping error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Mapping error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TokaMapError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Base class for all LibTokaMap errors</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;LibTokaMap error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"LibTokaMap error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="common-error-scenarios">Common Error Scenarios<a class="headerlink" href="#common-error-scenarios" title="Permanent link">&para;</a></h3>
@@ -2266,9 +2266,9 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">;</span>
 
 <span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="p">{</span><span class="s">&quot;mapping_directory&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/data/mappings&quot;</span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span><span class="s">&quot;cache_enabled&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span><span class="s">&quot;cache_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">}</span>
+<span class="w">            </span><span class="p">{</span><span class="s">"mapping_directory"</span><span class="p">,</span><span class="w"> </span><span class="s">"/data/mappings"</span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="s">"cache_enabled"</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="s">"cache_size"</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">}</span>
 <span class="w">        </span><span class="p">};</span>
 
 <span class="w">        </span><span class="n">handler</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
@@ -2277,14 +2277,14 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">type_index</span><span class="p">{</span><span class="k">typeid</span><span class="p">(</span><span class="kt">double</span><span class="p">)};</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="p">{</span><span class="s">&quot;shot&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span><span class="s">&quot;diagnostic&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;temperature&quot;</span><span class="p">}</span>
+<span class="w">            </span><span class="p">{</span><span class="s">"shot"</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">},</span>
+<span class="w">            </span><span class="p">{</span><span class="s">"diagnostic"</span><span class="p">,</span><span class="w"> </span><span class="s">"temperature"</span><span class="p">}</span>
 <span class="w">        </span><span class="p">};</span>
 
 <span class="w">        </span><span class="c1">// Perform mapping</span>
 <span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;temperature_calibrated&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;sensors/temperature&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"temperature_calibrated"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"sensors/temperature"</span><span class="p">,</span>
 <span class="w">            </span><span class="n">data_type</span><span class="p">,</span>
 <span class="w">            </span><span class="n">rank</span><span class="p">,</span>
 <span class="w">            </span><span class="n">attributes</span>
@@ -2294,7 +2294,7 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">holds_alternative</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">auto</span><span class="w"> </span><span class="n">temp_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
 
-<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Retrieved &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">temp_data</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; temperature readings</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Retrieved "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">temp_data</span><span class="p">.</span><span class="n">size</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" temperature readings</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
 
 <span class="w">            </span><span class="c1">// Calculate statistics</span>
 <span class="w">            </span><span class="kt">double</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
@@ -2303,11 +2303,11 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
 <span class="w">            </span><span class="p">}</span>
 <span class="w">            </span><span class="kt">double</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
 
-<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Average temperature: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; °C</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Average temperature: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">average</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" °C</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TokaMapError</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Error: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -2373,7 +2373,7 @@ make<span class="w"> </span>install<span class="w">  </span><span class="c1"># O
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

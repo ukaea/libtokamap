@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1557,7 +1557,7 @@
 </code></pre></div>
 <h3 id="step-2-implement-the-data-source">Step 2: Implement the Data Source<a class="headerlink" href="#step-2-implement-the-data-source" title="Permanent link">&para;</a></h3>
 <p>Create the implementation file (e.g., <code>my_data_source.cpp</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">"my_data_source.hpp"</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span>
 
@@ -1567,7 +1567,7 @@
 <span class="w">    </span><span class="c1">// Initialize your data source</span>
 <span class="w">    </span><span class="c1">// Validate connection, open files, establish connections, etc.</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">connection_string</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Connection string cannot be empty&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Connection string cannot be empty"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -1579,10 +1579,10 @@
 <span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// 1. Parse arguments from map_args</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_path</span><span class="p">;</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"path"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"path"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Missing &#39;path&#39; argument&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Missing 'path' argument"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// 2. Use cache if available</span>
@@ -1608,7 +1608,7 @@
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
 
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Failed to retrieve data: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Failed to retrieve data: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
@@ -1618,7 +1618,7 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">)</span><span class="w"> </span><span class="k">const</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Create a unique cache key based on path and arguments</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_connection_string</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;:&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_connection_string</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">":"</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">;</span>
 <span class="w">    </span><span class="c1">// Add relevant arguments to key if needed</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">key</span><span class="p">;</span>
 <span class="p">}</span>
@@ -1647,20 +1647,20 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">&quot;type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">value</span><span class="p">(</span><span class="s">"type"</span><span class="p">,</span><span class="w"> </span><span class="s">"double"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"path"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;double&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"double"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_double_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;int&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"int"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_int_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
-<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;string&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data_type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"string"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">retrieve_string_data</span><span class="p">(</span><span class="n">path</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Unsupported data type: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">data_type</span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Unsupported data type: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">data_type</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1672,13 +1672,13 @@
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Access shot number, timestamp, or other contextual information</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;shot&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">shot_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;shot&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"shot"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">shot_number</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">"shot"</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">        </span><span class="c1">// Use shot number to determine data location</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;timestamp&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"timestamp"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">timestamp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">"timestamp"</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">        </span><span class="c1">// Filter data by timestamp</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -1697,15 +1697,15 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Validate required arguments</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Missing required &#39;path&#39; argument&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">map_args</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"path"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Missing required 'path' argument"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"path"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="w">        </span><span class="c1">// Validate path</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">path</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Path cannot be empty&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Path cannot be empty"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Attempt data retrieval</span>
@@ -1713,7 +1713,7 @@
 
 <span class="w">        </span><span class="c1">// Validate data</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">data</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;No data found for path: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"No data found for path: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">path</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">TypedDataArray</span><span class="p">{</span><span class="n">data</span><span class="p">};</span>
@@ -1723,21 +1723,21 @@
 <span class="w">        </span><span class="k">throw</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Wrap other exceptions</span>
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Data retrieval failed: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Data retrieval failed: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()));</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <h2 id="registration-methods">Registration Methods<a class="headerlink" href="#registration-methods" title="Permanent link">&para;</a></h2>
 <h3 id="method-1-direct-registration">Method 1: Direct Registration<a class="headerlink" href="#method-1-direct-registration" title="Permanent link">&para;</a></h3>
 <p>Register your data source directly with the mapping handler:</p>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">"my_data_source.hpp"</span>
 
 <span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// Create your data source</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;connection_string&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"connection_string"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Register it with the system</span>
-<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceMapping</span><span class="o">::</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data_source</span><span class="p">));</span>
+<span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceMapping</span><span class="o">::</span><span class="n">register_data_source</span><span class="p">(</span><span class="s">"MY_SOURCE"</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">data_source</span><span class="p">));</span>
 
 <span class="w">    </span><span class="c1">// Initialize mapping handler</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">handler</span><span class="p">;</span>
@@ -1750,14 +1750,14 @@
 <span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create_my_data_source</span><span class="p">(</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">connection_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">get_arg</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;connection_string&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">connection_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">get_arg</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="s">"connection_string"</span><span class="p">);</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="n">connection_string</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="c1">// Register the factory</span>
 <span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceMapping</span><span class="o">::</span><span class="n">register_data_source_factory</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;MY_SOURCE&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">"MY_SOURCE"</span><span class="p">,</span>
 <span class="w">        </span><span class="n">create_my_data_source</span>
 <span class="w">    </span><span class="p">);</span>
 
@@ -1767,7 +1767,7 @@
 <h3 id="method-3-dynamic-library-plugin">Method 3: Dynamic Library (Plugin)<a class="headerlink" href="#method-3-dynamic-library-plugin" title="Permanent link">&para;</a></h3>
 <p>For maximum flexibility, create a shared library:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// my_data_source_plugin.cpp</span>
-<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="p">{</span>
+<span class="k">extern</span><span class="w"> </span><span class="s">"C"</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FactoryEntryInterface</span><span class="o">*</span><span class="w"> </span><span class="nf">get_factory_entry</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">static</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FactoryEntryInterface</span><span class="w"> </span><span class="n">entry</span><span class="p">;</span>
 <span class="w">        </span><span class="n">entry</span><span class="p">.</span><span class="n">function</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[](</span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceFactoryArgs</span><span class="o">&amp;</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
@@ -1789,7 +1789,7 @@
 <span class="w">        </span><span class="o">:</span><span class="w"> </span><span class="n">m_data_root</span><span class="p">(</span><span class="n">data_root</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">exists</span><span class="p">(</span><span class="n">m_data_root</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">&quot;Data root does not exist&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">"Data root does not exist"</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -1798,15 +1798,15 @@
 <span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
 <span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="k">override</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;file&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">json_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;path&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">filename</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"file"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">json_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"path"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">filesystem</span><span class="o">::</span><span class="n">path</span><span class="w"> </span><span class="n">full_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data_root</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">filename</span><span class="p">;</span>
 
 <span class="w">        </span><span class="c1">// Load JSON file</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">ifstream</span><span class="w"> </span><span class="nf">file</span><span class="p">(</span><span class="n">full_path</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">.</span><span class="n">is_open</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">&quot;Cannot open file: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">full_path</span><span class="p">.</span><span class="n">string</span><span class="p">());</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">FileError</span><span class="p">(</span><span class="s">"Cannot open file: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">full_path</span><span class="p">.</span><span class="n">string</span><span class="p">());</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
@@ -1825,7 +1825,7 @@
 <span class="w">            </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 
-<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Unsupported JSON data type&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Unsupported JSON data type"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="k">private</span><span class="o">:</span>
@@ -1842,7 +1842,7 @@
 <span class="w">        </span><span class="c1">// Initialize database connection</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_open</span><span class="p">(</span><span class="n">db_path</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="o">&amp;</span><span class="n">m_db</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;Cannot open database: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"Cannot open database: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
@@ -1857,23 +1857,23 @@
 <span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="o">&amp;</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span>
 <span class="w">        </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">RamCache</span><span class="o">*</span><span class="w"> </span><span class="n">ram_cache</span><span class="p">)</span><span class="w"> </span><span class="k">override</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;table&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;column&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">table</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"table"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map_args</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">"column"</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="w">        </span><span class="c1">// Build query</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SELECT &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot; FROM &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">table</span><span class="p">;</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"SELECT "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">" FROM "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">table</span><span class="p">;</span>
 
 <span class="w">        </span><span class="c1">// Add WHERE clause based on arguments</span>
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">&quot;shot&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">shot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">&quot;shot&quot;</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">            </span><span class="n">query</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">&quot; WHERE shot = &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">shot</span><span class="p">);</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">.</span><span class="n">contains</span><span class="p">(</span><span class="s">"shot"</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">int</span><span class="w"> </span><span class="n">shot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">arguments</span><span class="p">.</span><span class="n">extra_attributes</span><span class="p">[</span><span class="s">"shot"</span><span class="p">].</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">            </span><span class="n">query</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="s">" WHERE shot = "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">shot</span><span class="p">);</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="c1">// Execute query</span>
 <span class="w">        </span><span class="n">sqlite3_stmt</span><span class="o">*</span><span class="w"> </span><span class="n">stmt</span><span class="p">;</span>
 <span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqlite3_prepare_v2</span><span class="p">(</span><span class="n">m_db</span><span class="p">,</span><span class="w"> </span><span class="n">query</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">stmt</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">SQLITE_OK</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">&quot;SQL error: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceError</span><span class="p">(</span><span class="s">"SQL error: "</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">sqlite3_errmsg</span><span class="p">(</span><span class="n">m_db</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">results</span><span class="p">;</span>
@@ -1894,16 +1894,16 @@
 <h2 id="configuration-in-mappings">Configuration in Mappings<a class="headerlink" href="#configuration-in-mappings" title="Permanent link">&para;</a></h2>
 <p>Once registered, use your data source in mapping configurations:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;my_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;map_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DATA_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;data_source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MY_SOURCE&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sensors/temperature&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;csv&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;delimiter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;,&quot;</span>
+<span class="w">    </span><span class="nt">"my_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"map_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DATA_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"data_source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"MY_SOURCE"</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sensors/temperature"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">"delimiter"</span><span class="p">:</span><span class="w"> </span><span class="s2">","</span>
 <span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="nt">&quot;scale&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">        </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1932,12 +1932,12 @@
 <h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
 <p>Create unit tests for your data source:</p>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;gtest/gtest.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;my_data_source.hpp&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"my_data_source.hpp"</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MyDataSourceTest</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="w"> </span><span class="p">{</span>
 <span class="k">protected</span><span class="o">:</span>
 <span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="n">SetUp</span><span class="p">()</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;test_connection&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">data_source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="p">(</span><span class="s">"test_connection"</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">MyDataSource</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data_source</span><span class="p">;</span>
@@ -1945,11 +1945,11 @@
 
 <span class="n">TEST_F</span><span class="p">(</span><span class="n">MyDataSourceTest</span><span class="p">,</span><span class="w"> </span><span class="n">RetrievesValidData</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test/data&quot;</span><span class="p">}</span>
+<span class="w">        </span><span class="p">{</span><span class="s">"path"</span><span class="p">,</span><span class="w"> </span><span class="s">"test/data"</span><span class="p">}</span>
 <span class="w">    </span><span class="p">};</span>
 
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
-<span class="w">    </span><span class="n">arguments</span><span class="p">.</span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test/data&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">arguments</span><span class="p">.</span><span class="n">data_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"test/data"</span><span class="p">;</span>
 
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data_source</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">arguments</span><span class="p">,</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">);</span>
 
@@ -1960,7 +1960,7 @@
 
 <span class="n">TEST_F</span><span class="p">(</span><span class="n">MyDataSourceTest</span><span class="p">,</span><span class="w"> </span><span class="n">ThrowsOnInvalidPath</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataSourceArgs</span><span class="w"> </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="p">{</span><span class="s">&quot;path&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">}</span>
+<span class="w">        </span><span class="p">{</span><span class="s">"path"</span><span class="p">,</span><span class="w"> </span><span class="s">""</span><span class="p">}</span>
 <span class="w">    </span><span class="p">};</span>
 
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MapArguments</span><span class="w"> </span><span class="n">arguments</span><span class="p">;</span>
@@ -2047,7 +2047,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

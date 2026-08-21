@@ -17,7 +17,7 @@
       
       
       <link rel="icon" href="assets/logo.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -25,7 +25,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
@@ -1332,20 +1332,20 @@
 </ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>An example configuration file:</p>
-<div class="highlight"><pre><span></span><code><span class="n">mapping_directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/path/to/mappings&quot;</span>
-<span class="n">schemas_directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;/path/to/tokamap/schemas&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="n">mapping_directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/path/to/mappings"</span>
+<span class="n">schemas_directory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/path/to/tokamap/schemas"</span>
 <span class="n">trace_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 <span class="n">cache_enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 <span class="n">custom_function_libraries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;custom_function_library.so&quot;</span>
+<span class="w">    </span><span class="s2">"custom_function_library.so"</span>
 <span class="p">]</span>
 
 <span class="k">[data_source_factories]</span>
-<span class="n">data_source_factory_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;data_source_library.so&quot;</span>
+<span class="n">data_source_factory_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data_source_library.so"</span>
 
 <span class="k">[data_sources.JSON]</span>
-<span class="n">factory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;data_source_factory_name&quot;</span>
-<span class="n">args</span><span class="p">.</span><span class="n">factory_argument_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;factory constructor argument&quot;</span>
+<span class="n">factory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"data_source_factory_name"</span>
+<span class="n">args</span><span class="p">.</span><span class="n">factory_argument_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"factory constructor argument"</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;libtokamap.hpp&gt;</span>
 
@@ -1353,16 +1353,16 @@
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">MappingHandler</span><span class="w"> </span><span class="n">mapping_handler</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// Initialize with configuration</span>
-<span class="w">    </span><span class="n">mapping_handler</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;/path/to/config.toml&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">mapping_handler</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">"/path/to/config.toml"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Perform mapping</span>
 <span class="w">    </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataType</span><span class="w"> </span><span class="n">data_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">libtokamap</span><span class="o">::</span><span class="n">DataType</span><span class="o">::</span><span class="n">Double</span><span class="p">;</span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
-<span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">extra_attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="s">&quot;shot&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">}};</span>
+<span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">extra_attributes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{{</span><span class="s">"shot"</span><span class="p">,</span><span class="w"> </span><span class="mi">12345</span><span class="p">}};</span>
 
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapping_handler</span><span class="p">.</span><span class="n">map</span><span class="p">(</span>
-<span class="w">        </span><span class="s">&quot;my_mapping&quot;</span><span class="p">,</span><span class="w">   </span><span class="c1">// experiment name</span>
-<span class="w">        </span><span class="s">&quot;path/to/data&quot;</span><span class="p">,</span><span class="w"> </span><span class="c1">// mapping name</span>
+<span class="w">        </span><span class="s">"my_mapping"</span><span class="p">,</span><span class="w">   </span><span class="c1">// experiment name</span>
+<span class="w">        </span><span class="s">"path/to/data"</span><span class="p">,</span><span class="w"> </span><span class="c1">// mapping name</span>
 <span class="w">        </span><span class="n">data_type</span><span class="p">,</span>
 <span class="w">        </span><span class="n">rank</span><span class="p">,</span>
 <span class="w">        </span><span class="n">extra_attributes</span>
@@ -1499,7 +1499,7 @@ cmake<span class="w"> </span>--build<span class="w"> </span>build
       <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.highlight", "search.share"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
