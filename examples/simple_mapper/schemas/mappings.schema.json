@@ -27,26 +27,26 @@
     },
     "dimension": {
       "properties": {
-        "MAP_TYPE": { "const": "DIMENSION" },
-        "DIM_PROBE": { "type": "string" },
-        "COMMENT": { "type": "string" }
+        "map_type": { "const": "DIMENSION" },
+        "dim_probe": { "type": "string" },
+        "comment": { "type": "string" }
       },
-      "required": ["MAP_TYPE", "DIM_PROBE"],
+      "required": ["map_type", "dim_probe"],
       "additionalProperties": false
     },
     "value": {
       "properties": {
-        "MAP_TYPE": { "const": "VALUE" },
-        "VALUE": { "type": ["number", "string", "array", "object"] },
-        "COMMENT": { "type": "string" }
+        "map_type": { "const": "VALUE" },
+        "value": { "type": ["number", "string", "array"] },
+        "comment": { "type": "string" }
       },
-      "required": ["MAP_TYPE", "VALUE"],
+      "required": ["map_type", "value"],
       "additionalProperties": false
     },
     "data_source": {
       "properties": {
-        "MAP_TYPE": { "const": "DATA_SOURCE" },
-        "ARGS": {
+        "map_type": { "const": "DATA_SOURCE" },
+        "args": {
           "type": "object",
           "patternProperties": {
             "^.*$": {
@@ -54,19 +54,19 @@
             }
           }
         },
-        "DATA_SOURCE": { "type": "string" },
-        "OFFSET": { "type": ["string", "number"] },
-        "SCALE": { "type": ["string", "number"] },
-        "SLICE": { "type": "string" },
-        "COMMENT": { "type": "string" }
+        "data_source": { "type": "string" },
+        "offset": { "type": ["string", "number"] },
+        "scale": { "type": ["string", "number"] },
+        "slice": { "type": "string" },
+        "comment": { "type": "string" }
       },
-      "required": ["MAP_TYPE", "ARGS", "DATA_SOURCE"],
+      "required": ["map_type", "args", "data_source"],
       "additionalProperties": false
     },
     "expression": {
       "properties": {
-        "MAP_TYPE": { "const": "EXPR" },
-        "PARAMETERS": {
+        "map_type": { "const": "EXPR" },
+        "parameters": {
           "type": "object",
           "patternProperties": {
             "^.*$": {
@@ -74,18 +74,18 @@
             }
           }
         },
-        "EXPR": { "type": "string" },
-        "COMMENT": { "type": "string" }
+        "expr": { "type": "string" },
+        "comment": { "type": "string" }
       },
-      "required": ["MAP_TYPE", "PARAMETERS", "EXPR"],
+      "required": ["map_type", "parameters", "expr"],
       "additionalProperties": false
     },
     "custom": {
       "properties": {
-        "MAP_TYPE": { "const": "CUSTOM" },
-        "LIBRARY": { "type": "string" },
-        "FUNCTION": { "type": "string" },
-        "INPUTS": {
+        "map_type": { "const": "CUSTOM" },
+        "library": { "type": "string" },
+        "function": { "type": "string" },
+        "inputs": {
           "type": "object",
           "patternProperties": {
             "^.*$": {
@@ -93,10 +93,10 @@
             }
           }
         },
-        "PARAMETERS": { "type": "object" },
-        "COMMENT": { "type": "string" }
+        "parameters": { "type": "object" },
+        "comment": { "type": "string" }
       },
-      "required": ["MAP_TYPE", "LIBRARY", "FUNCTION", "INPUTS", "PARAMETERS"],
+      "required": ["map_type", "library", "function", "inputs", "parameters"],
       "additionalProperties": false
     }
   }

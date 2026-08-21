@@ -38,40 +38,32 @@ libtokamap::MapArguments make_map_arguments(const DataType data_type, const int 
 
 TEST_CASE("ValueMapping can be constructed from JSON", "[value_mapping]")
 {
-    // Setup test fixture
-    nlohmann::json test_json = {{"MAP_TYPE", "VALUE"}, {"VALUE", 42}};
+    nlohmann::json test_json = {{"map_type", "VALUE"}, {"value", 42}};
 
     SECTION("Constructor works with integer value")
     {
-        auto mapping = std::make_unique<ValueMapping>(test_json);
+        auto mapping = std::make_unique<ValueMapping>(test_json.at("value"));
         REQUIRE(mapping != nullptr);
     }
 
     SECTION("Constructor works with float value")
     {
-        test_json["VALUE"] = 3.14;
-        auto mapping = std::make_unique<ValueMapping>(test_json);
+        test_json["value"] = 3.14;
+        auto mapping = std::make_unique<ValueMapping>(test_json.at("value"));
         REQUIRE(mapping != nullptr);
     }
 
     SECTION("Constructor works with string value")
     {
-        test_json["VALUE"] = "test_string";
-        auto mapping = std::make_unique<ValueMapping>(test_json);
+        test_json["value"] = "test_string";
+        auto mapping = std::make_unique<ValueMapping>(test_json.at("value"));
         REQUIRE(mapping != nullptr);
     }
 
     SECTION("Constructor works with array value")
     {
-        test_json["VALUE"] = {1, 2, 3, 4, 5};
-        auto mapping = std::make_unique<ValueMapping>(test_json);
-        REQUIRE(mapping != nullptr);
-    }
-
-    SECTION("Constructor works with object value")
-    {
-        test_json["VALUE"] = {{"key1", "value1"}, {"key2", 2}};
-        auto mapping = std::make_unique<ValueMapping>(test_json);
+        test_json["value"] = {1, 2, 3, 4, 5};
+        auto mapping = std::make_unique<ValueMapping>(test_json.at("value"));
         REQUIRE(mapping != nullptr);
     }
 }
@@ -79,13 +71,13 @@ TEST_CASE("ValueMapping can be constructed from JSON", "[value_mapping]")
 TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_mapping_0D]")
 {
 
-    nlohmann::json test_json = {{"VALUE", 42}};
+    nlohmann::json test_json = {{"value", 42}};
 
     SECTION("Integer values are correctly returned")
     {
-        test_json["VALUE"] = 42;
+        test_json["value"] = 42;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Int32, 0);
@@ -99,9 +91,9 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
 
     SECTION("Negative integer values are correctly returned")
     {
-        test_json["VALUE"] = -42;
+        test_json["value"] = -42;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Int32, 0);
@@ -115,9 +107,9 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
 
     SECTION("String values are correctly returned")
     {
-        test_json["VALUE"] = "Hello World!";
+        test_json["value"] = "Hello World!";
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Int8, 1);
@@ -131,9 +123,9 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
 
     SECTION("Float values are correctly returned")
     {
-        test_json["VALUE"] = 42.75;
+        test_json["value"] = 42.75;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Float, 0);
@@ -147,9 +139,9 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
 
     SECTION("Negative float values are correctly returned")
     {
-        test_json["VALUE"] = -42.75;
+        test_json["value"] = -42.75;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Float, 0);
@@ -165,14 +157,14 @@ TEST_CASE("ValueMapping returns expected data for different 0D types", "[value_m
 TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_mapping_1D]")
 {
 
-    nlohmann::json test_json = {{"VALUE", {0, 0, 0}}};
+    nlohmann::json test_json = {{"value", {0, 0, 0}}};
 
     SECTION("1D integer arrays are correctly returned")
     {
         std::vector<int> test_vector_1d{1, 2, 3, 4};
-        test_json["VALUE"] = test_vector_1d;
+        test_json["value"] = test_vector_1d;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Int32, 1);
@@ -189,9 +181,9 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
     SECTION("1D negative integer arrays are correctly returned")
     {
         std::vector<int> test_vector_1d{-1, 2, -3, 4};
-        test_json["VALUE"] = test_vector_1d;
+        test_json["value"] = test_vector_1d;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Int32, 1);
@@ -208,9 +200,9 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
     SECTION("1D float arrays are correctly returned")
     {
         std::vector<float> test_vector_1d{0.1, 0.2, 0.3, 0.4};
-        test_json["VALUE"] = test_vector_1d;
+        test_json["value"] = test_vector_1d;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Float, 1);
@@ -227,9 +219,9 @@ TEST_CASE("ValueMapping returns expected data for different 1D types", "[value_m
     SECTION("1D negative float arrays are correctly returned")
     {
         std::vector<float> test_vector_1d{0.1, -0.2, 0.3, -0.4};
-        test_json["VALUE"] = test_vector_1d;
+        test_json["value"] = test_vector_1d;
 
-        const auto& value_json = test_json.at("VALUE");
+        const auto& value_json = test_json.at("value");
         auto mapping = std::make_unique<ValueMapping>(value_json);
 
         MapArguments map_args = make_map_arguments(DataType::Float, 1);

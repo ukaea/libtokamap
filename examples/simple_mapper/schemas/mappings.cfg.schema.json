@@ -37,7 +37,7 @@
         "type": "object",
         "properties": {
           "attribute": { "type": "string" },
-          "selector": { "enum": ["max_below", "min_above", "exact", "closest"] }
+          "selector": { "enum": ["MAX_BELOW", "MIN_ABOVE", "EXACT", "CLOSEST"] }
         },
         "additionalProperties": false,
         "required": ["attribute", "selector"]

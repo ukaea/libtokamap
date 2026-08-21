@@ -4,11 +4,11 @@
   "description": "JSON Schema for v1.0 of mapping globals",
   "type": "object",
   "properties": {
-    "DATA_SOURCE_CONFIG": {
+    "data_source_config": {
       "type": "object",
       "patternProperties": {
         "^.*$": {
-          "ARGS": { "$ref": "#/$defs/args" }
+          "args": { "$ref": "#/$defs/args" }
         }
       }
     }

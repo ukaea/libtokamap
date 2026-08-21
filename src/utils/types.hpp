@@ -48,10 +48,10 @@ enum class DirectorySelector : uint8_t { Undefined, MaxBelow, MinAbove, Exact, C
 
 NLOHMANN_JSON_SERIALIZE_ENUM(libtokamap::DirectorySelector, {
                                                                 {libtokamap::DirectorySelector::Undefined, nullptr},
-                                                                {libtokamap::DirectorySelector::MaxBelow, "max_below"},
-                                                                {libtokamap::DirectorySelector::MinAbove, "min_above"},
-                                                                {libtokamap::DirectorySelector::Exact, "exact"},
-                                                                {libtokamap::DirectorySelector::Closest, "closest"},
+                                                                {libtokamap::DirectorySelector::MaxBelow, "MAX_BELOW"},
+                                                                {libtokamap::DirectorySelector::MinAbove, "MIN_ABOVE"},
+                                                                {libtokamap::DirectorySelector::Exact, "EXACT"},
+                                                                {libtokamap::DirectorySelector::Closest, "CLOSEST"},
                                                             })
 
 struct MappingPartition {

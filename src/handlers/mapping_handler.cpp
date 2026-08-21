@@ -30,6 +30,7 @@
 #include "map_types/data_source_mapping.hpp"
 #include "map_types/dim_mapping.hpp"
 #include "map_types/expr_mapping.hpp"
+#include "map_types/interp_mapping.hpp"
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/algorithm.hpp"
@@ -147,28 +148,6 @@ void validate(const nlohmann::json& json, const valijson::Schema& schema)
         }
         throw libtokamap::SchemaError{msg.str()};
     }
-}
-
-void uppercase_keys(nlohmann::json& data)
-{
-    for (auto& entry : data) {
-        nlohmann::json new_entry;
-        if (entry.is_object()) {
-            for (const auto& [key, value] : entry.items()) {
-                new_entry[libtokamap::to_upper_copy(key)] = value;
-            }
-            entry = new_entry;
-        }
-    }
-}
-
-[[nodiscard]] nlohmann::json load_json(const std::filesystem::path& file_path, bool to_upper = false)
-{
-    auto json = load_json_file(file_path);
-    if (to_upper) {
-        uppercase_keys(json);
-    }
-    return json;
 }
 
 struct MappingConfigMetadata {
@@ -330,7 +309,8 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
     }
 
     const libtokamap::MapArguments map_arguments{mappings,        attributes,      data_type,        rank,
-                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get()};
+                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get(),
+                                                 extra_attributes};
 
     LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
     auto result = mappings.at(map_path)->map(map_arguments);
@@ -348,7 +328,7 @@ void apply_config(std::unordered_map<std::string, nlohmann::json>& args, nlohman
 {
     if (plugin_config_map.contains(plugin_name)) {
         const auto& plugin_config = plugin_config_map[plugin_name].get<nlohmann::json>();
-        const auto& plugin_args = plugin_config["ARGS"].get<nlohmann::json>();
+        const auto& plugin_args = plugin_config["args"].get<nlohmann::json>();
         for (const auto& [name, arg] : plugin_args.items()) {
             if (!args.contains(name)) {
                 // don't overwrite mapping arguments with global values
@@ -381,7 +361,7 @@ std::optional<float> get_float_value(const std::string& name, const nlohmann::js
 void init_value_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                         const nlohmann::json& value)
 {
-    const auto& value_json = value.at("VALUE");
+    const auto& value_json = value.at("value");
     map_store.emplace(mapping_name, std::make_unique<libtokamap::ValueMapping>(value_json));
 }
 
@@ -389,25 +369,25 @@ void init_data_source_mapping(libtokamap::MappingStore& map_store, const libtoka
                               const nlohmann::json& value, const nlohmann::json& group_attributes,
                               const libtokamap::DataSourceRegistry& data_sources)
 {
-    if (!value.contains("DATA_SOURCE")) {
-        throw libtokamap::ConfigurationError{"required DATA_SOURCE argument not provided in DATA_SOURCE mapping '" +
+    if (!value.contains("data_source")) {
+        throw libtokamap::ConfigurationError{"required data_source argument not provided in DATA_SOURCE mapping '" +
                                              mapping_name + "'"};
     }
-    std::string data_source_name = value["DATA_SOURCE"].get<std::string>();
+    std::string data_source_name = value["data_source"].get<std::string>();
     libtokamap::to_upper(data_source_name);
 
-    if (!value.contains("ARGS")) {
-        throw libtokamap::ConfigurationError{"required ARGS argument not provided in DATA_SOURCE mapping '" +
+    if (!value.contains("args")) {
+        throw libtokamap::ConfigurationError{"required args argument not provided in DATA_SOURCE mapping '" +
                                              mapping_name + "'"};
     }
-    auto args = value["ARGS"].get<libtokamap::DataSourceArgs>();
-    auto offset = get_float_value("OFFSET", value, group_attributes);
-    auto scale = get_float_value("SCALE", value, group_attributes);
-    auto slice = value.contains("SLICE") ? std::optional<std::string>{value.at("SLICE").get<std::string>()}
+    auto args = value["args"].get<libtokamap::DataSourceArgs>();
+    auto offset = get_float_value("offset", value, group_attributes);
+    auto scale = get_float_value("scale", value, group_attributes);
+    auto slice = value.contains("slice") ? std::optional<std::string>{value.at("slice").get<std::string>()}
                                          : std::optional<std::string>{};
 
-    if (group_attributes.contains("DATA_SOURCE_CONFIG")) {
-        const auto& plugin_config_map = group_attributes.at("DATA_SOURCE_CONFIG");
+    if (group_attributes.contains("data_source_config")) {
+        const auto& plugin_config_map = group_attributes.at("data_source_config");
         apply_config(args, plugin_config_map, data_source_name);
     }
 
@@ -423,7 +403,7 @@ void init_data_source_mapping(libtokamap::MappingStore& map_store, const libtoka
 void init_dim_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                       const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
 {
-    auto dim_probe = value["DIM_PROBE"].get<std::string>();
+    auto dim_probe = value["dim_probe"].get<std::string>();
     map_store.emplace(mapping_name, std::make_unique<libtokamap::DimMapping>(dim_probe));
     mapping_counts.increment(dim_probe);
 }
@@ -431,12 +411,37 @@ void init_dim_mapping(libtokamap::MappingStore& map_store, const libtokamap::Map
 void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                        const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
 {
-    auto expr = value["EXPR"].get<std::string>();
-    auto parameters = value["PARAMETERS"].get<std::unordered_map<std::string, std::string>>();
+    auto expr = value["expr"].get<std::string>();
+    auto parameters = value["parameters"].get<std::unordered_map<std::string, std::string>>();
     map_store.emplace(mapping_name, std::make_unique<libtokamap::ExprMapping>(expr, parameters));
     for (const auto& [_key, param_value] : parameters) {
         mapping_counts.increment(param_value);
     }
+}
+
+void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
+                         const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+{
+   for (const auto& required : {"input", "base", "target", "type"}) {
+        if (!value.contains(required)) {
+            throw libtokamap::ConfigurationError{"Required " + std::string{required} +
+                                                 " argument not provided in INTERP mapping '" + mapping_name + "'"};
+        }
+    }
+
+    const auto input = value["input"].get<std::string>();
+    const auto base = value["base"].get<std::string>();
+    const auto target = value["target"].get<std::string>();
+    const auto interp_type = value["type"].get<libtokamap::InterpType>();
+
+    if (interp_type == libtokamap::InterpType::UNKNOWN) {
+        throw libtokamap::ConfigurationError{"Unknown interpolation type in INTERP mapping '" + mapping_name + "'"};
+    }
+
+    map_store.emplace(mapping_name, std::make_unique<libtokamap::InterpMapping>(input, base, target, interp_type));
+    mapping_counts.increment(input);
+    mapping_counts.increment(base);
+    mapping_counts.increment(target);
 }
 
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
@@ -444,10 +449,10 @@ void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::
                          libtokamap::MappingCounts& mapping_counts)
 {
     std::vector<std::filesystem::path> library_paths = {};
-    auto library_name = value["LIBRARY"].get<libtokamap::LibraryName>();
-    auto function_name = value["FUNCTION"].get<libtokamap::FunctionName>();
-    auto input_map = value["INPUTS"].get<libtokamap::CustomMappingInputMap>();
-    auto params = value["PARAMETERS"];
+    auto library_name = value["library"].get<libtokamap::LibraryName>();
+    auto function_name = value["function"].get<libtokamap::FunctionName>();
+    auto input_map = value["inputs"].get<libtokamap::CustomMappingInputMap>();
+    auto params = value["parameters"];
     map_store.emplace(mapping_name, std::make_unique<libtokamap::CustomMapping>(library_functions, library_name,
                                                                                 function_name, input_map, params));
     for (const auto& [_key, input_value] : input_map) {
@@ -480,15 +485,15 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
 {
     libtokamap::MappingStore map_store;
     for (const auto& [mapping_name, value] : data.items()) {
-        if (!value.contains("MAP_TYPE")) {
-            throw libtokamap::MappingError{"required MAP_TYPE argument not found in mapping '" + mapping_name + "'"};
+        if (!value.contains("map_type")) {
+            throw libtokamap::MappingError{"required map_type argument not found in mapping '" + mapping_name + "'"};
         }
         if (map_store.contains(mapping_name)) {
             throw libtokamap::MappingError{"duplicate mapping found '" + mapping_name + "'"};
         }
 
         using libtokamap::MappingType;
-        switch (value["MAP_TYPE"].get<MappingType>()) {
+        switch (value["map_type"].get<MappingType>()) {
             case MappingType::VALUE:
                 init_value_mapping(map_store, mapping_name, value);
                 break;
@@ -500,6 +505,9 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                 break;
             case MappingType::EXPR:
                 init_expr_mapping(map_store, mapping_name, value, m_mapping_counts);
+                break;
+            case MappingType::INTERP:
+                init_interp_mapping(map_store, mapping_name, value, m_mapping_counts);
                 break;
             case MappingType::CUSTOM:
                 init_custom_mapping(map_store, mapping_name, value, m_library_functions, m_mapping_counts);
@@ -629,7 +637,7 @@ void libtokamap::MappingHandler::load_experiment(const ExperimentName& experimen
 
     const auto& mapping_dir = experiment_mapping.root_path;
 
-    auto top_level_globals = load_json(mapping_dir / "globals.json");
+    auto top_level_globals = load_json_file(mapping_dir / "globals.json");
     parse_globals(top_level_globals);
     validate(top_level_globals, m_globals_schema);
     experiment_mapping.top_level_globals = top_level_globals;
@@ -643,13 +651,12 @@ void libtokamap::MappingHandler::load_experiment(const ExperimentName& experimen
 
         MappingPair mapping_pair;
 
-        mapping_pair.globals = load_json(partition_directory / "globals.json");
+        mapping_pair.globals = load_json_file(partition_directory / "globals.json");
         parse_globals(mapping_pair.globals);
         validate(mapping_pair.globals, m_globals_schema);
         mapping_pair.globals.update(top_level_globals);
 
-        constexpr bool to_upper = true;
-        auto mappings_json = load_json(partition_directory / "mappings.json", to_upper);
+        auto mappings_json = load_json_file(partition_directory / "mappings.json");
         parse_mappings(mappings_json);
         validate(mappings_json, m_mappings_schema);
         mapping_pair.mappings = init_mappings(mappings_json, mapping_pair.globals);

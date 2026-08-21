@@ -14,6 +14,7 @@ set( TEST_SOURCES
     src/data_source_mapping_test.cpp
     src/dim_mapping_test.cpp
     src/indices_test.cpp
+    src/interp_mapping_test.cpp
     src/mapping_locator_test.cpp
     src/parse_slices_test.cpp
     src/render_test.cpp
@@ -57,10 +58,10 @@ target_link_libraries( libtokamap_tests
 )
 
 if( ENABLE_COVERAGE )
-    include( Coverage )
-    add_llvm_coverage( libtokamap_tests ${CMAKE_CURRENT_BINARY_DIR}/libtokamap_tests )
-    # target_compile_options( libtokamap_tests PRIVATE -fprofile-instr-generate -fcoverage-mapping )
-    # target_link_options( libtokamap_tests PRIVATE -fprofile-instr-generate )
+  include( Coverage )
+  add_llvm_coverage( libtokamap_tests ${CMAKE_CURRENT_BINARY_DIR}/libtokamap_tests )
+  # target_compile_options( libtokamap_tests PRIVATE -fprofile-instr-generate -fcoverage-mapping )
+  # target_link_options( libtokamap_tests PRIVATE -fprofile-instr-generate )
 endif()
 
 # CTest integration

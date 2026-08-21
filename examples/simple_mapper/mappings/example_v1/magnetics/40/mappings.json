@@ -2,91 +2,91 @@
   "version": "1.0.0",
   "coil": {
     "map_type": "DIMENSION",
-    "DIM_PROBE": "_coils"
+    "dim_probe": "_coils"
   },
   "_coils": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils"
     }
   },
   "coil[#]/name": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/name"
     }
   },
   "_coil[#]/radius": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/radius"
     }
   },
   "coil[#]/area": {
-    "MAP_TYPE": "EXPR",
-    "EXPR": "pi * r^2",
-    "PARAMETERS": {
+    "map_type": "EXPR",
+    "expr": "pi * r^2",
+    "parameters": {
       "r": "_coil[#]/radius"
     }
   },
   "coil[#]/position": {
-    "MAP_TYPE": "DIMENSION",
-    "DIM_PROBE": "_coil[#]/position"
+    "map_type": "DIMENSION",
+    "dim_probe": "_coil[#]/position"
   },
   "_coil[#]/position": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/position"
     }
   },
   "coil[#]/position[#]/r": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/position/{{ #1 }}/0"
     }
   },
   "coil[#]/position[#]/z": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/position/{{ #1 }}/1"
     }
   },
   "coil[#]/flux/time": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/flux/time"
     }
   },
   "coil[#]/flux/data": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/flux/data"
     }
   },
   "coil[#]/flux/data_scaled": {
-    "MAP_TYPE": "DATA_SOURCE",
-    "DATA_SOURCE": "JSON",
-    "ARGS": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "JSON",
+    "args": {
       "signal": "coils/{{ #0 }}/flux/data"
     },
-    "SCALE": 2.0
+    "scale": 2.0
   },
   "coil[#]/flux/dot_product": {
-    "MAP_TYPE": "CUSTOM",
-    "LIBRARY": "custom",
-    "FUNCTION": "dot_product",
-    "INPUTS": {
+    "map_type": "CUSTOM",
+    "library": "custom",
+    "function": "dot_product",
+    "inputs": {
       "lhs": "coil[#]/flux/time",
       "rhs": "coil[#]/flux/data"
     },
-    "PARAMETERS": {}
+    "parameters": {}
   }
 }

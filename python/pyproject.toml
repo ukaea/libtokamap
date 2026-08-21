@@ -13,7 +13,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
-    "tokamap>=0.1.0",
+    "tokamap>=0.3.2",
     "numpy>=2.0",
 ]
 keywords = [
@@ -58,6 +58,11 @@ relative_to = "pyproject.toml"
 version_file = "src/libtokamap/_version.py"
 version_scheme = "post-release"
 local_scheme = "no-local-version"
+
+[tool.pytest.ini_options]
+markers = [
+    "cache_regression: cache behavior regressions that document known failures on develop",
+]
 
 [tool.cibuildwheel]
 test-requires = ["pytest>=8"]

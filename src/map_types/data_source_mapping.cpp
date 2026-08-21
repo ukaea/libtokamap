@@ -27,6 +27,11 @@ libtokamap::TypedDataArray libtokamap::DataSourceMapping::map(const MapArguments
     TypedDataArray array;
 
     DataSourceArgs args = m_data_source_args;
+    for (const auto& [key, value] : arguments.runtime_attributes.items()) {
+        if (!args.contains(key) && value.is_primitive() && !value.is_null()) {
+            args[key] = value;
+        }
+    }
     for (auto& [key, value] : args) {
         if (value.is_string()) {
             value = libtokamap::render(value.get<std::string>(), arguments.global_data);

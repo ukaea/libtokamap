@@ -2,7 +2,11 @@ build/
 .zed/
 .cache/
 python/build/
+python/src/clibtokamap*.so
+python/src/libtokamap/__pycache__/
+python/src/libtokamap/_version.py
 python/src/libtokamap.egg-info
+python/tests/__pycache__/
 python/dist/
 python/setup.py
 .clangd

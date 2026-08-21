@@ -8,12 +8,20 @@
 #include <limits>
 #include <nlohmann/json.hpp>
 #include <optional>
-#include <span>
 #include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
 #include <vector>
+#if __cplusplus >= 202002L
+#  include <span>
+#  define TM_BIT_CAST std::bit_cast
+#else
+#  define TM_BIT_CAST reinterpret_cast
+#endif
+
+// #include <xtensor/containers/xarray.hpp>
+// #include <xtensor/containers/xadapt.hpp>
 
 #include "exceptions/exceptions.hpp"
 #include "utils/compiler.hpp"
@@ -204,7 +212,7 @@ class TypedDataArray
         : m_data_type{data_type_of<T>()}, m_size{array.size()}, m_shape{std::move(shape)}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(m_size * sizeof(T)));
-        std::memcpy(m_buffer, reinterpret_cast<const char*>(array.data()), m_size * sizeof(T));
+        std::memcpy(m_buffer, TM_BIT_CAST<const char*>(array.data()), m_size * sizeof(T));
         if (m_shape.empty()) {
             m_shape.push_back(m_size);
         }
@@ -216,9 +224,9 @@ class TypedDataArray
     {
         if (m_owning) {
             m_buffer = static_cast<char*>(malloc(m_size * sizeof(T)));
-            std::memcpy(m_buffer, reinterpret_cast<const char*>(array), m_size * sizeof(T));
+            std::memcpy(m_buffer, TM_BIT_CAST<const char*>(array), m_size * sizeof(T));
         } else {
-            m_buffer = reinterpret_cast<char*>(array);
+            m_buffer = TM_BIT_CAST<char*>(array);
         }
     }
 
@@ -226,7 +234,7 @@ class TypedDataArray
     explicit TypedDataArray(const T value) : m_data_type{data_type_of<T>()}, m_size{1}, m_owning{true}
     {
         m_buffer = static_cast<char*>(malloc(sizeof(T)));
-        std::memcpy(m_buffer, reinterpret_cast<const char*>(&value), sizeof(T));
+        std::memcpy(m_buffer, TM_BIT_CAST<const char*>(&value), sizeof(T));
     }
 
     explicit TypedDataArray(const std::string& value)
@@ -263,7 +271,7 @@ class TypedDataArray
             throw libtokamap::DataTypeError{"invalid type given to apply"};
         }
 
-        auto* data = reinterpret_cast<T*>(m_buffer);
+        auto* data = TM_BIT_CAST<T*>(m_buffer);
         for (size_t idx = 0; idx < m_size; ++idx) {
             data[idx] = static_cast<T>((static_cast<double>(data[idx]) * scale_factor) + offset);
         }
@@ -294,10 +302,10 @@ class TypedDataArray
             new_size *= len;
         }
 
-        auto* array = reinterpret_cast<T*>(m_buffer);
+        auto* array = TM_BIT_CAST<T*>(m_buffer);
 
         auto* new_buffer = static_cast<char*>(malloc(sizeof(T) * new_size));
-        auto* new_array = reinterpret_cast<T*>(new_buffer);
+        auto* new_array = TM_BIT_CAST<T*>(new_buffer);
 
         auto offsets = compute_offsets(m_shape, subsets);
         size_t idx = 0;
@@ -351,8 +359,8 @@ class TypedDataArray
         new_array.m_buffer = new char[m_size * sizeof(To)];
         new_array.m_owning = true;
 
-        From* data = std::bit_cast<From*>(m_buffer);
-        std::copy(data, data + m_size, std::bit_cast<To*>(new_array.m_buffer));
+        From* data = TM_BIT_CAST<From*>(m_buffer);
+        std::copy(data, data + m_size, TM_BIT_CAST<To*>(new_array.m_buffer));
 
         return new_array;
     }
@@ -363,7 +371,7 @@ class TypedDataArray
         if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to span"};
         }
-        return std::span<T>{reinterpret_cast<T*>(m_buffer), m_size};
+        return std::span<T>{TM_BIT_CAST<T*>(m_buffer), m_size};
     }
 #endif
 
@@ -372,7 +380,7 @@ class TypedDataArray
         if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to data"};
         }
-        return reinterpret_cast<T*>(m_buffer);
+        return TM_BIT_CAST<T*>(m_buffer);
     }
 
     template <typename T> [[nodiscard]] std::vector<T> to_vector() const
@@ -380,7 +388,7 @@ class TypedDataArray
         if (m_data_type != data_type_of<T>()) {
             throw libtokamap::DataTypeError{"invalid type given to to_vector"};
         }
-        const T* ptr = reinterpret_cast<T*>(m_buffer);
+        const T* ptr = TM_BIT_CAST<T*>(m_buffer);
         return std::vector<T>{ptr, ptr + m_size};
     }
 
@@ -444,6 +452,24 @@ class TypedDataArray
 
     void set_trace(nlohmann::json trace) { m_trace = std::move(trace); }
     [[nodiscard]] const nlohmann::json& trace() const { return m_trace; }
+
+    // template <typename T>
+    // xt::xarray<T> as_xtensor() {
+    //     if (m_data_type != data_type_of<T>()) {
+    //         throw libtokamap::DataTypeError{"invalid type given to as_xtensor"};
+    //     }
+    //     T* data = TM_BIT_CAST<T*>(m_buffer);
+    //     return xt::adapt(data, m_size, xt::no_ownership{}, m_shape);
+    // }
+
+    // template <typename T>
+    // xt::xarray<T> to_xtensor() {
+    //     if (m_data_type != data_type_of<T>()) {
+    //         throw libtokamap::DataTypeError{"invalid type given to into_xtensor"};
+    //     }
+    //     T* data = TM_BIT_CAST<T*>(m_buffer);
+    //     return xt::adapt(data, m_size, xt::acquire_ownership{}, m_shape);
+    // }
 
   private:
     char* m_buffer = nullptr;

@@ -6,26 +6,25 @@
 # become changelog entries. Merge commits are not excluded, so you probably
 # have to clean up the result manually.
 
-RE_VERSION='^v\?[0-9]\+\([.-][0-9]\+\)*'
+RE_VERSION='^[0-9]\+\(\.[0-9]\+\)\+$'
 # Assume the name of the current directory is the package name
 PACKAGE=${PWD##*/}
 
 function logentry() {
-        local previous=$1
-        local version=$2
-        echo "$PACKAGE ($version) unstable; urgency=low"
-        echo
-	git --no-pager log --format="%w(80,0,4)  * %s" $previous${previous:+..}$version
-        echo
-        git --no-pager log --format=" -- %an <%ae>  %aD" -n 1 $version
-        echo
+    local previous=$1
+    local version=$2
+    echo "$PACKAGE ($version) unstable; urgency=low"
+    echo
+    git --no-pager log --format="%w(80,0,4)  * %s" $previous${previous:+..}$version
+    echo
+    git --no-pager log --format=" -- %an <%ae>  %aD" -n 1 $version
+    echo
 }
 
 git tag --sort "-version:refname" | grep "$RE_VERSION" | (
-        read version; while read previous; do
-                logentry $previous $version
-                version="$previous"
-        done
-        logentry "" $version
+    read version; while read previous; do
+        logentry $previous $version
+        version="$previous"
+    done
+    logentry "" $version
 )
-
