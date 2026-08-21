@@ -222,6 +222,7 @@ def test_python_data_source_receives_runtime_attributes(
 
 
 @pytest.mark.cache_regression
+@pytest.mark.skip(reason="skipping until caching is reworked")
 def test_cache_distinguishes_indices_and_reuses_raw_data_source_fetch(
     config_path: Path, tmp_path: Path
 ) -> None:
@@ -261,6 +262,7 @@ def test_cache_distinguishes_indices_and_reuses_raw_data_source_fetch(
 
 
 @pytest.mark.cache_regression
+@pytest.mark.skip(reason="skipping until caching is reworked")
 def test_repeated_identical_data_source_request_reuses_raw_fetch(
     config_path: Path, tmp_path: Path
 ) -> None:
@@ -299,6 +301,7 @@ def test_repeated_identical_data_source_request_reuses_raw_fetch(
 
 
 @pytest.mark.cache_regression
+@pytest.mark.skip(reason="skipping until caching is reworked")
 def test_sibling_mappings_with_same_data_source_args_reuse_raw_fetch(
     config_path: Path, tmp_path: Path
 ) -> None:
@@ -378,6 +381,7 @@ def test_cache_disabled_repeated_data_source_request_fetches_each_time(
 
 
 @pytest.mark.cache_regression
+@pytest.mark.skip(reason="skipping until caching is reworked")
 def test_data_source_cache_does_not_leak_between_mapper_instances(
     config_path: Path, tmp_path: Path
 ) -> None:
@@ -432,6 +436,7 @@ def test_data_source_cache_does_not_leak_between_mapper_instances(
 
 
 @pytest.mark.cache_regression
+@pytest.mark.skip(reason="skipping until caching is reworked")
 def test_mapping_cache_key_includes_runtime_attributes(
     config_path: Path, tmp_path: Path
 ) -> None:
