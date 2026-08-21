@@ -30,6 +30,7 @@
 #include "map_types/data_source_mapping.hpp"
 #include "map_types/dim_mapping.hpp"
 #include "map_types/expr_mapping.hpp"
+#include "map_types/interp_mapping.hpp"
 #include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/algorithm.hpp"
@@ -418,6 +419,31 @@ void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::Ma
     }
 }
 
+void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
+                         const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+{
+   for (const auto& required : {"input", "base", "target", "type"}) {
+        if (!value.contains(required)) {
+            throw libtokamap::ConfigurationError{"Required " + std::string{required} +
+                                                 " argument not provided in INTERP mapping '" + mapping_name + "'"};
+        }
+    }
+
+    const auto input = value["input"].get<std::string>();
+    const auto base = value["base"].get<std::string>();
+    const auto target = value["target"].get<std::string>();
+    const auto interp_type = value["type"].get<libtokamap::InterpType>();
+
+    if (interp_type == libtokamap::InterpType::UNKNOWN) {
+        throw libtokamap::ConfigurationError{"Unknown interpolation type in INTERP mapping '" + mapping_name + "'"};
+    }
+
+    map_store.emplace(mapping_name, std::make_unique<libtokamap::InterpMapping>(input, base, target, interp_type));
+    mapping_counts.increment(input);
+    mapping_counts.increment(base);
+    mapping_counts.increment(target);
+}
+
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                          const nlohmann::json& value, const std::vector<libtokamap::LibraryFunction>& library_functions,
                          libtokamap::MappingCounts& mapping_counts)
@@ -479,6 +505,9 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                 break;
             case MappingType::EXPR:
                 init_expr_mapping(map_store, mapping_name, value, m_mapping_counts);
+                break;
+            case MappingType::INTERP:
+                init_interp_mapping(map_store, mapping_name, value, m_mapping_counts);
                 break;
             case MappingType::CUSTOM:
                 init_custom_mapping(map_store, mapping_name, value, m_library_functions, m_mapping_counts);
