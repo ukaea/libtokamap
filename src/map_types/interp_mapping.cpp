@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <iterator>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <utility>
@@ -168,7 +169,16 @@ libtokamap::TypedDataArray libtokamap::InterpMapping::map(const MapArguments& ar
 
     // use float if originally float
     if (input_array.data_type() == DataType::Float) {
-        return TypedDataArray{std::vector<float>{interpolated.begin(), interpolated.end()}};
+        std::vector<float> result;
+        result.reserve(interpolated.size());
+
+        std::transform(
+            interpolated.begin(),
+            interpolated.end(),
+            std::back_inserter(result),
+            [](double value) { return static_cast<float>(value); });
+
+        return TypedDataArray{std::move(result)};
     }
     return TypedDataArray{std::move(interpolated)};
 }
