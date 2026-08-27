@@ -138,6 +138,7 @@ set( EXT_HEADERS
     ext_include/valijson_nlohmann_bundled.hpp
     ext_include/exprtk/exprtk.hpp
     ext_include/inja/inja.hpp
+    ext_include/toml.hpp
 )
 
 if( "${PROJECT_VERSION_TWEAK}" STREQUAL "" )
