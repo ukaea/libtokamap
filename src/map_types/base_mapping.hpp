@@ -11,7 +11,7 @@ namespace libtokamap
 
 enum class MappingType : uint8_t { UNKNOWN, VALUE, DATA_SOURCE, EXPR, CUSTOM, DIM, INTERP, ERROR };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(MappingType, {{MappingType::UNKNOWN, ""}, // will default to this on no match
+NLOHMANN_JSON_SERIALIZE_ENUM(MappingType, {{MappingType::UNKNOWN, nullptr}, // will default to this on no match
                                            {MappingType::VALUE, "VALUE"},
                                            {MappingType::DATA_SOURCE, "DATA_SOURCE"},
                                            {MappingType::EXPR, "EXPR"},

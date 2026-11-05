@@ -11,7 +11,7 @@ namespace libtokamap
 
 enum class InterpType : short { UNKNOWN, LINEAR /*CUBIC, SPLINE, NEAREST*/ };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(InterpType, {{InterpType::UNKNOWN, ""}, // will default to this on no match
+NLOHMANN_JSON_SERIALIZE_ENUM(InterpType, {{InterpType::UNKNOWN, nullptr}, // will default to this on no match
                                           {InterpType::LINEAR, "LINEAR"}})
 
 class InterpMapping : public Mapping
