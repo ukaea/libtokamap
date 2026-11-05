@@ -449,7 +449,7 @@ void init_error_mapping(libtokamap::MappingStore& map_store, const libtokamap::M
                         const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
 {
     const auto reference = value.at("reference").get<std::string>();
-    const auto error_type = value.at("error_type").get<ErrorType>();
+    const auto error_type = value.at("error_type").get<libtokamap::ErrorType>();
 
     std::optional<double> absolute;
     std::optional<double> relative;
