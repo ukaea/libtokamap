@@ -29,6 +29,7 @@
 #include "map_types/custom_mapping.hpp"
 #include "map_types/data_source_mapping.hpp"
 #include "map_types/dim_mapping.hpp"
+#include "map_types/error_mapping.hpp"
 #include "map_types/expr_mapping.hpp"
 #include "map_types/interp_mapping.hpp"
 #include "map_types/map_arguments.hpp"
@@ -444,6 +445,28 @@ void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::
     mapping_counts.increment(target);
 }
 
+void init_error_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
+                        const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+{
+    const auto reference = value.at("reference").get<std::string>();
+    const auto error_type = value.at("error_type").get<ErrorType>();
+
+    std::optional<double> absolute;
+    std::optional<double> relative;
+    if (error_type == libtokamap::ErrorType::ABSOLUTE || error_type == libtokamap::ErrorType::MAX_ABS_REL) {
+        absolute = value.at("absolute").get<double>();
+    }
+    if (error_type == libtokamap::ErrorType::RELATIVE || error_type == libtokamap::ErrorType::MAX_ABS_REL) {
+        relative = value.at("relative").get<double>();
+    }
+
+    map_store.emplace(
+        mapping_name,
+        std::make_unique<libtokamap::ErrorMapping>(reference, error_type, absolute, relative)
+    );
+    mapping_counts.increment(reference);
+}
+
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                          const nlohmann::json& value, const std::vector<libtokamap::LibraryFunction>& library_functions,
                          libtokamap::MappingCounts& mapping_counts)
@@ -508,6 +531,9 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                 break;
             case MappingType::INTERP:
                 init_interp_mapping(map_store, mapping_name, value, m_mapping_counts);
+                break;
+            case MappingType::ERROR:
+                init_error_mapping(map_store, mapping_name, value, m_mapping_counts);
                 break;
             case MappingType::CUSTOM:
                 init_custom_mapping(map_store, mapping_name, value, m_library_functions, m_mapping_counts);
