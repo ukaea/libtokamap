@@ -38,7 +38,7 @@ double point_error(libtokamap::ErrorType error_type, double point, double absolu
         case libtokamap::ErrorType::MAX_ABS_REL:
             return std::max(absolute, relative * std::abs(point)); // EFIT++-ism 
         // case libtokamap::ErrorType::QUADRATURE:
-        //   could add in the future (absolute/abs(point) + relative)*abs(point)
+        //   could add in the future sqrt(absolute/abs(point)^2 + relative^2))*abs(point) or whatever
         //   can't really think of a situation we would need this though
         case libtokamap::ErrorType::UNKNOWN:
             throw libtokamap::ProcessingError{"Unknown error type"};
