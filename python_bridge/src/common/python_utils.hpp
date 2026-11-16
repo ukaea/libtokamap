@@ -1,7 +1,7 @@
 #pragma once
 
-// Small RAII helpers over the CPython C API, shared by the embedded Python bridge and intended for reuse by the
-// clibtokamap extension module.
+// Small RAII helpers over the CPython C API, shared by the embedded Python bridge and the clibtokamap extension
+// module.
 //
 // Python.h must be included before any standard headers, so this header includes it first.
 
@@ -11,10 +11,6 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
-
-#ifdef Py_GIL_DISABLED
-#error "The LibTokaMap Python bridge does not yet support free-threaded Python builds"
-#endif
 
 namespace libtokamap::python
 {

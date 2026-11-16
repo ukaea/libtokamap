@@ -58,7 +58,8 @@ class ArraySource:
         if kind == "unicode_multi":
             return np.array(["a", "b"])
         if kind == "object":
-            return np.array([object()], dtype=object)
+            # e.g. a list of records, which data sources return for DIMENSION mappings to count
+            return np.array([{"a": 1}, {"b": 2}, {"c": 3}], dtype=object)
         if kind == "complex":
             return np.zeros(2, dtype=np.complex128)
         if kind == "none":

@@ -51,22 +51,12 @@ libtokamap::TypedDataArray libtokamap::python::PythonDataSource::get(const DataS
     }
     GilGuard gil;
     try {
-        PyRef args = PyRef::steal(PyDict_New());
-        if (!args) {
-            throw_python_error("failed to create argument dict");
-        }
-        for (const auto& [key, value] : map_args) {
-            PyRef item = json_to_python(value);
-            if (PyDict_SetItemString(args.get(), key.c_str(), item.get()) != 0) {
-                throw_python_error("failed to set argument '" + key + "'");
-            }
-        }
-
+        PyRef args = args_to_python(map_args);
         PyRef result = PyRef::steal(PyObject_CallMethodOneArg(m_instance, m_get_name, args.get()));
         if (!result) {
             throw PythonError{fetch_python_error()};
         }
-        return python_to_typed_data_array(result.get());
+        return python_to_typed_data_array(result.get(), ObjectArrays::Placeholder);
     } catch (const PythonError& error) {
         throw PythonCallbackError{m_description + ".get(): " + error.what()};
     }

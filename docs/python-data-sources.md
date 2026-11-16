@@ -59,11 +59,16 @@ class MyDataSource:
 - a NumPy array or scalar, or any other object supporting the buffer protocol (e.g. `memoryview`, `array.array`),
   with a boolean, signed or unsigned 8–64 bit integer, `float32` or `float64` element type. Arrays may be
   non-contiguous, read-only or non-native byte order; the data is always copied. Booleans are returned as `uint8`;
-- a `str`, or a NumPy `U`/`S` array with exactly one element, returned as a string.
+- a `str`, or a NumPy `U`/`S` array with exactly one element, returned as a string;
+- a NumPy object array (e.g. `np.array(list_of_dicts)`), returned as a zero-filled `int8` placeholder of the same
+  shape. This lets `DIMENSION` mappings count the elements, but the elements themselves cannot be read.
 
-Anything else, including object arrays, complex numbers, multi-element string arrays and `None`, raises
+Anything else, including complex numbers, multi-element string arrays and `None`, raises
 `libtokamap::PythonCallbackError`, as does any exception raised by `get`. The error message includes the Python
 exception type, message and the location it was raised from.
+
+These rules are the same for data sources registered from Python with `Mapper.register_python_data_source`, and for
+Python custom functions, except that custom functions may not return object arrays.
 
 ## Configuration
 

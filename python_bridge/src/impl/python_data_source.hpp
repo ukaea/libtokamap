@@ -2,6 +2,10 @@
 
 #include "common/python_utils.hpp"
 
+#ifdef Py_GIL_DISABLED
+#error "The LibTokaMap Python bridge does not yet support free-threaded Python builds"
+#endif
+
 #include <string>
 
 #include "map_types/data_source_mapping.hpp"

@@ -143,6 +143,13 @@ TEST_CASE("Python bridge converts array layouts", "[python_bridge]")
     }
     SECTION("read-only arrays") { check_values<double>(call_kind("read_only"), {0, 1, 2, 3}); }
     SECTION("non-NumPy buffer objects") { check_values<int32_t>(call_kind("memoryview"), {1, 2, 3}); }
+    SECTION("object arrays become countable placeholders")
+    {
+        auto array = call_kind("object");
+        CHECK(array.shape() == std::vector<size_t>{3});
+        CHECK(array.size() == 3);
+        CHECK(array.data_type() == libtokamap::DataType::Int8);
+    }
 }
 
 TEST_CASE("Python bridge converts strings", "[python_bridge]")
@@ -155,7 +162,7 @@ TEST_CASE("Python bridge converts strings", "[python_bridge]")
 
 TEST_CASE("Python bridge rejects unsupported return values", "[python_bridge]")
 {
-    auto kind = GENERATE(as<std::string>{}, "object", "complex", "unicode_multi", "none", "int");
+    auto kind = GENERATE(as<std::string>{}, "complex", "unicode_multi", "none", "int");
     CAPTURE(kind);
     CHECK_THROWS_AS(call_kind(kind), libtokamap::PythonCallbackError);
 

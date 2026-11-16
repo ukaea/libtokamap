@@ -9,6 +9,7 @@
 #include <cstring>
 #include <nlohmann/json.hpp>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "utils/typed_data_array.hpp"
@@ -164,21 +165,26 @@ TypedDataArray make_string(const char* data, size_t count, Py_ssize_t item_size,
     return TypedDataArray{std::string{utf8, static_cast<size_t>(size)}};
 }
 
-TypedDataArray buffer_to_typed_data_array(PyObject* object)
+TypedDataArray buffer_to_typed_data_array(PyObject* object, libtokamap::python::ObjectArrays object_arrays)
 {
     BufferView buffer{object};
     const Py_buffer& view = buffer.view();
 
     ElementFormat format = parse_format(view.format);
-    if (format.code == 'O') {
-        throw PythonError{"object arrays are not supported"};
-    }
 
     std::vector<size_t> shape;
     for (int dim = 0; dim < view.ndim; ++dim) {
         shape.push_back(static_cast<size_t>(view.shape[dim]));
     }
     size_t count = view.itemsize > 0 ? static_cast<size_t>(view.len / view.itemsize) : 0;
+
+    if (format.code == 'O') {
+        if (object_arrays == libtokamap::python::ObjectArrays::Placeholder) {
+            // int8_t, not char, whose signedness (and so DataType) varies by platform
+            return TypedDataArray{std::vector<int8_t>(count), std::move(shape)};
+        }
+        throw PythonError{"object arrays are not supported"};
+    }
 
     // Gather into C order and native byte order if needed. Strings are byte swapped per UCS4 code unit.
     std::vector<char> contiguous;
@@ -274,6 +280,19 @@ libtokamap::python::PyRef libtokamap::python::json_to_python(const nlohmann::jso
     throw PythonError{std::string{"unsupported JSON value type '"} + value.type_name() + "'"};
 }
 
+libtokamap::python::PyRef
+libtokamap::python::args_to_python(const std::unordered_map<std::string, nlohmann::json>& args)
+{
+    PyRef dict = checked(PyDict_New(), "failed to create argument dict");
+    for (const auto& [key, value] : args) {
+        PyRef item = json_to_python(value);
+        if (PyDict_SetItemString(dict.get(), key.c_str(), item.get()) != 0) {
+            throw_python_error("failed to set argument '" + key + "'");
+        }
+    }
+    return dict;
+}
+
 libtokamap::python::PyRef libtokamap::python::factory_arg_to_python(const std::string& name, const std::any& value)
 {
     if (const auto* number = std::any_cast<double>(&value)) {
@@ -295,7 +314,7 @@ libtokamap::python::PyRef libtokamap::python::factory_arg_to_python(const std::s
     throw PythonError{"factory argument '" + name + "' has an unsupported type"};
 }
 
-libtokamap::TypedDataArray libtokamap::python::python_to_typed_data_array(PyObject* object)
+libtokamap::TypedDataArray libtokamap::python::python_to_typed_data_array(PyObject* object, ObjectArrays object_arrays)
 {
     if (PyUnicode_Check(object)) {
         Py_ssize_t size = 0;
@@ -308,5 +327,5 @@ libtokamap::TypedDataArray libtokamap::python::python_to_typed_data_array(PyObje
     if (PyObject_CheckBuffer(object) == 0) {
         throw PythonError{"expected a NumPy array, buffer-protocol object or str, got '" + type_name(object) + "'"};
     }
-    return buffer_to_typed_data_array(object);
+    return buffer_to_typed_data_array(object, object_arrays);
 }
