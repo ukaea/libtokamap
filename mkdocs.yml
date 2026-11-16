@@ -31,6 +31,7 @@ nav:
       - Refactoring Guide: developer_resources/refactoring_guide.md
   - Extending LibTokaMap:
       - Creating a New Data Source: creating-data-source.md
+      - Python Data Sources: python-data-sources.md
       - Creating Custom Function Libraries: creating-custom-functions.md
 
 markdown_extensions:

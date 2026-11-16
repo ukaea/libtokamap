@@ -76,3 +76,48 @@ jobs:
         with:
           name: example-trace-${{ matrix.os }}-${{ matrix.release }}
           path: trace.json
+
+  python-bridge:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Python with a shared libpython
+          - os: ubuntu-latest
+            python: setup-python
+          - os: macos-latest
+            python: setup-python
+          # Distribution python3, which has libpython built into the executable
+          - os: ubuntu-latest
+            python: system
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        if: matrix.python == 'setup-python'
+        with:
+          python-version: "3.12"
+
+      - name: Install system Python
+        if: matrix.python == 'system'
+        run: sudo apt-get update && sudo apt-get install -y python3-dev python3-venv
+
+      - name: Create virtual environment
+        run: |
+          python3 -m venv venv
+          venv/bin/pip install numpy
+
+      - name: Configure CMake
+        run: >
+          cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON \
+            -DLIBTOKAMAP_BUILD_PYTHON_BRIDGE=ON -DPython3_EXECUTABLE=$PWD/venv/bin/python
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure

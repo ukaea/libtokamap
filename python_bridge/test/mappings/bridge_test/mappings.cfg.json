@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "experiment": "bridge_test",
+    "author": "LibTokaMap",
+    "version": "1.0.0"
+  },
+  "partitions": [],
+  "groups": ["python"]
+}

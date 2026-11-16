@@ -33,6 +33,7 @@ option( ENABLE_EXAMPLES "Enable examples for the projects (from the `examples` s
 option( ENABLE_PROFILING "Compile with profiling enabled." OFF )
 option( ENABLE_COVERAGE "Enable code coverage." OFF )
 option( ENABLE_DEBIAN_PACKAGING "Configure install files for debian packaging" OFF )
+option( LIBTOKAMAP_BUILD_PYTHON_BRIDGE "Build the optional embedded-Python data source bridge" OFF )
 
 ## Generators
 if( UNIX AND NOT APPLE )
@@ -288,6 +289,10 @@ endif()
 
 if( ENABLE_EXAMPLES )
   add_subdirectory( examples/simple_mapper )
+endif()
+
+if( LIBTOKAMAP_BUILD_PYTHON_BRIDGE )
+  add_subdirectory( python_bridge )
 endif()
 
 list( TRANSFORM SOURCES PREPEND ${CMAKE_CURRENT_LIST_DIR}/ )

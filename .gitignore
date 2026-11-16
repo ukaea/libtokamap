@@ -27,3 +27,4 @@ build_artifacts
 site/
 graph/
 schemas/
+python_bridge/test/python/__pycache__/
