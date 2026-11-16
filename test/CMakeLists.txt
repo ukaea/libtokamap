@@ -13,6 +13,7 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 set( TEST_SOURCES
     src/data_source_mapping_test.cpp
     src/dim_mapping_test.cpp
+    src/error_mapping_test.cpp
     src/indices_test.cpp
     src/interp_mapping_test.cpp
     src/mapping_locator_test.cpp
