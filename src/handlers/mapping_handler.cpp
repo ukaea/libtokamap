@@ -547,6 +547,9 @@ void libtokamap::MappingHandler::load_data_source(const std::string& name, const
             factory_args[key] = value.get<bool>();
         } else if (value.is_string()) {
             factory_args[key] = value.get<std::string>();
+        } else if (value.is_structured() || value.is_null()) {
+            // Objects, arrays and nulls are passed through unconverted for factories that accept them
+            factory_args[key] = value;
         } else {
             throw libtokamap::ConfigurationError{"Unsupported type for argument " + key};
         }

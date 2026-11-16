@@ -282,22 +282,33 @@ For maximum flexibility, create a shared library:
 
 ```cpp
 // my_data_source_plugin.cpp
-extern "C" {
-    libtokamap::FactoryEntryInterface* get_factory_entry() {
-        static libtokamap::FactoryEntryInterface entry;
-        entry.function = [](const libtokamap::DataSourceFactoryArgs& args) {
-            return create_my_data_source(args);
-        };
-        return &entry;
-    }
+#include <libtokamap.hpp>
+
+// Lets LibTokaMap refuse to load the plugin if it was built against an incompatible LibTokaMap
+LIBTOKAMAP_EXPORT_FACTORY_ABI_VERSION()
+
+LIBTOKAMAP_FACTORY_EXPORT void LibTokaMapFactoryLoader(libtokamap::FactoryEntryInterface& entry)
+{
+    entry.function = create_my_data_source;
 }
 ```
 
-Build as a shared library and load it dynamically:
+Build as a shared library and reference it from the configuration file:
 
-```bash
-g++ -shared -fPIC -o my_data_source.so my_data_source_plugin.cpp
+```toml
+[data_source_factories]
+my_factory = "/path/to/libmy_data_source.so"
+
+[data_sources.MY_SOURCE]
+factory = "my_factory"
+args.connection_string = "..."
 ```
+
+Factory arguments that are strings, booleans, integers or floats are passed as `std::string`, `bool`, `int` and
+`double`. Tables, arrays and nulls are passed as `nlohmann::json`.
+
+Data sources can also be written in Python and loaded the same way, see
+[Python Data Sources](python-data-sources.md).
 
 ## Real-World Examples
 

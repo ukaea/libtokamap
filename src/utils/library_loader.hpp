@@ -100,6 +100,19 @@ struct FactoryEntryInterface {
     DataSourceFactory function;
 };
 
+/**
+ * Version of the C++ interface shared between LibTokaMap and dynamically loaded data source factories.
+ *
+ * Factory libraries statically link their own copy of LibTokaMap, so types such as DataSource, TypedDataArray,
+ * MapArguments and DataSourceFactoryArgs cross the library boundary by layout. Increment this whenever any of
+ * those types change incompatibly.
+ *
+ * A factory library may export `extern "C" int LibTokaMapFactoryABIVersion()` (see
+ * LIBTOKAMAP_EXPORT_FACTORY_ABI_VERSION) and the loader will refuse to use it if the versions differ. Libraries
+ * that do not export the symbol are accepted unchecked for backwards compatibility.
+ */
+constexpr int FactoryABIVersion = 1;
+
 DataSourceFactory load_data_source_factory(const std::filesystem::path& library_path);
 
 template <typename T> std::string to_string()
@@ -120,3 +133,13 @@ template <typename T> auto get_arg(const DataSourceFactoryArgs& args, const char
 }
 
 } // namespace libtokamap
+
+#if defined(_WIN32)
+#  define LIBTOKAMAP_FACTORY_EXPORT extern "C" __declspec(dllexport)
+#else
+#  define LIBTOKAMAP_FACTORY_EXPORT extern "C" __attribute__((visibility("default")))
+#endif
+
+// Export the factory ABI version from a data source factory library, checked by load_data_source_factory
+#define LIBTOKAMAP_EXPORT_FACTORY_ABI_VERSION()                                                                        \
+    LIBTOKAMAP_FACTORY_EXPORT int LibTokaMapFactoryABIVersion() { return libtokamap::FactoryABIVersion; }
