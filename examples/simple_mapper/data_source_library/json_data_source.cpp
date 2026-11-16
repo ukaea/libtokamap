@@ -115,6 +115,8 @@ libtokamap::TypedDataArray JSONDataSource::get(const libtokamap::DataSourceArgs&
     return result;
 }
 
+LIBTOKAMAP_EXPORT_FACTORY_ABI_VERSION()
+
 void LibTokaMapFactoryLoader(libtokamap::FactoryEntryInterface& factory)
 {
     factory.function = json_data_source_factory;

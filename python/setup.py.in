@@ -15,6 +15,12 @@ LIBRARY_NAME = "@CMAKE_STATIC_LIBRARY_PREFIX@" + "tokamap" + "@CMAKE_STATIC_LIBR
 # Search in build directory for cases when library has been added to subdirectory
 library = find_file(LIBRARY_NAME, LIBRARY_DIR)
 
+# CPython helpers shared with the embedded Python bridge. setuptools requires sources relative to this directory.
+PYTHON_COMMON_SOURCES = [
+    "../python_bridge/src/common/python_conversions.cpp",
+    "../python_bridge/src/common/python_utils.cpp",
+]
+
 if platform.system() == 'Windows':
     EXTRA_COMPILE_ARGS = ["/std:c++20", "/O2"]
     EXTRA_LINK_ARGS= ["Dbghelp.lib"]
@@ -25,10 +31,11 @@ else:
 ext_modules = [
     Extension(
         "clibtokamap",
-        sources=["libtokamap.cpp"],
+        sources=["libtokamap.cpp", *PYTHON_COMMON_SOURCES],
         include_dirs=[
             str(ROOT / "include"),
             str(ROOT / "src"),
+            str(ROOT / "python_bridge" / "src"),
             str(ROOT / "ext_include"),
             str(ROOT / "build" / "include"),
             numpy.get_include(),

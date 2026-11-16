@@ -1,0 +1,24 @@
+{
+  "value": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "PY",
+    "args": {
+      "value": 5
+    }
+  },
+  "value_scaled": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "PY",
+    "args": {
+      "value": 5
+    },
+    "scale": 10.0
+  },
+  "label": {
+    "map_type": "DATA_SOURCE",
+    "data_source": "PY",
+    "args": {
+      "value": "label"
+    }
+  }
+}

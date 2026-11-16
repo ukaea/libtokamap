@@ -86,6 +86,44 @@ def test_custom_callback_accepts_multidimensional_numpy_return(tmp_path) -> None
     np.testing.assert_array_equal(result, expected)
 
 
+def read_only(values: np.ndarray) -> np.ndarray:
+    values.setflags(write=False)
+    return values
+
+
+@pytest.mark.parametrize(
+    ("returned", "expected"),
+    [
+        (np.arange(6, dtype=np.float64)[::2], np.array([0.0, 2.0, 4.0])),
+        (np.asfortranarray(np.arange(6, dtype=np.int32).reshape(2, 3)), np.arange(6, dtype=np.int32).reshape(2, 3)),
+        (read_only(np.arange(3, dtype=np.float64)), np.arange(3, dtype=np.float64)),
+        (np.arange(3, dtype=np.int32).astype(np.dtype(np.int32).newbyteorder("S")), np.arange(3, dtype=np.int32)),
+        (np.float64(2.5), np.array(2.5)),
+    ],
+    ids=["non_contiguous", "fortran_order", "read_only", "byte_swapped", "numpy_scalar"],
+)
+def test_custom_callback_accepts_any_array_layout(tmp_path, returned, expected) -> None:
+    def callback(_inputs: dict[str, libtokamap.MappedValue], _params: dict[str, Any]) -> np.ndarray:
+        return returned
+
+    mapper = make_custom_mapper(tmp_path, callback)
+    result = mapper.map("example", "magnetics/coil[0]/flux/callback_result", {"shot": 42})
+
+    assert isinstance(result, np.ndarray)
+    assert result.dtype == expected.dtype.newbyteorder("=")
+    np.testing.assert_array_equal(result, expected)
+
+
+@pytest.mark.parametrize("returned", ["h\u00e9llo", np.array(["h\u00e9llo"])], ids=["str", "unicode_array"])
+def test_custom_callback_accepts_strings(tmp_path, returned) -> None:
+    def callback(_inputs: dict[str, libtokamap.MappedValue], _params: dict[str, Any]) -> object:
+        return returned
+
+    mapper = make_custom_mapper(tmp_path, callback)
+
+    assert mapper.map("example", "magnetics/coil[0]/flux/callback_result", {"shot": 42}) == "h\u00e9llo"
+
+
 @pytest.mark.parametrize(
     "bad_return",
     [
@@ -94,7 +132,7 @@ def test_custom_callback_accepts_multidimensional_numpy_return(tmp_path) -> None
         1.0,
         np.array(["a", "b"], dtype=object),
         np.array([1 + 2j], dtype=np.complex128),
-        np.arange(6, dtype=np.float64)[::2],
+        np.array(["a", "b"]),
     ],
 )
 def test_custom_callback_rejects_invalid_return_values(tmp_path, bad_return) -> None:

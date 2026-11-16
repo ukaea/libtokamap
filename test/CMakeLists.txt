@@ -15,6 +15,7 @@ set( TEST_SOURCES
     src/dim_mapping_test.cpp
     src/indices_test.cpp
     src/interp_mapping_test.cpp
+    src/library_loader_test.cpp
     src/mapping_locator_test.cpp
     src/parse_slices_test.cpp
     src/render_test.cpp
@@ -56,6 +57,19 @@ target_link_libraries( libtokamap_tests
     Catch2::Catch2WithMain
     LibTokaMap::libtokamap
 )
+
+# Factory libraries exporting matching and mismatched ABI versions, for library_loader_test.cpp
+add_library( test_matching_abi_factory SHARED src/factories/abi_factory.cpp )
+target_link_libraries( test_matching_abi_factory PRIVATE LibTokaMap::libtokamap )
+add_library( test_mismatched_abi_factory SHARED src/factories/abi_factory.cpp )
+target_link_libraries( test_mismatched_abi_factory PRIVATE LibTokaMap::libtokamap )
+target_compile_definitions( test_mismatched_abi_factory PRIVATE TEST_FACTORY_ABI_OFFSET=1 )
+
+target_compile_definitions( libtokamap_tests PRIVATE
+    TEST_MATCHING_ABI_FACTORY="$<TARGET_FILE:test_matching_abi_factory>"
+    TEST_MISMATCHED_ABI_FACTORY="$<TARGET_FILE:test_mismatched_abi_factory>"
+)
+add_dependencies( libtokamap_tests test_matching_abi_factory test_mismatched_abi_factory )
 
 if( ENABLE_COVERAGE )
   include( Coverage )
