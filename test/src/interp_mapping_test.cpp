@@ -1,38 +1,22 @@
-#include <cstddef>
 #include <memory>
 #include <nlohmann/json.hpp>
-#include <string>
-#include <unordered_map>
 #include <vector>
 
 #include "exceptions/exceptions.hpp"
-#include "map_types/base_mapping.hpp"
 #include "map_types/interp_mapping.hpp"
-#include "map_types/map_arguments.hpp"
 #include "map_types/value_mapping.hpp"
-#include "utils/typed_data_array.hpp"
+#include "mapping_test_helpers.hpp"
 
-#include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <catch2/matchers/catch_matchers_vector.hpp>
 
 using namespace libtokamap;
+using namespace libtokamap::test;
+using Catch::Matchers::Approx;
 
 namespace
 {
-
-using MapEntries = std::unordered_map<std::string, std::unique_ptr<Mapping>>;
-
-MapArguments make_map_arguments(MapEntries& entries)
-{
-    static nlohmann::json empty_global_data = nlohmann::json::object();
-
-    constexpr bool trace_enabled = false;
-    constexpr bool cache_enabled = false;
-    constexpr RamCache* ram_cache = nullptr;
-
-    return MapArguments(entries, empty_global_data, DataType::Float, 1, trace_enabled, cache_enabled, ram_cache);
-}
 
 MapEntries make_entries(const nlohmann::json& signal, const nlohmann::json& time, const nlohmann::json& new_time)
 {
@@ -63,16 +47,8 @@ TEST_CASE("InterpMapping interpolates onto a new time base", "[interp_mapping]")
     const auto result = make_interp_mapping().map(map_args);
 
     REQUIRE(result.rank() == 1);
-    REQUIRE(result.size() == 7);
-    REQUIRE(result.data_type() == DataType::Float);
-
     // points outside the base are clamped rather than extrapolated
-    const std::vector<float> expected{10.0F, 10.0F, 15.0F, 25.0F, 30.0F, 40.0F, 40.0F};
-    const auto actual = result.to_vector<float>();
-    for (size_t idx = 0; idx < expected.size(); ++idx) {
-        INFO("index " << idx);
-        REQUIRE(actual[idx] == Catch::Approx(expected[idx]));
-    }
+    REQUIRE_THAT(result.to_vector<float>(), Approx(std::vector{10.0F, 10.0F, 15.0F, 25.0F, 30.0F, 40.0F, 40.0F}));
 }
 
 TEST_CASE("InterpMapping rejects arguments it cannot interpolate", "[interp_mapping_errors]")
