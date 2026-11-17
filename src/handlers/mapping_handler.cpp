@@ -667,6 +667,66 @@ void libtokamap::MappingHandler::load_experiment(const ExperimentName& experimen
     experiment_mapping.is_loaded = true;
 }
 
+const libtokamap::ExperimentMappings&
+libtokamap::MappingHandler::get_experiment(const std::string& experiment) const
+{
+    // Use lowercase experiment name, consistent with map()
+    ExperimentName experiment_string = experiment;
+    to_lower(experiment_string);
+
+    if (!m_experiment_register.contains(experiment_string)) {
+        throw libtokamap::ParameterError{"no mappings found for experiment '" + experiment_string + "'"};
+    }
+    return m_experiment_register.at(experiment_string);
+}
+
+std::vector<std::string> libtokamap::MappingHandler::list_experiments() const
+{
+    std::vector<std::string> experiments;
+    experiments.reserve(m_experiment_register.size());
+    for (const auto& [name, _] : m_experiment_register) {
+        experiments.push_back(name);
+    }
+    std::ranges::sort(experiments);
+    return experiments;
+}
+
+std::vector<std::string> libtokamap::MappingHandler::list_groups(const std::string& experiment) const
+{
+    std::vector<std::string> groups = get_experiment(experiment).groups;
+    std::ranges::sort(groups);
+    return groups;
+}
+
+std::vector<std::string> libtokamap::MappingHandler::list_mappings(const std::string& experiment,
+                                                                   const std::string& group,
+                                                                   const nlohmann::json& attributes,
+                                                                   bool include_internal) const
+{
+    const auto& experiment_mappings = get_experiment(experiment);
+
+    if (std::ranges::find(experiment_mappings.groups, group) == experiment_mappings.groups.end()) {
+        throw libtokamap::ParameterError{"no mappings found for group '" + group + "'"};
+    }
+
+    auto partition_directory = find_partition_directory(experiment_mappings.root_path / group,
+                                                        experiment_mappings.partition_list,
+                                                        attributes);
+
+    auto mappings_json = load_json_file(partition_directory / "mappings.json");
+
+    std::vector<std::string> mapping_names;
+    for (const auto& [key, _] : mappings_json.items()) {
+        // Skip internal helper mappings unless requested, will rarely want the internal ones I reckon
+        if (!include_internal && key.starts_with('_')) {
+            continue;
+        }
+        mapping_names.push_back(group + "/" + key);
+    }
+    std::ranges::sort(mapping_names);
+    return mapping_names;
+}
+
 void libtokamap::MappingHandler::register_data_source_factory(const std::string& factory_name,
                                                               DataSourceFactory factory)
 {

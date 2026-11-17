@@ -61,7 +61,42 @@ class MappingHandler
 
     void load_custom_function_library(const std::filesystem::path& library_path);
 
+    /**
+     * List the experiments (machines) for which mappings have been found.
+     *
+     * @return sorted list of experiment names
+     */
+    [[nodiscard]] std::vector<std::string> list_experiments() const;
+
+    /**
+     * List the groups (e.g. "magnetics", "equilibrium") defined for an experiment.
+     *
+     * @param experiment experiment name (case-insensitive)
+     * @return sorted list of group names
+     */
+    [[nodiscard]] std::vector<std::string> list_groups(const std::string& experiment) const;
+
+    /**
+     * List the mapping paths available for a group of an experiment.
+     *
+     * Reads the keys of the partition's mappings.json directly from disk, so no data sources or
+     * custom function libraries need to be registered. The returned paths are prefixed with the
+     * group name, matching the form accepted by map(), e.g. "magnetics/coil[#]/name". Index
+     * placeholders ("#") are returned as written in the mapping files.
+     *
+     * @param experiment experiment name (case-insensitive)
+     * @param group group name, e.g. "magnetics"
+     * @param attributes partition attributes used to select the mapping directory, e.g. {"shot": 45000}
+     * @param include_internal include internal helper mappings (keys starting with '_')
+     * @return sorted list of mapping paths
+     */
+    [[nodiscard]] std::vector<std::string> list_mappings(const std::string& experiment, const std::string& group,
+                                                         const nlohmann::json& attributes,
+                                                         bool include_internal = false) const;
+
   private:
+    [[nodiscard]] const ExperimentMappings& get_experiment(const std::string& experiment) const;
+
     void load_experiment(const ExperimentName& experiment, const nlohmann::json& attributes);
     libtokamap::MappingStore init_mappings(const nlohmann::json& data, const nlohmann::json& group_attributes);
 
