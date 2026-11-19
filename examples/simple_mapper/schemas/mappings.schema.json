@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "/schemas/toplevel",
-  "description": "JSON Schema for v1.0 of mappings",
+  "description": "JSON Schema for v1.1 of mappings",
   "type": "object",
   "patternProperties": {
     "^.*$": {
@@ -22,7 +22,9 @@
         { "$ref": "#/$defs/value" },
         { "$ref": "#/$defs/data_source" },
         { "$ref": "#/$defs/expression" },
-        { "$ref": "#/$defs/custom" }
+        { "$ref": "#/$defs/custom" },
+        { "$ref": "#/$defs/interp" },
+        { "$ref": "#/$defs/uncertainty" }
       ]
     },
     "dimension": {
@@ -98,6 +100,71 @@
       },
       "required": ["map_type", "library", "function", "inputs", "parameters"],
       "additionalProperties": false
+    },
+    "interp": {
+      "properties": {
+        "map_type": { "const": "INTERP" },
+        "input": { "type": "string" },
+        "base": { "type": "string" },
+        "target": { "type": "string" },
+        "type": { "enum": ["LINEAR"] },
+        "args": {
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "type": ["string", "boolean", "number"]
+            }
+          }
+        },
+        "comment": { "type": "string" }
+      },
+      "required": ["map_type", "input", "base", "target", "type"],
+      "additionalProperties": false
+    },
+    "uncertainty": {
+      "properties": {
+        "map_type": { "const": "UNCERTAINTY" },
+        "model_type": { "enum": ["ABSOLUTE", "RELATIVE", "MAX_ABS_REL"] },
+        "reference": { "type": "string" },
+        "absolute": { "type": ["string", "number"], "minimum": 0 },
+        "relative": { "type": ["string", "number"], "minimum": 0 },
+        "comment": { "type": "string" }
+      },
+      "required": ["map_type", "model_type", "reference"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "model_type": { "const": "ABSOLUTE" }
+            }
+          },
+          "then": {
+            "required": ["absolute"],
+            "not": { "required": ["relative"] } 
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "model_type": { "const": "RELATIVE" }
+            }
+          },
+          "then": {
+            "required": ["relative"],
+            "not": { "required": ["absolute"] } }
+        },
+        {
+          "if": {
+            "properties": {
+              "model_type": { "const": "MAX_ABS_REL" }
+            }
+          },
+          "then": {
+            "required": ["absolute", "relative"] 
+          }
+        }
+      ]
     }
   }
 }

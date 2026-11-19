@@ -26,7 +26,7 @@ uint64_t map(libtokamap::MappingHandler& mapping_handler, nlohmann::json& trace,
 
     auto result = mapping_handler.map(mapping, path, data_type, rank, extra_attributes);
 
-    constexpr int64_t key_length = 35;
+    constexpr int64_t key_length = 40;
     std::string padding;
     padding.resize(std::max(key_length - static_cast<int64_t>(path.size()), int64_t{0}), ' ');
     std::cout << path << padding << " -> " << result.to_string() << "\n";
@@ -60,6 +60,7 @@ nlohmann::json map_all(libtokamap::MappingHandler& mapping_handler, const std::s
         map(mapping_handler, trace, mapping, path + "/flux/time");
         map(mapping_handler, trace, mapping, path + "/flux/data");
         map(mapping_handler, trace, mapping, path + "/flux/data_scaled");
+        map(mapping_handler, trace, mapping, path + "/flux/data_error_upper");
         map(mapping_handler, trace, mapping, path + "/flux/dot_product");
     }
 

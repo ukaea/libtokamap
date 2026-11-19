@@ -22,6 +22,7 @@ set( TEST_SOURCES
     # src/subset_edge_cases_test.cpp
     src/syntax_parser_test.cpp
     src/typed_data_array_test.cpp
+    src/uncertainty_mapping_test.cpp
     src/value_mapping_test.cpp
 )
 

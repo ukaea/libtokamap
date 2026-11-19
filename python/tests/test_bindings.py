@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 from typing import Any
 
@@ -569,3 +570,85 @@ def test_invalid_slice_raises_processing_error(config_path: Path, tmp_path: Path
 def test_missing_mapping_raises_missing_mapping_error(mapper: libtokamap.Mapper) -> None:
     with pytest.raises(libtokamap.MissingMappingError):
         mapper.map("example", "magnetics/missing", {"shot": 42})
+
+
+def test_uncertainty_mapping_from_example(mapper: libtokamap.Mapper) -> None:
+    attributes = {"shot": 42}
+    raw = mapper.map("example", "magnetics/coil[0]/flux/data", attributes)
+    uncertainty = mapper.map("example", "magnetics/coil[0]/flux/data_error_upper", attributes)
+
+    assert uncertainty.dtype == raw.dtype
+    assert uncertainty.shape == raw.shape
+    np.testing.assert_allclose(uncertainty, np.maximum(0.01, 0.05 * np.abs(raw)))
+
+
+def write_mappings(mapping_dir: Path, extra_mappings: dict[str, Any], extra_globals: dict[str, Any] | None = None) -> None:
+    group_dir = mapping_dir / "example_v1/magnetics/40"
+    mappings_path = group_dir / "mappings.json"
+    mappings = json.loads(mappings_path.read_text(encoding="utf-8"))
+    mappings.update(extra_mappings)
+    mappings_path.write_text(json.dumps(mappings), encoding="utf-8")
+    if extra_globals:
+        globals_path = group_dir / "globals.json"
+        group_globals = json.loads(globals_path.read_text(encoding="utf-8"))
+        group_globals.update(extra_globals)
+        globals_path.write_text(json.dumps(group_globals), encoding="utf-8")
+
+
+def test_uncertainty_mapping_renders_templated_parameter(config_path: Path, tmp_path: Path) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    write_mappings(
+        mapping_dir,
+        {
+            "coil[#]/flux/data_error_lower": {
+                "map_type": "UNCERTAINTY",
+                "model_type": "ABSOLUTE",
+                "reference": "coil[#]/flux/data",
+                "absolute": "{{ flux_uncertainty }}",
+            }
+        },
+        {"flux_uncertainty": 0.25},
+    )
+    write_config(config_path, mapping_dir, REPO_ROOT / "examples/simple_mapper/schemas")
+    mapper = make_mapper(config_path)
+
+    uncertainty = mapper.map("example", "magnetics/coil[0]/flux/data_error_lower", {"shot": 42})
+    assert uncertainty.shape == (100,)
+    np.testing.assert_allclose(uncertainty, 0.25)
+
+
+def test_recursive_mapping_reference_raises_mapping_error(config_path: Path, tmp_path: Path) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    write_mappings(
+        mapping_dir,
+        {
+            "loop_a": {"map_type": "UNCERTAINTY", "model_type": "RELATIVE", "reference": "loop_b", "relative": 0.1},
+            "loop_b": {"map_type": "EXPR", "expr": "2 * x", "parameters": {"x": "loop_a"}},
+        },
+    )
+    write_config(config_path, mapping_dir, REPO_ROOT / "examples/simple_mapper/schemas")
+
+    with pytest.raises(libtokamap.MappingError, match="recursive mapping reference found: 'loop_[ab]' -> 'loop_[ab]' -> 'loop_[ab]'"):
+        make_mapper(config_path).map("example", "magnetics/loop_a", {"shot": 42})
+
+
+@pytest.mark.parametrize(
+    ("extra", "message"),
+    [
+        ({"typo": {"map_type": "VALEU", "value": 1}}, "unknown map_type \"VALEU\" in mapping 'typo'"),
+        ({"alias": "@coil[#]/flux/data"}, "'@name' shorthand \\(FORWARD\\) is not supported yet"),
+    ],
+)
+def test_unknown_map_type_raises_mapping_error(
+    config_path: Path, tmp_path: Path, extra: dict[str, Any], message: str
+) -> None:
+    mapping_dir = copy_example_mappings(tmp_path)
+    write_mappings(mapping_dir, extra)
+    # a schema that accepts any mappings, so the check in the library is what fails
+    schemas = tmp_path / "schemas"
+    shutil.copytree(REPO_ROOT / "examples/simple_mapper/schemas", schemas)
+    (schemas / "mappings.schema.json").write_text(json.dumps({"type": "object"}), encoding="utf-8")
+    write_config(config_path, mapping_dir, schemas)
+
+    with pytest.raises(libtokamap.MappingError, match=message):
+        make_mapper(config_path).map("example", "magnetics/coil", {"shot": 42})
