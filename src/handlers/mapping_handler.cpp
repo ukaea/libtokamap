@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
+#include <cstdint>
 #include <deque>
 #include <filesystem>
 #include <fstream>
@@ -29,21 +30,21 @@
 #include "map_types/custom_mapping.hpp"
 #include "map_types/data_source_mapping.hpp"
 #include "map_types/dim_mapping.hpp"
-#include "map_types/error_mapping.hpp"
 #include "map_types/expr_mapping.hpp"
 #include "map_types/interp_mapping.hpp"
 #include "map_types/map_arguments.hpp"
+#include "map_types/uncertainty_mapping.hpp"
 #include "map_types/value_mapping.hpp"
 #include "utils/algorithm.hpp"
 #include "utils/indices.hpp"
 #include "utils/library_loader.hpp"
 #include "utils/mapping_locator.hpp"
+#include "utils/profiler.hpp"
 #include "utils/ram_cache.hpp"
 #include "utils/render.hpp"
 #include "utils/syntax_parser.hpp"
 #include "utils/typed_data_array.hpp"
 #include "utils/types.hpp"
-#include "utils/profiler.hpp"
 
 namespace
 {
@@ -309,9 +310,8 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
         attributes[key] = value;
     }
 
-    const libtokamap::MapArguments map_arguments{mappings,        attributes,      data_type,        rank,
-                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get(),
-                                                 extra_attributes};
+    const libtokamap::MapArguments map_arguments{mappings,        attributes,      data_type,         rank,
+                                                 m_trace_enabled, m_cache_enabled, m_ram_cache.get(), extra_attributes};
 
     LIBTOKAMAP_PROFILER_ATTR(profiler, "cache_hit", false);
     auto result = mappings.at(map_path)->map(map_arguments);
@@ -323,6 +323,87 @@ libtokamap::TypedDataArray libtokamap::MappingHandler::map(const ExperimentName&
 
 namespace
 {
+
+using ReferenceGraph = std::unordered_map<libtokamap::MappingName, std::vector<libtokamap::MappingName>>;
+
+/**
+ * @brief Counts each mapping a mapping refers to, as MappingCounts does, and
+ * also records it so that the reference graph can be checked for cycles
+ */
+class ReferenceRecorder
+{
+  public:
+    ReferenceRecorder(libtokamap::MappingCounts& counts, std::vector<libtokamap::MappingName>& references)
+        : m_counts{&counts}, m_references{&references}
+    {
+    }
+    void increment(const libtokamap::MappingName& name)
+    {
+        m_counts->increment(name);
+        m_references->push_back(name);
+    }
+
+  private:
+    libtokamap::MappingCounts* m_counts;
+    std::vector<libtokamap::MappingName>* m_references;
+};
+
+/**
+ * @brief Throw if any mapping refers back to itself, directly or through other
+ * mappings, which would otherwise recurse until the stack overflows when mapped
+ *
+ * References to names that are not in the graph are skipped, those are reported
+ * as missing when mapped.
+ */
+void check_for_recursive_references(const ReferenceGraph& graph)
+{
+    enum class State : uint8_t { Unvisited, InProgress, Done };
+    std::unordered_map<std::string_view, State> states;
+
+    struct Frame {
+        const libtokamap::MappingName* name;
+        const std::vector<libtokamap::MappingName>* references;
+        size_t next;
+    };
+    std::vector<Frame> path; // the chain of mappings currently being followed
+
+    for (const auto& [root, root_references] : graph) {
+        if (states[root] != State::Unvisited) {
+            continue;
+        }
+        states[root] = State::InProgress;
+        path.push_back({&root, &root_references, 0});
+
+        while (!path.empty()) {
+            auto& frame = path.back();
+            if (frame.next == frame.references->size()) {
+                states[*frame.name] = State::Done;
+                path.pop_back();
+                continue;
+            }
+            const auto& reference = (*frame.references)[frame.next++];
+            const auto found = graph.find(reference);
+            if (found == graph.end()) {
+                continue;
+            }
+            auto& state = states[found->first];
+            if (state == State::InProgress) {
+                const auto start =
+                    std::ranges::find_if(path, [&](const Frame& item) { return *item.name == reference; });
+                std::string message = "recursive mapping reference found: ";
+                for (const auto& item : std::ranges::subrange(start, path.end())) {
+                    message.append("'").append(*item.name).append("' -> ");
+                }
+                message.append("'").append(reference).append("'");
+                throw libtokamap::MappingError{message};
+            }
+            if (state == State::Unvisited) {
+                state = State::InProgress;
+                path.push_back({&found->first, &found->second, 0});
+            }
+        }
+    }
+}
 
 void apply_config(std::unordered_map<std::string, nlohmann::json>& args, nlohmann::json plugin_config_map,
                   const std::string& plugin_name)
@@ -402,7 +483,7 @@ void init_data_source_mapping(libtokamap::MappingStore& map_store, const libtoka
 }
 
 void init_dim_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
-                      const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+                      const nlohmann::json& value, ReferenceRecorder& mapping_counts)
 {
     auto dim_probe = value["dim_probe"].get<std::string>();
     map_store.emplace(mapping_name, std::make_unique<libtokamap::DimMapping>(dim_probe));
@@ -410,7 +491,7 @@ void init_dim_mapping(libtokamap::MappingStore& map_store, const libtokamap::Map
 }
 
 void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
-                       const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+                       const nlohmann::json& value, ReferenceRecorder& mapping_counts)
 {
     auto expr = value["expr"].get<std::string>();
     auto parameters = value["parameters"].get<std::unordered_map<std::string, std::string>>();
@@ -421,9 +502,9 @@ void init_expr_mapping(libtokamap::MappingStore& map_store, const libtokamap::Ma
 }
 
 void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
-                         const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+                         const nlohmann::json& value, ReferenceRecorder& mapping_counts)
 {
-   for (const auto& required : {"input", "base", "target", "type"}) {
+    for (const auto& required : {"input", "base", "target", "type"}) {
         if (!value.contains(required)) {
             throw libtokamap::ConfigurationError{"Required " + std::string{required} +
                                                  " argument not provided in INTERP mapping '" + mapping_name + "'"};
@@ -445,31 +526,24 @@ void init_interp_mapping(libtokamap::MappingStore& map_store, const libtokamap::
     mapping_counts.increment(target);
 }
 
-void init_error_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
-                        const nlohmann::json& value, libtokamap::MappingCounts& mapping_counts)
+void init_uncertainty_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
+                              const nlohmann::json& value, const nlohmann::json& group_attributes,
+                              ReferenceRecorder& mapping_counts)
 {
-    const auto reference = value.at("reference").get<std::string>();
-    const auto error_type = value.at("error_type").get<libtokamap::ErrorType>();
-
-    std::optional<double> absolute;
-    std::optional<double> relative;
-    if (error_type == libtokamap::ErrorType::ABSOLUTE || error_type == libtokamap::ErrorType::MAX_ABS_REL) {
-        absolute = value.at("absolute").get<double>();
+    if (!value.contains("reference")) {
+        throw libtokamap::ConfigurationError{"Required reference argument not provided in UNCERTAINTY mapping '" +
+                                             mapping_name + "'"};
     }
-    if (error_type == libtokamap::ErrorType::RELATIVE || error_type == libtokamap::ErrorType::MAX_ABS_REL) {
-        relative = value.at("relative").get<double>();
-    }
+    auto reference = value.at("reference").get<std::string>();
+    auto model = libtokamap::parse_uncertainty_model(value, group_attributes, mapping_name);
 
-    map_store.emplace(
-        mapping_name,
-        std::make_unique<libtokamap::ErrorMapping>(reference, error_type, absolute, relative)
-    );
     mapping_counts.increment(reference);
+    map_store.emplace(mapping_name, std::make_unique<libtokamap::UncertaintyMapping>(std::move(reference), model));
 }
 
 void init_custom_mapping(libtokamap::MappingStore& map_store, const libtokamap::MappingName& mapping_name,
                          const nlohmann::json& value, const std::vector<libtokamap::LibraryFunction>& library_functions,
-                         libtokamap::MappingCounts& mapping_counts)
+                         ReferenceRecorder& mapping_counts)
 {
     std::vector<std::filesystem::path> library_paths = {};
     auto library_name = value["library"].get<libtokamap::LibraryName>();
@@ -507,6 +581,7 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                                                                    const nlohmann::json& group_attributes)
 {
     libtokamap::MappingStore map_store;
+    ReferenceGraph references;
     for (const auto& [mapping_name, value] : data.items()) {
         if (!value.contains("map_type")) {
             throw libtokamap::MappingError{"required map_type argument not found in mapping '" + mapping_name + "'"};
@@ -514,6 +589,8 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
         if (map_store.contains(mapping_name)) {
             throw libtokamap::MappingError{"duplicate mapping found '" + mapping_name + "'"};
         }
+
+        ReferenceRecorder recorder{m_mapping_counts, references[mapping_name]};
 
         using libtokamap::MappingType;
         switch (value["map_type"].get<MappingType>()) {
@@ -524,26 +601,34 @@ libtokamap::MappingStore libtokamap::MappingHandler::init_mappings(const nlohman
                 init_data_source_mapping(map_store, mapping_name, value, group_attributes, m_data_sources);
                 break;
             case MappingType::DIM:
-                init_dim_mapping(map_store, mapping_name, value, m_mapping_counts);
+                init_dim_mapping(map_store, mapping_name, value, recorder);
                 break;
             case MappingType::EXPR:
-                init_expr_mapping(map_store, mapping_name, value, m_mapping_counts);
+                init_expr_mapping(map_store, mapping_name, value, recorder);
                 break;
             case MappingType::INTERP:
-                init_interp_mapping(map_store, mapping_name, value, m_mapping_counts);
+                init_interp_mapping(map_store, mapping_name, value, recorder);
                 break;
-            case MappingType::ERROR:
-                init_error_mapping(map_store, mapping_name, value, m_mapping_counts);
+            case MappingType::UNCERTAINTY:
+                init_uncertainty_mapping(map_store, mapping_name, value, group_attributes, recorder);
                 break;
             case MappingType::CUSTOM:
-                init_custom_mapping(map_store, mapping_name, value, m_library_functions, m_mapping_counts);
+                init_custom_mapping(map_store, mapping_name, value, m_library_functions, recorder);
                 break;
-            default:
-                break;
+            case MappingType::UNKNOWN: {
+                // no default, so -Wswitch flags a MappingType that is added but not handled here
+                const auto& map_type = value["map_type"];
+                std::string message = "unknown map_type " + map_type.dump() + " in mapping '" + mapping_name + "'";
+                if (map_type == "FORWARD") {
+                    message += ", the '@name' shorthand (FORWARD) is not supported yet";
+                }
+                throw libtokamap::MappingError{message};
+            }
         }
 
         m_mapping_counts.increment(mapping_name);
     }
+    check_for_recursive_references(references);
     return map_store;
 }
 
@@ -564,7 +649,7 @@ void libtokamap::MappingHandler::load_data_source(const std::string& name, const
     std::string factory_name = args.at("factory");
     auto factory_args_json = args.at("args");
     DataSourceFactoryArgs factory_args;
-    for (const auto& [key, value]: factory_args_json.items()) {
+    for (const auto& [key, value] : factory_args_json.items()) {
         if (value.is_number_float()) {
             factory_args[key] = value.get<double>();
         } else if (value.is_number_integer()) {

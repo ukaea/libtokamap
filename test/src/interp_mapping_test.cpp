@@ -27,21 +27,14 @@ MapEntries make_entries(const nlohmann::json& signal, const nlohmann::json& time
     return entries;
 }
 
-InterpMapping make_interp_mapping()
-{
-    return InterpMapping{"signal", "time", "new_time", InterpType::LINEAR};
-}
+InterpMapping make_interp_mapping() { return InterpMapping{"signal", "time", "new_time", InterpType::LINEAR}; }
 
 } // namespace
 
 TEST_CASE("InterpMapping interpolates onto a new time base", "[interp_mapping]")
 {
     // throw a few situations, on the nose, out of bounds, inbetween, all the rest
-    auto entries = make_entries(
-        {10.0, 20.0, 30.0, 40.0},
-        {0.0, 1.0, 2.0, 3.0},
-        {-1.0, 0.0, 0.5, 1.5, 2.0, 3.0, 5.0}
-    );
+    auto entries = make_entries({10.0, 20.0, 30.0, 40.0}, {0.0, 1.0, 2.0, 3.0}, {-1.0, 0.0, 0.5, 1.5, 2.0, 3.0, 5.0});
     MapArguments map_args = make_map_arguments(entries);
 
     const auto result = make_interp_mapping().map(map_args);

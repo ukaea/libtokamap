@@ -19,7 +19,8 @@ class InterpMapping : public Mapping
   public:
     InterpMapping() = delete;
     InterpMapping(std::string input, std::string base, std::string target, InterpType interp_type)
-        : m_input{std::move(input)}, m_base{std::move(base)}, m_target{std::move(target)}, m_interp_type{interp_type} {};
+        : m_input{std::move(input)}, m_base{std::move(base)}, m_target{std::move(target)},
+          m_interp_type{interp_type} {};
 
     [[nodiscard]] TypedDataArray map(const MapArguments& arguments) const override;
 

@@ -88,5 +88,13 @@
       "rhs": "coil[#]/flux/data"
     },
     "parameters": {}
+  },
+  "coil[#]/flux/data_error_upper": {
+    "map_type": "UNCERTAINTY",
+    "model_type": "MAX_ABS_REL",
+    "reference": "coil[#]/flux/data",
+    "absolute": 0.01,
+    "relative": 0.05,
+    "comment": "5% of the flux, with a floor of 0.01"
   }
 }

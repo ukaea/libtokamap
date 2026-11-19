@@ -80,9 +80,9 @@ set( MAP_TYPE_SOURCES
     src/map_types/custom_mapping.cpp
     src/map_types/data_source_mapping.cpp
     src/map_types/dim_mapping.cpp
-    src/map_types/error_mapping.cpp
     src/map_types/expr_mapping.cpp
     src/map_types/interp_mapping.cpp
+    src/map_types/uncertainty_mapping.cpp
     src/map_types/value_mapping.cpp
 )
 
@@ -117,10 +117,10 @@ set( MAP_TYPE_HEADERS
     src/map_types/custom_mapping.hpp
     src/map_types/data_source_mapping.hpp
     src/map_types/dim_mapping.hpp
-    src/map_types/error_mapping.hpp
     src/map_types/expr_mapping.hpp
     src/map_types/interp_mapping.hpp
     src/map_types/map_arguments.hpp
+    src/map_types/uncertainty_mapping.hpp
     src/map_types/value_mapping.hpp
 )
 

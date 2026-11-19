@@ -321,6 +321,45 @@ Get dimension information from arrays:
 }
 ```
 
+### Uncertainty Mapping
+
+Generate a per point uncertainty (error bar) for another mapping, the `reference`:
+
+```json
+{
+    "flux/data": {
+        "map_type": "DATA_SOURCE",
+        "data_source": "JSON",
+        "args": { "signal": "flux" }
+    },
+    "flux/data_error_upper": {
+        "map_type": "UNCERTAINTY",
+        "model_type": "MAX_ABS_REL",
+        "reference": "flux/data",
+        "absolute": 0.01,
+        "relative": 0.05,
+        "comment": "5% of the flux, with a floor of 0.01"
+    }
+}
+```
+
+`model_type` is one of:
+
+| `model_type` | Uncertainty at each point `x` | Parameters |
+|---|---|---|
+| `ABSOLUTE` | `absolute` | `absolute` |
+| `RELATIVE` | `relative * abs(x)` | `relative` |
+| `MAX_ABS_REL` | `max(absolute, relative * abs(x))` | `absolute` and `relative` |
+
+- `absolute` is in the units of the reference. `relative` is a fraction, so `0.05` is 5%.
+- Parameters must be `>= 0`. A parameter the `model_type` does not use is an error.
+- A parameter can be a template string, e.g. `"absolute": "{{ flux_uncertainty }}"`. It is
+  rendered against the group's `globals.json` when the mappings are loaded, so it cannot depend
+  on per request values such as `indices`.
+- The reference must be `float` or `double`. Whole numbers in a VALUE mapping are integers, so
+  write `[10.0, 20.0]`, not `[10, 20]`.
+- The result has the same type and shape as the reference. NaN points in the reference stay NaN.
+
 ### Custom Mapping
 
 Use custom functions from loaded libraries:
@@ -438,6 +477,7 @@ try {
 3. **Data source not found**: Verify data source is registered
 4. **File not found**: Check file paths in data source arguments
 5. **Type mismatch**: Ensure requested type matches returned data
+6. **Recursive reference**: A mapping that refers back to itself, directly or through other mappings, fails to load with a `MappingError` naming the cycle
 
 ## Best Practices
 

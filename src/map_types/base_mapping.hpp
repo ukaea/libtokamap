@@ -9,14 +9,14 @@
 namespace libtokamap
 {
 
-enum class MappingType : uint8_t { UNKNOWN, VALUE, DATA_SOURCE, EXPR, CUSTOM, DIM, INTERP, ERROR };
+enum class MappingType : uint8_t { UNKNOWN, VALUE, DATA_SOURCE, EXPR, CUSTOM, DIM, INTERP, UNCERTAINTY };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(MappingType, {{MappingType::UNKNOWN, nullptr}, // will default to this on no match
                                            {MappingType::VALUE, "VALUE"},
                                            {MappingType::DATA_SOURCE, "DATA_SOURCE"},
                                            {MappingType::EXPR, "EXPR"},
                                            {MappingType::INTERP, "INTERP"},
-                                           {MappingType::ERROR, "ERROR"},
+                                           {MappingType::UNCERTAINTY, "UNCERTAINTY"},
                                            {MappingType::CUSTOM, "CUSTOM"},
                                            {MappingType::DIM, "DIMENSION"}})
 
