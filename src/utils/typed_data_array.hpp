@@ -13,7 +13,11 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#if __cplusplus >= 202002L
+
+#include "utils/compiler.hpp"
+
+#if LIBTOKAMAP_HAS_CPP20
+#  include <bit>
 #  include <span>
 #  define TM_BIT_CAST std::bit_cast
 #else
@@ -24,7 +28,6 @@
 // #include <xtensor/containers/xadapt.hpp>
 
 #include "exceptions/exceptions.hpp"
-#include "utils/compiler.hpp"
 
 namespace libtokamap
 {
@@ -365,7 +368,7 @@ class TypedDataArray
         return new_array;
     }
 
-#if __cplusplus >= 202002L
+#if LIBTOKAMAP_HAS_CPP20
     template <typename T> [[nodiscard]] std::span<T> span() const
     {
         if (m_data_type != data_type_of<T>()) {
